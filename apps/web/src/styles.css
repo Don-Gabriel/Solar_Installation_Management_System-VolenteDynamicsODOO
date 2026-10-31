@@ -3686,3 +3686,138 @@ select {
   color: #132e3b;
   background: #fff;
 }
+[data-slot="card"] select,
+.panel select,
+.form-dialog select,
+.panel input:not([type="checkbox"]),
+.form-dialog input:not([type="checkbox"]),
+.panel textarea {
+  max-width: 100%;
+}
+.schedule-slots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  max-height: 340px;
+  overflow: auto;
+  margin: 16px 0;
+}
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid #bccbd3;
+  border-radius: 8px;
+  background: white;
+  color: #132e3b;
+  text-align: left;
+  min-height: 78px;
+}
+.slot.selected {
+  border: 2px solid #2d697f;
+  background: #eef5f8;
+}
+.crew-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 16px 0;
+}
+.crew-options label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.component-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+.component-choice {
+  border: 1px solid #d7e3e9;
+  padding: 16px;
+  border-radius: 8px;
+}
+.component-choice label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.component-choice p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+.diagnosis-line {
+  border: 1px solid #c9d7df;
+  border-radius: 8px;
+  padding: 18px;
+  margin: 16px 0;
+}
+.diagnosis-line legend {
+  padding: 0 8px;
+  font-weight: 700;
+}
+.visit-row {
+  padding: 12px 0;
+  border-bottom: 1px solid #d7e3e9;
+}
+.panel label > input:not([type="checkbox"]),
+.panel label > select,
+.panel label > textarea,
+.form-dialog label > select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #a7b9c4;
+  border-radius: 6px;
+  background: white;
+  color: #132e3b;
+  font-size: 16px;
+  margin: 6px 0 12px;
+}
+.data-table td small {
+  display: block;
+  line-height: 1.5;
+  color: #455f70;
+}
+@media (max-width: 540px) {
+  .component-grid {
+    grid-template-columns: 1fr;
+  }
+  .diagnosis-line {
+    padding: 12px;
+  }
+  .schedule-slots {
+    grid-template-columns: 1fr;
+  }
+  .ticket-card {
+    min-width: 0;
+  }
+}
+
+@media print {
+  body:has(.service-document) main > :not(.service-document) {
+    display: none !important;
+  }
+  .service-document form,
+  .service-document button {
+    display: none !important;
+  }
+  .service-document {
+    break-inside: auto;
+    box-shadow: none;
+  }
+  .service-document .table-scroll {
+    overflow: visible;
+  }
+  .service-document table {
+    min-width: 0;
+    width: 100%;
+  }
+  .service-document tr {
+    break-inside: avoid;
+  }
+}

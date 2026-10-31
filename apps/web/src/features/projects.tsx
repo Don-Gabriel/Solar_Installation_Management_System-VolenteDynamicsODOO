@@ -131,7 +131,7 @@ export function Projects() {
         title="Projects"
         description="One connected journey from first enquiry to handover."
       >
-        <Can roles={["admin", "sales"]}>
+        <Can roles={["admin", "sales", "support", "coordinator"]}>
           <NewProjectLink />
         </Can>
       </PageHead>
@@ -374,9 +374,14 @@ export function ProjectDetail() {
       value: "installation",
       label: "Installation",
       icon: HardHat,
-      show: ["admin", "technician", "sales", "surveyor", "support"].includes(
-        user.role,
-      ),
+      show: [
+        "admin",
+        "technician",
+        "sales",
+        "surveyor",
+        "support",
+        "coordinator",
+      ].includes(user.role),
     },
     {
       value: "passport",

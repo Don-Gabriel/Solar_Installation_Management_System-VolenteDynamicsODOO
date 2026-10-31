@@ -30,6 +30,13 @@ import { cn } from "@/lib/utils";
 export const navigation = [
   { to: "/", label: "Home", short: "Home", icon: LayoutDashboard },
   {
+    to: "/schedule",
+    label: "Visits & scheduling",
+    short: "Visits",
+    icon: HardHat,
+    roles: ["admin", "coordinator", "technician", "support", "surveyor"],
+  },
+  {
     to: "/projects",
     label: "Customers & projects",
     short: "Projects",
@@ -47,14 +54,21 @@ export const navigation = [
     label: "Installation jobs",
     short: "Jobs",
     icon: HardHat,
-    roles: ["admin", "technician", "surveyor", "sales"],
+    roles: ["admin", "technician", "surveyor", "sales", "coordinator"],
   },
   {
     to: "/service",
     label: "Repairs & warranty",
     short: "Repairs",
     icon: ShieldCheck,
-    roles: ["admin", "support", "accounts"],
+    roles: [
+      "admin",
+      "support",
+      "accounts",
+      "coordinator",
+      "technician",
+      "warehouse",
+    ],
   },
   {
     to: "/reports",

@@ -9,7 +9,7 @@ async function login(page: any, email = "admin@sunpower.local") {
     page.getByRole("heading", { name: /Good morning|Good afternoon/ }),
   ).toBeVisible();
 }
-test("project next step and back navigation preserve search and stage", async ({
+test("[UXP-01] project next step and back navigation preserve search and stage", async ({
   page,
 }) => {
   await login(page);

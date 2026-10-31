@@ -7,6 +7,7 @@ export default defineConfig({
   expect: { timeout: 10000 },
   reporter: [
     ["list"],
+    ["json", { outputFile: "output/scenarios/browser-results.json" }],
     ["html", { open: "never", outputFolder: "output/playwright-report" }],
   ],
   outputDir: "output/test-results",

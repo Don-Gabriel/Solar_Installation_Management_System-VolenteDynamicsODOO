@@ -37,7 +37,7 @@ export function Overview() {
         title={`Good ${new Date().getHours() < 12 ? "morning" : "afternoon"}, ${user.name.split(" ")[0]}`}
         description="Here’s what’s moving across your solar operations."
       >
-        <Can roles={["admin", "sales"]}>
+        <Can roles={["admin", "sales", "support", "coordinator"]}>
           <NewProjectLink />
         </Can>
       </PageHead>
@@ -72,14 +72,14 @@ export function Overview() {
               <ArrowUpRight />
             </Link>
           </Can>
-          <Can roles={["admin", "sales"]}>
+          <Can roles={["admin", "sales", "support", "coordinator"]}>
             <Link to="/projects?status=quoted">
               <span>Customer decisions</span>
               <strong>Follow up on quotations</strong>
               <ArrowUpRight />
             </Link>
           </Can>
-          <Can roles={["admin", "support"]}>
+          <Can roles={["admin", "support", "coordinator", "technician"]}>
             <Link to="/service">
               <span>Repairs</span>
               <strong>Check a warranty or resolve a fault</strong>
@@ -95,6 +95,29 @@ export function Overview() {
           </Can>
         </div>
       </Panel>
+      <Can roles={["admin", "coordinator", "support", "technician"]}>
+        <Panel
+          title="Repair work queue"
+          description="Requests waiting for a crew, active visits, parts delays and customer confirmation stay separate."
+        >
+          <div className="work-shortcuts">
+            <Link to="/schedule">
+              <span>Visits & scheduling</span>
+              <strong>Find available workers or review appointments</strong>
+              <ArrowUpRight />
+            </Link>
+            {data.service_queue?.map((q: any) => (
+              <Link key={q.status} to={"/service?status=" + q.status}>
+                <span>{human(q.status)}</span>
+                <strong>{q.count} requests</strong>
+                <small>
+                  {q.urgent} urgent · {q.overdue} overdue visits
+                </small>
+              </Link>
+            ))}
+          </div>
+        </Panel>
+      </Can>
       <div className="metrics">
         <div className="metric">
           <span>

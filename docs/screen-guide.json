@@ -10,7 +10,8 @@
       "warehouse",
       "technician",
       "support",
-      "accounts"
+      "accounts",
+      "coordinator"
     ],
     "purpose": "Enter your staff account. Your role controls the screens and actions you can use.",
     "options": [
@@ -28,7 +29,9 @@
     "id": "public",
     "title": "Customer enquiry",
     "path": "/enquire",
-    "roles": ["public"],
+    "roles": [
+      "public"
+    ],
     "purpose": "Let a customer request a solar installation without a staff account.",
     "options": [
       "Send enquiry",
@@ -53,7 +56,8 @@
       "warehouse",
       "technician",
       "support",
-      "accounts"
+      "accounts",
+      "coordinator"
     ],
     "purpose": "See current work and open the right task quickly.",
     "options": [
@@ -63,7 +67,9 @@
       "Recent projects and installer schedule",
       "Money totals only for permitted roles"
     ],
-    "fields": ["No typing is required."],
+    "fields": [
+      "No typing is required."
+    ],
     "next": "Choose a work shortcut or project. Installers see their assigned projects only."
   },
   {
@@ -77,7 +83,8 @@
       "warehouse",
       "technician",
       "support",
-      "accounts"
+      "accounts",
+      "coordinator"
     ],
     "purpose": "Find a customer, installation site or project.",
     "options": [
@@ -97,7 +104,12 @@
     "id": "new",
     "title": "New staff enquiry",
     "path": "/projects/new",
-    "roles": ["admin", "sales"],
+    "roles": [
+      "admin",
+      "sales",
+      "support",
+      "coordinator"
+    ],
     "purpose": "Create a customer request received by the staff team.",
     "options": [
       "Create project",
@@ -122,7 +134,8 @@
       "warehouse",
       "technician",
       "support",
-      "accounts"
+      "accounts",
+      "coordinator"
     ],
     "purpose": "Keep one customer journey together and show what happens next.",
     "options": [
@@ -132,14 +145,20 @@
       "Project sections: survey, quote/payment, packing/delivery, installation, device history, subsidy, activity",
       "Customer address and phone link"
     ],
-    "fields": ["The summary itself has no form."],
+    "fields": [
+      "The summary itself has no form."
+    ],
     "next": "The recommended section depends on the saved state and your role. A handoff message explains which team owns a step you cannot perform."
   },
   {
     "id": "survey",
     "title": "Site survey",
     "path": "Project > Site survey",
-    "roles": ["admin", "sales", "surveyor"],
+    "roles": [
+      "admin",
+      "sales",
+      "surveyor"
+    ],
     "purpose": "Check that the roof and power supply are suitable before quoting.",
     "options": [
       "Record site survey / Record new survey",
@@ -158,7 +177,11 @@
     "id": "quote",
     "title": "Quotation & payment",
     "path": "Project > Quotation & payment",
-    "roles": ["admin", "sales", "accounts"],
+    "roles": [
+      "admin",
+      "sales",
+      "accounts"
+    ],
     "purpose": "Prepare a price list, record acceptance and track customer payments.",
     "options": [
       "Generate quotation or Issue new version: administrator/sales after survey approval",
@@ -178,7 +201,11 @@
     "id": "packing",
     "title": "Packing & delivery",
     "path": "Project > Packing & delivery",
-    "roles": ["admin", "warehouse", "sales"],
+    "roles": [
+      "admin",
+      "warehouse",
+      "sales"
+    ],
     "purpose": "Set aside the right equipment, check its serials and record delivery.",
     "options": [
       "Reserve stock: administrator/stock team",
@@ -199,7 +226,14 @@
     "id": "installation",
     "title": "Installation & handover",
     "path": "Project > Installation",
-    "roles": ["admin", "technician", "sales", "surveyor", "support"],
+    "roles": [
+      "admin",
+      "technician",
+      "sales",
+      "surveyor",
+      "support",
+      "coordinator"
+    ],
     "purpose": "Assign the job, record work and save proof of handover.",
     "options": [
       "Assign technician & time: administrator",
@@ -207,7 +241,9 @@
       "Choose photo / camera file picker",
       "Draw signature, Clear, Save signature or upload PNG alternative",
       "Complete safety checklist and handover",
-      "View saved evidence after refresh"
+      "View saved evidence after refresh",
+      "Select a lead and additional crew members",
+      "Record actual minutes separately for each worker; only the lead signs off"
     ],
     "fields": [
       "Assignment: choose active installer, start date/time and expected duration in hours.",
@@ -236,14 +272,20 @@
       "Review old and replacement devices",
       "Open related service work where allowed"
     ],
-    "fields": ["No manual data entry on this section."],
+    "fields": [
+      "No manual data entry on this section."
+    ],
     "next": "Use the serial or customer search in Repairs & warranty when a fault is reported. Printing or scanning a barcode never resets coverage."
   },
   {
     "id": "subsidy",
     "title": "Subsidy records",
     "path": "Project > Subsidy",
-    "roles": ["admin", "sales", "accounts"],
+    "roles": [
+      "admin",
+      "sales",
+      "accounts"
+    ],
     "purpose": "Track the paperwork for a subsidy application.",
     "options": [
       "Choose application status",
@@ -268,7 +310,8 @@
       "warehouse",
       "technician",
       "support",
-      "accounts"
+      "accounts",
+      "coordinator"
     ],
     "purpose": "See who saved important changes and when.",
     "options": [
@@ -284,7 +327,11 @@
     "id": "stock",
     "title": "Stock & deliveries",
     "path": "/inventory",
-    "roles": ["admin", "warehouse", "accounts"],
+    "roles": [
+      "admin",
+      "warehouse",
+      "accounts"
+    ],
     "purpose": "Check equipment quantities, device serials and purchases.",
     "options": [
       "Packing queue links to a project",
@@ -304,7 +351,13 @@
     "id": "jobs",
     "title": "Installation jobs",
     "path": "/jobs",
-    "roles": ["admin", "technician", "surveyor", "sales"],
+    "roles": [
+      "admin",
+      "technician",
+      "surveyor",
+      "sales",
+      "coordinator"
+    ],
     "purpose": "Review upcoming, in-progress and completed installation work.",
     "options": [
       "Open a job directly on its Installation section",
@@ -320,28 +373,72 @@
     "id": "service",
     "title": "Repairs & warranty",
     "path": "/service",
-    "roles": ["admin", "support", "accounts"],
-    "purpose": "Find coverage, track a repair and record customer confirmation.",
+    "roles": [
+      "admin",
+      "support",
+      "coordinator",
+      "technician",
+      "warehouse",
+      "accounts"
+    ],
+    "purpose": "Support records the problem without guessing the faulty part. The assigned crew diagnoses installed equipment and records completed work.",
     "options": [
-      "Search customer/device/phone: administrator/support",
-      "Open ticket: select problem category and write complaint",
-      "Record repair or replacement: administrator/support",
-      "View free covered charge or itemized expired charge",
-      "Record customer confirmation only after repair",
-      "Open related project; accounts can review charges"
+      "New repair call, customer search and stage filter",
+      "Open installed equipment and earlier service requests",
+      "Schedule or reschedule a visit",
+      "Select faulty components and record repair or replacement",
+      "Review separate part and labour coverage",
+      "Record estimate approval, save a current photo, complete repair",
+      "Print the service document; collect payment if chargeable",
+      "Receive faulty devices into quarantine; record customer confirmation or dispute",
+      "Create a linked follow-up if the fault returns"
     ],
     "fields": [
-      "Problem category: No power, Low generation, Inverter warning, Battery issue, Wiring or connection, Physical damage, Other.",
-      "Repair: actual work performed, parts cost, labour cost, optional replacement serial of the same product.",
-      "Confirmation: customer name prefilled for review; record only after customer agreement."
+      "Choose the installation, problem category and priority.",
+      "Type the reported problem and actual findings.",
+      "Choose installed components and available matching serials.",
+      "Record actual minutes and agreed selling prices; internal cost remains separate.",
+      "Coverage exceptions need an authorized reviewer and a reason.",
+      "A changed diagnosis needs approval and a fresh completion photo."
     ],
-    "next": "Covered service is free to the customer but keeps its internal cost. Expired service creates a bill. A replacement inherits original warranty dates. Customer confirmation closes the ticket."
+    "next": "Physical completion creates a separate service document, including zero-payable covered lines. Support closes the request only after customer confirmation."
+  },
+  {
+    "id": "schedule",
+    "title": "Visits & scheduling",
+    "path": "/schedule",
+    "roles": [
+      "admin",
+      "coordinator",
+      "technician",
+      "support",
+      "surveyor"
+    ],
+    "purpose": "Plan field visits against real availability, with installation bookings, repair visits, travel and leave checked together.",
+    "options": [
+      "Choose a repair request or survey site",
+      "Search a date window, required skill, duration and crew size",
+      "Select qualified available workers and a lead",
+      "Confirm or reschedule with a reason",
+      "See installation appointments and record leave",
+      "Review unavailable-worker warnings and record no access"
+    ],
+    "fields": [
+      "Routine dates default to days 3 through 5. Appointment times use IST.",
+      "Working hours are 09:00 to 17:00, with a fixed 30-minute travel buffer and configured weekly working days.",
+      "When the window is full, the next seven days are searched for alternatives. A coordinator must explicitly choose an alternative.",
+      "The server rechecks availability at confirmation; search results do not reserve a worker."
+    ],
+    "next": "The crew opens its visit, records findings and evidence, and completes the appropriate work. A failed visit stays visible for follow-up."
   },
   {
     "id": "reports",
     "title": "Money & reports",
     "path": "/reports",
-    "roles": ["admin", "accounts"],
+    "roles": [
+      "admin",
+      "accounts"
+    ],
     "purpose": "Separate money received, unpaid invoices and installation costs.",
     "options": [
       "Choose Today, This week, This month or All time",
@@ -349,7 +446,8 @@
       "Open project breakdown",
       "View installer payables; record paid reference",
       "Export CSV",
-      "Print report"
+      "Print report",
+      "Pay each installation crew member separately; repeat submissions do not pay twice"
     ],
     "fields": [
       "Period: select.",
@@ -361,7 +459,11 @@
     "id": "barcodes",
     "title": "Barcode labels",
     "path": "/barcodes",
-    "roles": ["admin", "warehouse", "accounts"],
+    "roles": [
+      "admin",
+      "warehouse",
+      "accounts"
+    ],
     "purpose": "Use ready-made Code 128 barcodes for all saved serialized devices.",
     "options": [
       "Filter product and stock status",
@@ -370,25 +472,31 @@
       "Print these labels",
       "Back to stock"
     ],
-    "fields": ["Filters: select product/status; optional serial search."],
+    "fields": [
+      "Filters: select product/status; optional serial search."
+    ],
     "next": "Use Available devices of the required product for successful packing. Used-device labels can test rejection. Printing does not make an allocated serial reusable. Regenerate the PDF after adding new devices."
   },
   {
     "id": "team",
     "title": "Team & access",
     "path": "/team",
-    "roles": ["admin"],
-    "purpose": "Make role-based access visible using actual synthetic staff accounts.",
+    "roles": [
+      "admin"
+    ],
+    "purpose": "Administrators manage each named employee without sharing accounts.",
     "options": [
-      "Choose a role card to filter staff",
-      "Search name or email",
-      "View sign-in email, role, active status and open assigned jobs",
-      "Read what each role can do"
+      "Filter by role or search by name",
+      "Edit permission role and active status",
+      "Choose technician skills, working days and dispatch availability",
+      "Record a reason for every access change"
     ],
     "fields": [
-      "Search/filter only. This screen does not create passwords or change roles."
+      "Eight permission roles; no customer login is required.",
+      "34 preserved demo staff accounts: 15 technicians on the dispatch roster and four historical technician identities.",
+      "Inactive accounts cannot keep using an existing session."
     ],
-    "next": "Sign out and use another role account to demonstrate the differences. Customers have an enquiry form, not a staff login."
+    "next": "Review flagged future visits after disabling a worker or changing their skills. Coordinators reassign affected appointments."
   },
   {
     "id": "help",
@@ -401,7 +509,8 @@
       "warehouse",
       "technician",
       "support",
-      "accounts"
+      "accounts",
+      "coordinator"
     ],
     "purpose": "Read a simple explanation of each screen and the types of fields.",
     "options": [
@@ -409,7 +518,9 @@
       "Open screens that your role can access",
       "Read form categories and test steps"
     ],
-    "fields": ["Optional screen search."],
+    "fields": [
+      "Optional screen search."
+    ],
     "next": "Keep the PDF guide alongside the app during testing and presentation."
   }
 ]

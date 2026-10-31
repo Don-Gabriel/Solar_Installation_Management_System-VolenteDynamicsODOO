@@ -181,6 +181,7 @@ export function DeliveryPanel({ data }: { data: any }) {
 }
 export function InstallationPanel({ data }: { data: any }) {
   const [assign, setAssign] = useState(false);
+  const [extraCrew, setExtraCrew] = useState<string[]>([]);
   const { data: users } = useData("/users");
   const j = data.job;
   if (!j)
@@ -201,7 +202,13 @@ export function InstallationPanel({ data }: { data: any }) {
         <dl className="detail-grid">
           <div>
             <dt>Assigned technician</dt>
-            <dd>{data.project.technician_name || "Unassigned"}</dd>
+            <dd>
+              {j.crew?.length
+                ? j.crew
+                    .map((c: any) => c.name + (c.is_lead ? " (lead)" : ""))
+                    .join(", ")
+                : data.project.technician_name || "Unassigned"}
+            </dd>
           </div>
           <div>
             <dt>Scheduled visit</dt>
@@ -222,8 +229,18 @@ export function InstallationPanel({ data }: { data: any }) {
         </dl>
         <div className="button-row">
           {!["completed", "in_progress"].includes(j.status) && (
-            <Can roles={["admin"]}>
-              <Button variant="outline" onClick={() => setAssign(true)}>
+            <Can roles={["admin", "coordinator"]}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setExtraCrew(
+                    j.crew
+                      ?.filter((c: any) => !c.is_lead)
+                      .map((c: any) => c.user_id) || [],
+                  );
+                  setAssign(true);
+                }}
+              >
                 Assign technician & time
               </Button>
             </Can>
@@ -250,7 +267,7 @@ export function InstallationPanel({ data }: { data: any }) {
                 <dd>{j.generation_kw} kW</dd>
               </div>
               <div>
-                <dt>Labour time</dt>
+                <dt>Total crew labour time</dt>
                 <dd>{(j.labour_minutes / 60).toFixed(1)} hours</dd>
               </div>
               <div>
@@ -292,6 +309,13 @@ export function InstallationPanel({ data }: { data: any }) {
                 capacity_kw: data.project.capacity_kw,
                 generation_kw: 0,
                 labour_minutes: 180,
+                ...(j.crew?.length > 1
+                  ? {
+                      crew_minutes: Object.fromEntries(
+                        j.crew.map((c: any) => [c.user_id, 180]),
+                      ),
+                    }
+                  : {}),
                 checklist: {
                   mounting: false,
                   earthing: false,
@@ -317,11 +341,23 @@ export function InstallationPanel({ data }: { data: any }) {
                 },
                 {
                   name: "labour_minutes",
-                  label: "Total technician time (minutes)",
+                  label:
+                    j.crew?.length > 1
+                      ? "Default minutes per worker (individual entries below apply)"
+                      : "Total technician time (minutes)",
                   type: "number",
                   min: 1,
                   max: 10080,
                 },
+                ...(j.crew?.length > 1
+                  ? j.crew.map((c: any) => ({
+                      name: `crew_minutes.${c.user_id}`,
+                      label: `Actual minutes · ${c.name}`,
+                      type: "number" as const,
+                      min: 0,
+                      max: 10080,
+                    }))
+                  : []),
                 { name: "signer_name", label: "Homeowner / signer name" },
                 {
                   name: "checklist.mounting",
@@ -362,8 +398,31 @@ export function InstallationPanel({ data }: { data: any }) {
         open={assign}
         onClose={() => setAssign(false)}
         title="Schedule installation"
-        description="Overlapping assignments for the same technician are blocked."
+        description="Times are in IST. Each crew member must be free, skilled and working. The lead signs off; actual minutes can differ per worker."
       >
+        <fieldset>
+          <legend>Additional crew members (optional)</legend>
+          <div className="crew-options">
+            {users?.items
+              .filter((u: any) => u.role === "technician")
+              .map((u: any) => (
+                <label key={u.id}>
+                  <input
+                    type="checkbox"
+                    checked={extraCrew.includes(u.id)}
+                    onChange={(e) =>
+                      setExtraCrew(
+                        e.target.checked
+                          ? [...extraCrew, u.id]
+                          : extraCrew.filter((x) => x !== u.id),
+                      )
+                    }
+                  />
+                  {u.name}
+                </label>
+              ))}
+          </div>
+        </fieldset>
         <CommandForm
           path={`/jobs/${j.id}/assignment`}
           onDone={() => setAssign(false)}
@@ -374,17 +433,15 @@ export function InstallationPanel({ data }: { data: any }) {
               users?.items.find((u: any) => u.role === "technician")?.id,
             duration_hours: j.duration_hours,
             scheduled_at: j.scheduled_at
-              ? new Date(
-                  new Date(j.scheduled_at).getTime() -
-                    new Date(j.scheduled_at).getTimezoneOffset() * 60000,
-                )
+              ? new Date(new Date(j.scheduled_at).getTime() + 330 * 60000)
                   .toISOString()
                   .slice(0, 16)
               : "",
           }}
           transform={(b) => ({
             ...b,
-            scheduled_at: new Date(b.scheduled_at).toISOString(),
+            scheduled_at: new Date(b.scheduled_at + "+05:30").toISOString(),
+            technician_ids: [...new Set([b.technician_id, ...extraCrew])],
           })}
           fields={[
             {

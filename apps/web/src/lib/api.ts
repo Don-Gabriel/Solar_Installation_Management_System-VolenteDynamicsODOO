@@ -92,6 +92,7 @@ export const money = (minor: number | string = 0) =>
 export const date = (value: string | undefined | null, time = false) =>
   value
     ? new Intl.DateTimeFormat("en-IN", {
+        timeZone:"Asia/Kolkata",
         day: "numeric",
         month: "short",
         year: "numeric",

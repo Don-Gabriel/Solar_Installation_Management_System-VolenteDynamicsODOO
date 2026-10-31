@@ -138,9 +138,11 @@ export function SerialScanner({ orderId }: { orderId: string }) {
 export function EvidenceCapture({
   jobId,
   evidence,
+  ticketId,
 }: {
   jobId: string;
   evidence: any[];
+  ticketId?: string;
 }) {
   const canvas = useRef<HTMLCanvasElement>(null),
     pad = useRef<SignaturePad | null>(null);
@@ -187,10 +189,13 @@ export function EvidenceCapture({
             ? file.name
             : "photo.png",
       );
-      await api(`/jobs/${jobId}/evidence`, { method: "POST", body });
+      await api(
+        ticketId ? `/tickets/${ticketId}/evidence` : `/jobs/${jobId}/evidence`,
+        { method: "POST", body },
+      );
       await queryClient.invalidateQueries();
       setSaved(
-        `${kind === "photo" ? "Photo" : "Signature"} saved to the installation record.`,
+        `${kind === "photo" ? "Photo" : "Signature"} saved to the ${ticketId ? "repair visit" : "installation record"}.`,
       );
     } catch (e) {
       setError(e as Error);
@@ -308,7 +313,7 @@ export function EvidenceList({ evidence }: { evidence: any[] }) {
             alt={
               e.kind === "signature"
                 ? "Saved homeowner signature"
-                : "Saved installation test photo"
+                : "Saved work photo"
             }
           />
           <span>

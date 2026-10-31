@@ -15,6 +15,9 @@ const Barcodes = lazy(() =>
 const Team = lazy(() =>
   import("@/features/team").then((m) => ({ default: m.Team })),
 );
+const Schedule = lazy(() =>
+  import("@/features/schedule").then((m) => ({ default: m.Schedule })),
+);
 const Help = lazy(() =>
   import("@/features/help").then((m) => ({ default: m.Help })),
 );
@@ -96,12 +99,28 @@ function Workspace() {
           <Route
             path="projects/new"
             element={
-              <RolePage roles={["admin", "sales"]}>
+              <RolePage roles={["admin", "sales", "support", "coordinator"]}>
                 <NewProject />
               </RolePage>
             }
           />
           <Route path="projects/:id" element={<ProjectDetail />} />
+          <Route
+            path="schedule"
+            element={
+              <RolePage
+                roles={[
+                  "admin",
+                  "coordinator",
+                  "technician",
+                  "support",
+                  "surveyor",
+                ]}
+              >
+                <Schedule />
+              </RolePage>
+            }
+          />
           <Route
             path="inventory"
             element={
@@ -114,7 +133,16 @@ function Workspace() {
           <Route
             path="service"
             element={
-              <RolePage roles={["admin", "support", "accounts"]}>
+              <RolePage
+                roles={[
+                  "admin",
+                  "support",
+                  "accounts",
+                  "coordinator",
+                  "technician",
+                  "warehouse",
+                ]}
+              >
                 <Service />
               </RolePage>
             }

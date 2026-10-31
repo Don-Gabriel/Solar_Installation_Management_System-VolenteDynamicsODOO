@@ -195,7 +195,7 @@ export function Reports() {
           </div>
           <Panel
             title="Technician payables"
-            description="All completed jobs. Labour is calculated from recorded minutes and the rate saved at completion."
+            description="Each worker on completed jobs. Labour is calculated from recorded minutes and the rate saved at completion."
           >
             <div
               className="table-scroll"
@@ -215,7 +215,7 @@ export function Reports() {
                 </thead>
                 <tbody>
                   {data.payroll.map((j: any) => (
-                    <tr key={j.id}>
+                    <tr key={j.id + ":" + (j.technician_id || "")}>
                       <td>
                         <strong>{j.name}</strong>
                         <small>{projectNumber(j.number)}</small>
@@ -253,7 +253,8 @@ export function Reports() {
       >
         {pay && (
           <CommandForm
-            path={`/jobs/${pay.id}/pay`}
+            path={`/jobs/${pay.id}/crew-pay`}
+            transform={(b) => ({ ...b, technician_id: pay.technician_id })}
             onDone={() => setPay(null)}
             submit="Record as paid"
             fields={[
