@@ -295,7 +295,9 @@ export function Schedule() {
                 }
                 onClick={() =>
                   booking.mutate({
-                    ticket_id: ticketId,
+                    ...(purpose === "repair"
+                      ? { ticket_id: ticketId }
+                      : { project_id: projectId }),
                     starts_at: slot.starts_at,
                     duration_hours: duration,
                     skill,

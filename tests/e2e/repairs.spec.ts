@@ -170,3 +170,38 @@ test("coordinator can schedule but cannot open finance or team administration", 
     axe.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target)}`),
   ).toEqual([]);
 });
+
+test("[SUR-08] coordinator books a two-person survey crew against the selected site", async ({
+  page,
+}) => {
+  await login(page, "coordinator@sunpower.local");
+  const before = await page.request.get("/api/schedule").then((r) => r.json());
+  await page.goto("/schedule");
+  await page.getByLabel("Visit purpose").selectOption("survey");
+  await page.getByLabel("Survey site").selectOption({ index: 1 });
+  const site = await page.getByLabel("Survey site").inputValue();
+  await page.getByLabel("Crew size").fill("2");
+  await page
+    .getByRole("button", { name: "Find available times", exact: true })
+    .click();
+  await page.locator(".slot").first().click();
+  await page.locator(".crew-options input").nth(0).check();
+  await page.locator(".crew-options input").nth(1).check();
+  await page.getByLabel("Crew lead").selectOption({ index: 1 });
+  await page
+    .getByRole("button", { name: "Confirm appointment", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Confirm appointment", exact: true }),
+  ).toBeHidden();
+  const after = await page.request.get("/api/schedule").then((r) => r.json());
+  const added = after.visits.filter(
+    (v: any) => !before.visits.some((old: any) => old.id === v.id),
+  );
+  expect(added).toHaveLength(1);
+  expect(added[0].project_id).toBe(site);
+  expect(added[0].ticket_id).toBeNull();
+  expect(added[0].kind).toBe("survey");
+  expect(added[0].crew).toHaveLength(2);
+  expect(added[0].crew.filter((c: any) => c.is_lead)).toHaveLength(1);
+});
