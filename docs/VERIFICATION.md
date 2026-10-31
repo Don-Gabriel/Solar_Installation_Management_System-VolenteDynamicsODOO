@@ -2,6 +2,8 @@
 
 Verified locally on Windows, 31 October 2026, using Node 24.15.0 and dedicated PostgreSQL 18.6. Results describe this build, not a security certification or a claim of production readiness.
 
+The [GitHub Actions Linux run for application commit 1aa525c](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO/actions/runs/41173148316) also completed successfully: clean `npm ci`, type checks, **20 integration tests**, production build and **6 browser tests across Chromium, Firefox and WebKit**. This subsequent update changes documentation only.
+
 ## Passed
 
 - `npm run typecheck`: frontend and backend.
@@ -19,11 +21,11 @@ Verified locally on Windows, 31 October 2026, using Node 24.15.0 and dedicated P
 
 ## Limitations and remaining release checks
 
-- Playwright's downloaded Firefox cannot launch on this Windows machine, including after reinstall. Windows reported a side-by-side `mozglue` assembly failure; the fresh attempt returns a process-launch error. Firefox compatibility is **unverified**. The CI workflow is configured to test Chromium, Firefox and WebKit on Linux; configuration is not proof that CI passed.
+- Playwright's downloaded Firefox cannot launch on this Windows machine, including after reinstall. Windows reported a side-by-side `mozglue` assembly failure; the fresh attempt returns a process-launch error. The same full journey and public enquiry tests **passed in Firefox on Linux CI**. Windows Firefox remains unverified.
 - No physical phone/camera test, actual barcode-camera scan, or HTTPS deployment was performed. Phone-width browser emulation verifies layout and the workflow; manual serial entry and file uploads were tested.
 - Docker Compose was validated but the container image and full container startup were not executed. The native Windows setup is the verified route.
 - No full manual screen-reader, load/soak, penetration, backup/restore or external user acceptance test was performed. Static PWA registration is built; installed-phone behavior and offline relaunch are unverified. Offline writes are intentionally unsupported.
-- CI results, if available, must be checked separately. No public deployment or hackathon submission has been made.
+- The linked Linux CI run passed. No public deployment or hackathon submission has been made.
 
 ## Evidence and reproducibility
 
