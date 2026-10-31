@@ -1,0 +1,12 @@
+ALTER TABLE assets DROP CONSTRAINT assets_status_check;
+ALTER TABLE assets DROP CONSTRAINT assets_check;
+ALTER TABLE assets ADD CONSTRAINT assets_status_check CHECK(status IN ('available','allocated','dispatched','delivered','replaced','quarantined'));
+ALTER TABLE assets ADD CONSTRAINT asset_location_check CHECK((status IN ('available','quarantined'))=(order_line_id IS NULL));
+CREATE TABLE stock_damage(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),asset_id uuid NOT NULL REFERENCES assets(id),order_id uuid REFERENCES orders(id),reason text NOT NULL,created_by uuid NOT NULL REFERENCES users(id),created_at timestamptz NOT NULL DEFAULT now());
+CREATE INDEX stock_damage_asset ON stock_damage(asset_id);
+CREATE INDEX stock_damage_order ON stock_damage(order_id);
+CREATE INDEX stock_damage_actor ON stock_damage(created_by);
+CREATE TABLE stock_counts(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),product_id uuid NOT NULL REFERENCES products(id),expected_quantity integer NOT NULL,counted_quantity integer NOT NULL CHECK(counted_quantity>=0),reason text NOT NULL,status text NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','approved','rejected')),requested_by uuid NOT NULL REFERENCES users(id),reviewed_by uuid REFERENCES users(id),review_note text NOT NULL DEFAULT '',created_at timestamptz NOT NULL DEFAULT now(),reviewed_at timestamptz,CHECK(reviewed_by IS NULL OR requested_by<>reviewed_by));
+CREATE INDEX stock_counts_product ON stock_counts(product_id);
+CREATE INDEX stock_counts_requester ON stock_counts(requested_by);
+CREATE INDEX stock_counts_reviewer ON stock_counts(reviewed_by);

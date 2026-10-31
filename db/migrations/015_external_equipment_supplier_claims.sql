@@ -1,0 +1,9 @@
+CREATE TABLE external_equipment(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),ticket_id uuid NOT NULL REFERENCES tickets(id),name text NOT NULL,serial text NOT NULL DEFAULT '',findings text NOT NULL,recorded_by uuid NOT NULL REFERENCES users(id),created_at timestamptz NOT NULL DEFAULT now(),UNIQUE(ticket_id,name,serial));
+CREATE INDEX external_equipment_ticket ON external_equipment(ticket_id);
+CREATE INDEX external_equipment_actor ON external_equipment(recorded_by);
+CREATE TABLE supplier_claims(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),return_id uuid NOT NULL UNIQUE REFERENCES service_returns(id),supplier text NOT NULL,reference text NOT NULL,tracking_reference text NOT NULL,requested_minor bigint NOT NULL CHECK(requested_minor>=0),approved_minor bigint NOT NULL DEFAULT 0 CHECK(approved_minor>=0),status text NOT NULL DEFAULT 'submitted' CHECK(status IN ('submitted','disputed','approved','declined','paid')),decision_note text NOT NULL DEFAULT '',created_by uuid NOT NULL REFERENCES users(id),reviewed_by uuid REFERENCES users(id),created_at timestamptz NOT NULL DEFAULT now(),reviewed_at timestamptz,version integer NOT NULL DEFAULT 1,UNIQUE(supplier,reference));
+CREATE INDEX supplier_claims_creator ON supplier_claims(created_by);
+CREATE INDEX supplier_claims_reviewer ON supplier_claims(reviewed_by);
+CREATE TABLE supplier_recoveries(id uuid PRIMARY KEY DEFAULT gen_random_uuid(),claim_id uuid NOT NULL REFERENCES supplier_claims(id),amount_minor bigint NOT NULL CHECK(amount_minor>0),reference text NOT NULL,recorded_by uuid NOT NULL REFERENCES users(id),received_at timestamptz NOT NULL DEFAULT now(),UNIQUE(claim_id,reference));
+CREATE INDEX supplier_recoveries_claim ON supplier_recoveries(claim_id);
+CREATE INDEX supplier_recoveries_actor ON supplier_recoveries(recorded_by);
