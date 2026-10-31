@@ -1,6 +1,6 @@
 # Technology decisions
 
-Status: selected for implementation on 31 October 2026. This supersedes the provisional NestJS proposal from the initial investigation.
+Status: implemented on 31 October 2026. Exact direct versions and the dependency lockfile are committed. This supersedes the provisional NestJS proposal from the initial investigation. Actual runtime checks and packaging limitations are recorded in VERIFICATION.md.
 
 ## Architecture
 

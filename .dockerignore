@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+**/dist
+.git
+.env
+.env.*
+data
+**/data
+tmp
+output
+coverage
+*.log
+*.pdf

@@ -1,6 +1,12 @@
 # Build plan
 
-Revision 2 · 31 October 2026 · Solo developer · Deadline 1 November 2026, 09:00 IST.
+Revision 3 · 31 October 2026 · Solo developer · Deadline 1 November 2026, 09:00 IST.
+
+## Current implementation status
+
+The first working build implements the enquiry-to-installation lifecycle, serialized inventory, warranty service, role-based access, evidence storage and financial reports. The native local PostgreSQL setup is running. See [VERIFICATION.md](VERIFICATION.md) for passed checks and gaps, and [DEMO.md](DEMO.md) for rehearsal.
+
+The schedule below remains the original planning baseline. Remaining release work is physical-phone/HTTPS verification, Firefox runtime validation on a supported machine, Docker execution, demo rehearsal and the organizer's actual submission. Catalogue and user administration screens, full payroll, cancellation/refund flows and offline synchronization are outside this first build.
 
 Canonical repository: [Solar_Installation_Management_System-VolenteDynamicsODOO](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO).
 
@@ -46,7 +52,7 @@ package.json
 package-lock.json
 ```
 
-This is the target layout; application files are not present yet. Keep routes thin, business operations in services, SQL in repositories, and authentication/authorization at the backend. Do not share database code with the client.
+This layout is implemented. SQL and business operations are grouped in domain modules for this bounded release; routes handle contracts, permissions and transactions. Database code is not shared with the client.
 
 ## Implementation milestones
 
