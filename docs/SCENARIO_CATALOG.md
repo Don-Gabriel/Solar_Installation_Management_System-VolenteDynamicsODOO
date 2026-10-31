@@ -1,6 +1,6 @@
 # SunPower real world scenarios and acceptance plan
 
-Prepared 31 October 2026 for the user's revised working deadline of **1 November 2026 at 07:00 IST**. There is no confirmed official event deadline. The aim is a working, demonstrable operational system, not a large checklist with invented passes.
+Prepared 31 October 2026 for the user's revised working deadline of **31 October 2026 at 14:45 IST**. There is no confirmed official event deadline. The aim is a working, demonstrable operational system, not a large checklist with invented passes.
 
 ## Purpose and scope
 
@@ -23,15 +23,17 @@ Every execution result must separately be PASS, FAIL, BLOCKED or NOT RUN. Keep o
 
 ## What the current application actually supports
 
-The current build has seven staff roles, 32 seeded staff accounts and 19 installer accounts. Each installation has a single assigned technician. That is different from having only one installer account. There are no crew membership records, shared installation-and-repair visit calendar, leave calendar, skill-based availability search or repair-specific evidence records.
+The implemented build has **eight staff roles and 34 preserved demo accounts**: two administrators, three sales staff, two surveyors, two support staff, two service coordinators, two warehouse staff, two accounts staff and 19 technician identities. Fifteen technicians form the active dispatch roster; four older identities remain for historical work. No customer login is needed for the phone-led service workflow.
 
-Installation assignment rejects overlapping installation jobs. It does not yet solve the user's days 3 to 5 repair availability search. Repair tickets currently require one warranty record before diagnosis, have one covered flag, and can be resolved by administrator/support. Assigned repair technicians cannot currently use a complete repair-work flow. Project access for technicians follows the installation assignment, not a later repair assignment.
+Support can create installation requests and repair complaints before a faulty part is known. Coordinators search dates, skills and crew size, reserve qualified workers atomically, reschedule visits and see leave conflicts. Installation and repair bookings share availability checks. Weekly working days, 09:00 to 17:00 IST hours and a 30-minute buffer are enforced. Geographic route planning and a dated holiday calendar are not implemented.
 
-Covered repairs currently have zero customer charge but no zero-value invoice is created. Chargeable repairs create generic parts and labour lines. Replacement cost is derived from acquisition cost. These facts do not satisfy itemized mixed coverage, approved selling prices, technician diagnosis or after-repair photographs. The existing initial installation invoice must remain separate and immutable when service billing is added.
+Assigned repair technicians can open site and installed-component history, select faulty items, propose replacements and attach completion photos. Approval is tied to diagnosis revision. Completion requires a photo from the current visit and diagnosis, and repeated completion cannot issue stock or bills twice. The original installation invoice remains unchanged. Service invoices show covered and charged lines, warranty credits and original/replacement serials, including a zero-payable document when fully covered. Selling prices and internal costs are separate. Returned components enter quarantine. Support records customer confirmation, disputes or a linked follow-up request.
+
+Installation crews record individual time and cost, and accounts can pay crew members separately without duplicate payment. Administrators can change staff access and qualifications with an audit reason; deactivation revokes sessions. These are implemented capabilities, not a claim that every exception in the catalogue is complete. The execution register contains 137 passed cases and 63 blocked cases at this revision. All six original review failures have passing focused retests.
 
 ## Roles and realistic staffing
 
-Recommended target: **eight permission roles and 27 distinct demo employees**, including exactly **15 field technicians**. These are proposed fixture sizes for a 40-installations-per-month company, not a proven optimal hiring plan. Actual staffing depends on geography, average job duration and repair volume. Do not expand every role to 50 people.
+Standalone acceptance fixture: **eight permission roles and 27 distinct demo employees**, including exactly **15 field technicians**. These are proposed fixture sizes for a 40-installations-per-month company, not a proven optimal hiring plan. Actual staffing depends on geography, average job duration and repair volume. Do not expand every role to 50 people.
 
 | Permission role | People | Why this size | Main powers | Boundary |
 | --- | ---: | --- | --- | --- |
@@ -44,13 +46,13 @@ Recommended target: **eight permission roles and 27 distinct demo employees**, i
 | Field technician | 15 | Matches the problem statement and reviewer example | Assigned visits, diagnosis, component selection, evidence and actual work time | Cannot access unrelated customers or approve their own charge exceptions |
 | Accounts | 1 | Modest initial invoice volume with owner backup | Payment verification, approved service bills, credits and cost reporting | Cannot mark physical work complete or fabricate evidence |
 
-The **new missing permission role is Service coordinator**. Dispatching and service supervision are responsibilities inside this role; they do not need two separate permission roles yet. Lead installer, assistant, driver and purchasing clerk are job responsibilities or qualifications, not automatically separate login roles. Record each person's identity; never share a team password.
+The **newly implemented permission role is Service coordinator**. Dispatching and service supervision are responsibilities inside this role; they do not need two separate permission roles yet. Lead installer, assistant, driver and purchasing clerk are job responsibilities or qualifications, not automatically separate login roles. Record each person's identity; never share a team password.
 
 The target has one owner and one accountant, with explicit backup arrangements rather than duplicate daily roles. Sales, surveys, support, coordination and stock are each two-person teams. Technicians are the large team. A possible skills fixture is four lead-capable technicians, nine qualified general technicians and two supervised assistants. Skills and crew membership must constrain assignments; a free assistant cannot become an independent electrical lead simply because the calendar is empty. Qualifications here are synthetic test attributes, not real-world certifications.
 
 One employee may cover several duties in a small business, but the current database has one role per user. Define the combined capabilities and conflicts before adding multi-role support. A coordinator may also handle calls through explicitly granted intake permission. Financial override, payment approval and technical completion should remain independently attributable. A reporting-only owner delegate may be added later if actually needed; no separate customer, supplier, HR or driver login is required for this demo.
 
-Do not delete the existing 32 demo users to reach 27. Add a separate F15 acceptance fixture, retaining historical references. After implementation, select the coherent 27-person fixture for demonstrations; archiving old accounts requires a reviewed migration and reassignment of future work.
+The live demo preserves its original 32 employees and adds two named coordinators, giving 34 accounts. The standalone F15 planning fixture has 27 people; it does not replace the live staff directory. The demo seeds 15 active dispatch technicians, with 13 occupied in the 13:00 to 15:00 IST interval on days 3 through 5. Working dates and the two free names are recorded in the demo settings. Existing users, payments and historical work are not deleted.
 
 ## Appointment and work model
 
@@ -94,7 +96,7 @@ React Native is a feasible mobile client direction, and React Native Windows is 
 
 Keep Fastify and PostgreSQL as the shared authoritative backend. Build a small native proof first: sign in, assigned visits, installed-component list, photo upload and completion, plus a Windows staff view. Pin a compatible React Native and React Native Windows version pair after checking their current compatibility. Do not upgrade the web app blindly to match a native runtime. Local iOS development requires its Apple toolchain; device testing and distribution are separate release gates. No native binary exists in the reviewed build.
 
-Recommended order under the 07:00 target: implement and test the shared scheduling, repair and billing rules first; prove the native path with a narrow client; then package only platforms whose build and device gates actually pass. Keep the browser client available for rehearsal. Installing a web app is not the same as shipping a React Native app.
+Recommended order under the 14:45 target: implement and test the shared scheduling, repair and billing rules first; prove the native path with a narrow client; then package only platforms whose build and device gates actually pass. Keep the browser client available for rehearsal. Installing a web app is not the same as shipping a React Native app.
 
 ## Test data and evidence
 
@@ -118,7 +120,7 @@ Run each automated case in a resettable isolated database schema with synthetic 
 5. Add realistic fixture people and competing workloads; then the narrow native client proof, only after shared API behavior is stable.
 6. Execute the entire catalogue, resolve defects, rerun failures and affected regressions, then rehearse the review examples with actual saved data.
 
-Aim to freeze new scope by 05:00 IST and reserve 05:00 to 07:00 for regression, artifact generation and rehearsal. This is a planning target, not a promise that 200 scenarios or every native platform can be completed in that time. If the deadline becomes incompatible with required work, report the exact unfinished cases rather than hiding them or marking them passed.
+Use the remaining time before 14:45 IST for regression, artifact generation and rehearsal of scheduling and warranty billing. This is a planning target, not a promise that 200 scenarios or every native platform can be completed in that time. If the deadline becomes incompatible with required work, report the exact unfinished cases rather than hiding them or marking them passed.
 
 A release may be called verified for this catalogue only when every required case has a recorded executed result, no unresolved required failures, and no required blocked cases. Any deferred P1/P2 scenario must be listed and accepted as a limitation; it must not be relabelled PASS. Security, monetary and stock integrity failures prevent a clean-release claim. Physical-device and restore gates cannot be replaced by source inspection. An explicit owner-approved scope change is required to remove a requirement.
 
@@ -126,7 +128,7 @@ A release may be called verified for this catalogue only when every required cas
 
 The original user-supplied Solar Installation Management System PDF was read on 31 October 2026. It is kept outside Git. The user's review messages and staffing clarification are primary requirements; the calendar window and target staffing numbers are labelled proposals.
 
-Repository evidence: `apps/api/src/routes.ts` for role boundaries; `modules/field.ts` for single-worker scheduling and installation checks; `modules/service.ts` for one-warranty repair and billing; `modules/queries.ts` for technician project access and financial views; `plugins/files.ts` for installation evidence; `packages/contracts/src/index.ts` for accepted payloads; `db/migrations/001_core.sql` for current entities; `tests/integration/lifecycle.test.ts` and `tests/e2e` for existing checks.
+Repository evidence: `apps/api/src/routes.ts` for role boundaries; `modules/scheduling.ts` for shared worker availability; `modules/field.ts` for installation crews and individual payouts; `modules/service-operations.ts` for diagnosis, coverage and billing; `modules/staff.ts` for access changes; `modules/queries.ts` for restricted views; `plugins/files.ts` for private installation and repair evidence; migrations 003 through 009 for service operations; `tests/integration/lifecycle.test.ts` and `tests/e2e` for executed checks. The original catalogue source classifications remain historical baseline assessments; current execution status is authoritative for test results.
 
 - React Native platform-specific code: https://reactnative.dev/docs/platform-specific-code
 - React Native environment setup: https://reactnative.dev/docs/set-up-your-environment
@@ -138,7 +140,7 @@ The Odoo reference supports separating field work, materials, customer reports a
 
 ## Catalogue status summary
 
-Source review is separate from execution. Counts below are generated from the 200 named cases.
+Historical source review at d0d1038 is separate from current execution. Counts below are generated from the 200 named cases.
 
 - Missing workflow: 103
 - Partial: 28
@@ -146,13 +148,13 @@ Source review is separate from execution. Counts below are generated from the 20
 - Present in source: 43
 - Policy decision: 2
 
-Execution: FAIL: 6, NOT RUN: 189, PASS: 5.
+Execution: PASS: 137, BLOCKED: 63.
 
 
 ## INT Calls and installation requests
 
 ### INT-01 Support records a new installation call
-P0 | Source: Missing workflow | Execution: FAIL
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A new caller has a site and preferred visit date
 
@@ -160,12 +162,12 @@ P0 | Source: Missing workflow | Execution: FAIL
 
 **Expected:** One numbered request records the caller, site, phone source and support actor
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Support installation intake returned HTTP 403; required success with an audited support actor.
+**Observed:** Passed: Review regressions and real operational requests [INT-01 SEC-01] support creates audited installation intake without gaining stock or finance authority
 
 ### INT-02 Caller does not know system size
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Caller wants advice but cannot choose capacity
 
@@ -173,10 +175,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Unknown capacity is explicit and no package is silently promised
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Capacity is still mandatory at enquiry intake; an explicit unknown-size state and later survey sizing are missing.
 
 ### INT-03 Repeated call for the same request
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** An open installation request exists
 
@@ -184,10 +188,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The existing request is offered and a second project is not silently created
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Installation enquiry intake does not suggest duplicates or append to an existing installation contact log.
 
 ### INT-04 Two unrelated requests from one household
-P1 | Source: Partial | Execution: NOT RUN
+P1 | Source: Partial | Execution: BLOCKED
 
 **Given:** A caller wants installation at two addresses
 
@@ -195,10 +201,12 @@ P1 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Separate sites and appointment histories stay linked to the right customer
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Each installation enquiry still creates a customer record; a shared customer with multiple separately linked sites is not supported by intake.
 
 ### INT-05 Customer wants a specific appointment
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Customer can attend only Friday afternoon
 
@@ -206,10 +214,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Preference is stored separately from a confirmed appointment
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** A follow-up date and notes exist, but a structured customer appointment preference separate from confirmation is missing.
 
 ### INT-06 Caller reports an electrical hazard
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Caller reports smoke or exposed live wiring
 
@@ -217,10 +227,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** An urgent queue and human escalation appear without applying the routine 3 to 5 day promise
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Urgent repair priority exists; installation-call hazard triage and a tracked human escalation are missing.
 
 ### INT-07 Wrong phone number entered
-P1 | Source: Needs verification | Execution: NOT RUN
+P1 | Source: Needs verification | Execution: PASS
 
 **Given:** Support enters a malformed phone number
 
@@ -228,10 +240,12 @@ P1 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Validation explains the error and no incomplete customer is committed
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [INT-07] malformed phone is rejected without creating a partial customer
 
 ### INT-08 Customer changes their mind before survey
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** An enquiry has no accepted order
 
@@ -239,10 +253,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Request history is retained and any future appointment is released
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Pre-survey installation cancellation and release of related visits are not implemented.
 
 ### INT-09 Call interrupted during entry
-P1 | Source: Partial | Execution: NOT RUN
+P1 | Source: Partial | Execution: BLOCKED
 
 **Given:** Support has entered customer details
 
@@ -250,10 +266,12 @@ P1 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Unsaved information remains recoverable and no success message is shown
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Inputs survive a request error while the form stays open; durable interrupted-entry recovery is not implemented.
 
 ### INT-10 Public intake disabled for staff operation
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** The business chooses phone-led intake only
 
@@ -261,13 +279,15 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Public creation is disabled by an explicit setting while staff intake remains available
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Final billing and intake guards [INT-10] explicit phone-only setting blocks anonymous creation while staff intake stays usable
 
 
 ## CRM Customers sites and contact history
 
 ### CRM-01 Search a returning customer by phone
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** A customer already has installed equipment
 
@@ -275,10 +295,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Matching customers and sites are shown without exposing unrelated private evidence
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [CRM-01 CRM-02] phone search distinguishes customers sharing a phone by name and site
 
 ### CRM-02 Shared family phone number
-P1 | Source: Partial | Execution: NOT RUN
+P1 | Source: Partial | Execution: PASS
 
 **Given:** Two distinct customers use the same phone
 
@@ -286,10 +308,12 @@ P1 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Records remain distinguishable by name and site rather than forcibly merging
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [CRM-01 CRM-02] phone search distinguishes customers sharing a phone by name and site
 
 ### CRM-03 Multiple systems at one address
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** One site has an older and newer installation
 
@@ -297,10 +321,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The affected installation must be selected and both histories remain visible
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Separate installation projects can be selected, but a shared-site view linking multiple systems is missing.
 
 ### CRM-04 Correct a customer spelling
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** An installed project exists with a name typo
 
@@ -308,10 +334,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Current contact data changes with an audit record while issued document snapshots stay unchanged
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Customer correction with issued-document name snapshots is not implemented.
 
 ### CRM-05 Change customer contact number
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A customer reports a replacement phone number
 
@@ -319,10 +347,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The old value remains in restricted history and future contact uses the new number
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Verified contact-number updates with restricted old-value history are not implemented.
 
 ### CRM-06 Record access instructions
-P1 | Source: Partial | Execution: NOT RUN
+P1 | Source: Partial | Execution: BLOCKED
 
 **Given:** A roof is accessible only through a locked gate
 
@@ -330,10 +360,12 @@ P1 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Assigned workers see the notes before departure
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Repair contact notes are visible to the assigned crew; a dedicated persisted site-access record and a focused access-instruction test are missing.
 
 ### CRM-07 Customer address differs from billing address
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A company pays for a remote installation
 
@@ -341,10 +373,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Work goes to the service address and the invoice uses the agreed billing address
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Separate service and billing addresses are not implemented.
 
 ### CRM-08 Duplicate records discovered
-P2 | Source: Missing workflow | Execution: NOT RUN
+P2 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Two records represent the same person and site
 
@@ -352,10 +386,12 @@ P2 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** No invoices, warranties or evidence are lost and identifiers remain traceable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** An administrator-reviewed customer merge workflow is not implemented.
 
 ### CRM-09 Wrong customer selected for a complaint
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Support has selected a different household
 
@@ -363,10 +399,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Selected devices and proposed visit reset to the correct customer
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/e2e/repairs.spec.ts
+
+**Observed:** Passed: [CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (chromium); Passed: [CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (webkit)
 
 ### CRM-10 Customer calls while another employee edits
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Two support employees open the same contact record
 
@@ -374,13 +412,15 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The later save detects a conflict rather than silently losing the earlier change
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Customer contact editing with optimistic version checks is not implemented; ticket and visit version checks do exist.
 
 
 ## SUR Survey and suitability
 
 ### SUR-01 Quote without a survey
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A new enquiry has no approved survey
 
@@ -388,10 +428,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The server refuses and explains that survey approval is required
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Sales lifecycle and snapshots [SUR-01] blocks direct quote issuance without an approved survey
 
 ### SUR-02 Insufficient roof area
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A 3 kW request has less than the configured roof requirement
 
@@ -399,10 +441,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Approval is refused with the actual measured requirement
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection
 
 ### SUR-03 Unsuitable on-grid connection
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** The grid-suitability check is false
 
@@ -410,10 +454,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Approval is refused and the survey remains reviewable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection
 
 ### SUR-04 Approve a suitable site
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** Measurements satisfy the configured package rules
 
@@ -421,10 +467,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Sales can quote the approved package with the survey reference
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection
 
 ### SUR-05 New measurements after quote issuance
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** An unaccepted quote exists and roof measurements change
 
@@ -432,10 +480,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Old approval cannot authorize a quote based on the new unreviewed measurements
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection
 
 ### SUR-06 Negative or impossible readings
-P1 | Source: Needs verification | Execution: NOT RUN
+P1 | Source: Needs verification | Execution: PASS
 
 **Given:** A measurement is negative or outside configured bounds
 
@@ -443,10 +493,12 @@ P1 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** The server rejects invalid values without partially storing the survey
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection
 
 ### SUR-07 Customer absent for survey
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A survey visit was confirmed
 
@@ -454,10 +506,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The visit is not marked completed and a reschedule task is created
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** No-access survey outcome and reason are tested; an automatic reschedule task is not created.
 
 ### SUR-08 Survey needs two workers
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** Access requires an assistant under company policy
 
@@ -465,10 +519,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Both people must be available and the visit records the crew
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SUR-08] two-worker survey stores both crew members and blocks both calendars
 
 ### SUR-09 Rain prevents roof inspection
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** A scheduled survey cannot safely proceed
 
@@ -476,10 +532,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The original slot, reason and revised appointment remain in history
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Final concurrency and revision checks [SUR-07 SUR-09 DSP-04] survey no-access remains explicit and leave-triggered crew reassignment preserves history
 
 ### SUR-10 Accepted system requested to change
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: BLOCKED
 
 **Given:** An accepted order already exists
 
@@ -487,13 +545,15 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** The original commercial record is protected and a change-order path is required
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Accepted commercial records are protected, but the required approved change-order path is not implemented.
 
 
 ## QUO Quotations acceptance and commercial changes
 
 ### QUO-01 Generate a package quote
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** An approved survey selects a configured capacity and type
 
@@ -501,10 +561,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Quantities, prices, warranty periods and total match the selected package version
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [QUO-01 PAY-01] package lines and totals carry through to one installation invoice
 
 ### QUO-02 Price changes after acceptance
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A customer has accepted a quote
 
@@ -512,10 +574,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Accepted quote, order and invoice amounts remain unchanged
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Sales lifecycle and snapshots [QUO-02 QUO-03 CON-01] acceptance is idempotent and material prices remain snapshots
 
 ### QUO-03 Customer accepts twice
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** One quote is accepted successfully
 
@@ -523,10 +587,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Only one order, installation invoice and job exist
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Sales lifecycle and snapshots [QUO-02 QUO-03 CON-01] acceptance is idempotent and material prices remain snapshots
 
 ### QUO-04 Two staff accept simultaneously
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** Sales and administrator accept the same quote at once
 
@@ -534,10 +600,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** One commercial acceptance is committed without duplicate orders
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [QUO-04] concurrent customer acceptance produces one order, invoice and job
 
 ### QUO-05 Customer requests a discount
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** An unaccepted quote exists
 
@@ -545,10 +613,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** An authorized approver and reason are required; original prices remain traceable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Discount limits, requests and approval workflow are not implemented.
 
 ### QUO-06 Customer accepts an older quote
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: BLOCKED
 
 **Given:** A newer quote version has been issued
 
@@ -556,10 +626,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** The selected version is explicit and stale acceptance is rejected or reviewed
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Acceptance selects the current quote server-side, but the caller cannot explicitly submit a quote version for stale-acceptance detection.
 
 ### QUO-07 Quote expires before acceptance
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** The quoted validity date has passed
 
@@ -567,10 +639,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The quote must be renewed or an authorized exception recorded
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Quote expiry and renewal exceptions are not implemented.
 
 ### QUO-08 Customer cancels after paying advance
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** An order exists with money received
 
@@ -578,10 +652,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** A cancellation and refund workflow preserves the original invoice and releases eligible reservations
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Paid-order cancellation, refunds and reservation release are not implemented.
 
 ### QUO-09 Customer adds a battery after order acceptance
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** The original package is frozen
 
@@ -589,10 +665,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Only the approved additional work is billed; the original invoice is not overwritten
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Accepted-order additions need a change-order workflow which is not implemented.
 
 ### QUO-10 Package unavailable for requested system
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** The chosen capacity and type have no active package
 
@@ -600,13 +678,15 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** A clear configuration error appears and no empty quote or order is created
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [QUO-10] unavailable package refuses an empty quote
 
 
 ## PAY Initial invoices and payments
 
 ### PAY-01 Initial installation invoice
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A customer accepts a component-and-installation quote
 
@@ -614,10 +694,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Components and installation appear as distinct lines on one initial invoice
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [QUO-01 PAY-01] package lines and totals carry through to one installation invoice
 
 ### PAY-02 Advance below threshold
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** An invoice has less than the configured advance received
 
@@ -625,10 +707,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Reservation is refused and the shortfall is clear
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [PAY-02 DLV-01 STK-06] blocks reservation before advance, incomplete scans and unknown serials
 
 ### PAY-03 Advance exactly at threshold
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** Payment reaches the exact required advance
 
@@ -636,10 +720,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Reservation is allowed if stock is sufficient
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [PAY-03] exact required advance permits reservation
 
 ### PAY-04 Payment submitted twice
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A receipt has already been recorded
 
@@ -647,10 +733,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** No duplicate collection is created
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Sales lifecycle and snapshots [PAY-04 PAY-05 CON-02 CON-08] does not duplicate payments and blocks overpayment or changed retries
 
 ### PAY-05 Payment exceeds outstanding amount
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** Only INR 1000 is due
 
@@ -658,10 +746,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The payment is rejected and the balance remains unchanged
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Sales lifecycle and snapshots [PAY-04 PAY-05 CON-02 CON-08] does not duplicate payments and blocks overpayment or changed retries
 
 ### PAY-06 Two payments race for final balance
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** Two cashiers submit payments against the same balance
 
@@ -669,10 +759,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** The committed sum never exceeds the permitted outstanding amount
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [PAY-06] two cashiers cannot collect the final balance twice
 
 ### PAY-07 UPI payment not actually settled
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A customer shows an unverified payment screenshot
 
@@ -680,10 +772,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** A pending payment does not count as cleared advance until verified
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Collections are manually recorded as received; pending/verified settlement states and payment-provider verification are missing.
 
 ### PAY-08 Part payment against service bill
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** An issued service invoice has a balance
 
@@ -691,10 +785,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Only that invoice balance falls and installation payment history remains intact
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [BIL-05 BIL-03 PAY-08] customer retail differs from acquisition cost and service part-payments leave initial invoice unchanged
 
 ### PAY-09 Incorrect payment needs reversal
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A confirmed receipt was entered by mistake
 
@@ -702,10 +798,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** A traceable reversal is created without deleting historical receipts
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Receipt reversal with retained financial history is not implemented.
 
 ### PAY-10 Two customers use the same reference text
-P1 | Source: Needs verification | Execution: NOT RUN
+P1 | Source: Needs verification | Execution: PASS
 
 **Given:** Different invoices have independently valid receipts
 
@@ -713,13 +811,15 @@ P1 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Uniqueness follows the documented receipt scope and does not merge customers
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [PAY-10] identical reference text on different invoices remains independently scoped
 
 
 ## STK Stock receipt and reservation
 
 ### STK-01 Receive serialized equipment
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** Warehouse receives three new inverters with distinct serials
 
@@ -727,10 +827,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Three assets and the correct quantity and value are added atomically
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [STK-01 STK-09] receipt creates three distinct devices and scan normalizes case and spaces
 
 ### STK-02 Duplicate serial in a receipt
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A batch contains a serial already in stock
 
@@ -738,10 +840,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The whole invalid receipt rolls back without inflating stock
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [STK-02] receipt rollback preserves stock when duplicate serials are submitted
 
 ### STK-03 Insufficient stock for full package
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** At least one required product is short
 
@@ -749,10 +853,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** No partial hidden reservation is left and shortages identify product and quantity
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [STK-03] insufficient package stock leaves no hidden partial reservation
 
 ### STK-04 Two orders compete for the last device
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** One unreserved compatible serial remains
 
@@ -760,10 +866,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** At most one order owns the serial and the other receives a clear conflict
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [STK-04] concurrent allocations can never claim the same physical device twice
 
 ### STK-05 Wrong product scanned
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** An inverter is required but a battery serial is scanned
 
@@ -771,10 +879,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The scan is rejected without altering reservations or ownership
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [STK-05 STK-07] rejects a wrong product and duplicate serial scans
 
 ### STK-06 Unknown barcode scanned
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** The serial has never been received
 
@@ -782,10 +892,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The app refuses the unknown identity rather than inventing stock
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [PAY-02 DLV-01 STK-06] blocks reservation before advance, incomplete scans and unknown serials
 
 ### STK-07 Duplicate scan on one order
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** The device is already allocated to that order
 
@@ -793,10 +905,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Required quantity and stock are not counted twice
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [STK-05 STK-07] rejects a wrong product and duplicate serial scans
 
 ### STK-08 Stock found damaged before dispatch
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A reserved device fails inspection
 
@@ -804,10 +918,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** It is quarantined and a compatible substitute is allocated without double counting
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Repair returns can enter quarantine; damaged reserved sale stock still lacks quarantine/substitution handling.
 
 ### STK-09 Serial pasted with spaces and case changes
-P1 | Source: Needs verification | Execution: NOT RUN
+P1 | Source: Needs verification | Execution: PASS
 
 **Given:** A saved serial is pasted with surrounding spaces or lower case
 
@@ -815,10 +931,12 @@ P1 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Documented normalization locates the same device without creating a second identity
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [STK-01 STK-09] receipt creates three distinct devices and scan normalizes case and spaces
 
 ### STK-10 Stock correction after physical count
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A count differs from recorded quantity
 
@@ -826,13 +944,15 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** An authorized adjustment records reason, quantity and value without editing history
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Reasoned physical-count adjustments and approval are not implemented.
 
 
 ## DLV Packing delivery and warranty start
 
 ### DLV-01 Dispatch before every required scan
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A reserved order is missing one serialized device
 
@@ -840,10 +960,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Dispatch is refused with the missing item count
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [PAY-02 DLV-01 STK-06] blocks reservation before advance, incomplete scans and unknown serials
 
 ### DLV-02 Dispatch a complete packing list
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** All required quantities and scans are present
 
@@ -851,10 +973,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Equipment ownership and dispatch status change once with an audit record
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [DLV-02 DLV-03 DLV-04 DLV-05] starts warranties on delivery only, and delivery retries preserve dates
 
 ### DLV-03 Dispatch does not start warranty
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** An order has left the warehouse but is undelivered
 
@@ -862,10 +986,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** No delivery-based warranty has started yet
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [DLV-02 DLV-03 DLV-04 DLV-05] starts warranties on delivery only, and delivery retries preserve dates
 
 ### DLV-04 Delivery starts each line warranty
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** The customer has received all equipment
 
@@ -873,10 +999,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Each covered component receives its own policy period from delivery time
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [DLV-02 DLV-03 DLV-04 DLV-05] starts warranties on delivery only, and delivery retries preserve dates
 
 ### DLV-05 Delivery is retried
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** Delivery was recorded successfully
 
@@ -884,10 +1012,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** No extra warranty is created and original dates remain unchanged
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Inventory integrity and warranty timing [DLV-02 DLV-03 DLV-04 DLV-05] starts warranties on delivery only, and delivery retries preserve dates
 
 ### DLV-06 Partial delivery
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Only inverter and some panels arrive
 
@@ -895,10 +1025,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Undelivered lines remain pending and warranty start follows the agreed per-line rule
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Delivery remains all-or-nothing; partial line delivery and per-line receipt dates are missing.
 
 ### DLV-07 Wrong customer receives equipment
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Driver discovers the wrong destination
 
@@ -906,10 +1038,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The intended customer is not marked delivered and custody is traceable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Failed/wrong-destination delivery and driver custody events are not implemented.
 
 ### DLV-08 Transit damage
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A serial is damaged before customer acceptance
 
@@ -917,10 +1051,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The damaged device is not commissioned and replacement delivery is tracked
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Transit incident handling and replacement-delivery records are not implemented.
 
 ### DLV-09 Customer refuses delivery
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** The customer does not accept the shipment
 
@@ -928,10 +1064,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** No false handover or warranty start occurs; a return task is opened
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Delivery refusal with a return task is not implemented.
 
 ### DLV-10 Delivery time entered in another timezone
-P1 | Source: Needs verification | Execution: NOT RUN
+P1 | Source: Needs verification | Execution: PASS
 
 **Given:** The office and device show different timezones
 
@@ -939,13 +1077,15 @@ P1 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** One saved instant produces consistent policy start and expiry boundaries
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Customer follow-up and workflow compatibility [DLV-10] warranty instants are invariant when database session timezones differ
 
 
 ## SCH Availability search and workload
 
 ### SCH-01 Thirteen busy and two free
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Fixture F15 has 15 active technicians and 13 busy during the requested visit interval
 
@@ -953,10 +1093,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Only the two qualified available technicians are offered with actual times and reasons
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SCH-01] fifteen dispatch workers, thirteen occupied and precisely two free in the demonstrated interval
 
 ### SCH-02 No worker free within target window
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** All qualified workers are occupied on days 3 to 5
 
@@ -964,10 +1106,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** An unassigned escalation and earliest feasible alternative appear without a false promise
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against the complete acceptance requirement; partial passing runtime evidence is retained separately.
+
+**Observed:** Availability returns explicit next dates and an escalation instruction, but no dedicated persisted escalation task is created when the requested window is full.
 
 ### SCH-03 Free worker lacks required skill
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** One available worker lacks inverter skills
 
@@ -975,10 +1119,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** That worker is excluded or shown as ineligible with a reason
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SCH-03 SCH-04 SCH-08 DSP-10] skills, leave, office hours and stale suggestions are enforced on booking
 
 ### SCH-04 Leave overrides an empty calendar
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A worker has approved leave but no job that day
 
@@ -986,10 +1132,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The worker is not offered during leave
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SCH-03 SCH-04 SCH-08 DSP-10] skills, leave, office hours and stale suggestions are enforced on booking
 
 ### SCH-05 Travel consumes the apparent gap
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A worker has a one-hour calendar gap between distant sites
 
@@ -997,7 +1145,9 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Travel buffers prevent an impossible booking
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SCH-05 SCH-07 SCH-10] travel buffer and two coordinators racing for one worker
 
 ### SCH-06 Two jobs have overlapping times
 P0 | Source: Present in source | Execution: PASS
@@ -1008,12 +1158,12 @@ P0 | Source: Present in source | Execution: PASS
 
 **Expected:** The server refuses the overlap even if the UI submits it
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Overlapping installation assignment returned HTTP 409; does not test shared repair scheduling.
+**Observed:** Passed: Field work and service [SCH-06 INS-06] blocks overlapping assignments and completion without saved evidence
 
 ### SCH-07 Adjacent visits at the same site
-P1 | Source: Partial | Execution: NOT RUN
+P1 | Source: Partial | Execution: PASS
 
 **Given:** One visit ends exactly when the next begins
 
@@ -1021,10 +1171,12 @@ P1 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Half-open intervals allow adjacency only when travel and handover buffers permit
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SCH-05 SCH-07 SCH-10] travel buffer and two coordinators racing for one worker
 
 ### SCH-08 Customer available outside business hours
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** Customer asks for a late-night routine visit
 
@@ -1032,10 +1184,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Out-of-hours handling follows a documented policy and does not silently book normal staff
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SCH-03 SCH-04 SCH-08 DSP-10] skills, leave, office hours and stale suggestions are enforced on booking
 
 ### SCH-09 Routine window crosses a holiday
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Day 3 is a configured nonworking day
 
@@ -1043,10 +1197,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Working-day or calendar-day policy is explicit and eligible dates are shown
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Weekly nonworking days and calendar-day targets are implemented and tested; a dated company-holiday calendar is missing.
 
 ### SCH-10 Two coordinators choose the same free slot
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** Two requests target one technician at the same time
 
@@ -1054,13 +1210,15 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** One booking succeeds and the other refreshes availability after an atomic conflict
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SCH-05 SCH-07 SCH-10] travel buffer and two coordinators racing for one worker
 
 
 ## DSP Assignment changes and competing requests
 
 ### DSP-01 Twenty simultaneous customer calls
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Twenty independent requests arrive for the same 15-person team
 
@@ -1068,10 +1226,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** All requests are uniquely recorded and none disappear because capacity is full
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DSP-01 SEC-08] twenty concurrent calls survive without appointments or shared identities
 
 ### DSP-02 One slot remains and two requests compete
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Two equally eligible jobs need the same worker
 
@@ -1079,10 +1239,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Priority, target date, travel and stable tie-break reasons are visible; no silent starvation occurs
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Priority is visible and available candidates have stable names; due-date/travel/workload ranking and anti-starvation rules are not implemented.
 
 ### DSP-03 Urgent repair interrupts routine planning
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A hazardous fault arrives after routine appointments are confirmed
 
@@ -1090,10 +1252,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Urgent work is escalated and displaced customers require explicit rescheduling
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Urgent requests are highlighted, but a tracked hazard-escalation and displaced-customer contact workflow is missing.
 
 ### DSP-04 Technician becomes sick after assignment
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Tomorrow's worker becomes unavailable
 
@@ -1101,10 +1265,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Replacement eligibility is checked and both assignment history and customer contact task are retained
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Leave flags and conflict-checked reassignment pass; a separate tracked customer-contact task is missing.
 
 ### DSP-05 Customer requests another date
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A confirmed repair appointment exists
 
@@ -1112,10 +1278,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Old capacity is released only when the replacement arrangement is safely committed
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DSP-05 DSP-09 CON-07] rescheduling releases old time atomically, rejects stale revision and supports retry
 
 ### DSP-06 Job overruns planned duration
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A technician remains at the current site
 
@@ -1123,10 +1291,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Affected later appointments are flagged instead of silently overlapping
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** An in-progress appointment cannot yet be extended with downstream-conflict alerts.
 
 ### DSP-07 Technician declines an unsuitable job
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A worker has been assigned outside capability
 
@@ -1134,10 +1304,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The task returns to the coordinator queue and is not marked completed
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** An assigned worker can cancel a visit with a reason; a dedicated decline/acknowledgement workflow and focused decline test are not recorded.
 
 ### DSP-08 Technician cannot be contacted
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A confirmed worker has not acknowledged the visit
 
@@ -1145,10 +1317,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The coordinator receives an actionable exception without auto-closing the request
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Worker acknowledgement deadlines and coordinator alerts are not implemented.
 
 ### DSP-09 Assignment retry after network timeout
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** Booking committed but the response was lost
 
@@ -1156,10 +1330,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** One assignment exists and capacity is not held twice
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DSP-05 DSP-09 CON-07] rescheduling releases old time atomically, rejects stale revision and supports retry
 
 ### DSP-10 Search result becomes stale
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** Availability was viewed before a new booking or leave record
 
@@ -1167,13 +1343,15 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** The server rechecks all constraints at confirmation time
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SCH-03 SCH-04 SCH-08 DSP-10] skills, leave, office hours and stale suggestions are enforced on booking
 
 
 ## INS Installation crews and field work
 
 ### INS-01 Only assigned installer sees work
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** Two technicians own different installations
 
@@ -1181,10 +1359,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The server denies access and the user's own list stays usable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost
 
 ### INS-02 Start before delivery
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** An installation is scheduled but equipment is undelivered
 
@@ -1192,10 +1372,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The server blocks starting and identifies the missing delivery
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost
 
 ### INS-03 Two-person installation crew
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A roof job requires a lead and an assistant
 
@@ -1203,10 +1385,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Both memberships and time reservations are stored and both see the assigned work
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost
 
 ### INS-04 Lead and assistant have different powers
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** A two-person crew is assigned
 
@@ -1214,10 +1398,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Only a qualified lead or authorized supervisor can approve the handover
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost
 
 ### INS-05 Safety checklist incomplete
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** One required commissioning check is false
 
@@ -1225,10 +1411,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Completion is blocked without falsely marking the project installed
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost
 
 ### INS-06 Missing installation evidence
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A started job has no saved photo or signature
 
@@ -1236,10 +1424,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Completion is blocked until required evidence has been saved
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Field work and service [SCH-06 INS-06] blocks overlapping assignments and completion without saved evidence
 
 ### INS-07 Actual hours differ from scheduled hours
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** A four-hour appointment takes six hours
 
@@ -1247,10 +1437,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Actual labour cost uses saved rates and actual time; schedule and billable time are distinguished
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost
 
 ### INS-08 Multiple crew members record time
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** Two workers spend different hours at the site
 
@@ -1258,10 +1450,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Costs and payables are calculated per worker without double counting
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost; Passed: Capacity, payroll and workload verification [INS-08] individual crew payout does not pay the other worker or duplicate the first payment
 
 ### INS-09 Customer refuses installation sign-off
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Checks pass but customer disputes the work
 
@@ -1269,10 +1463,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Work awaits review and a fabricated signature or automatic closure is forbidden
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Missing signature blocks completion; an explicit installation dispute/review state is not implemented.
 
 ### INS-10 Installed system differs from accepted capacity
-P1 | Source: Needs verification | Execution: NOT RUN
+P1 | Source: Needs verification | Execution: PASS
 
 **Given:** The measured or installed capacity differs materially
 
@@ -1280,13 +1476,15 @@ P1 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** A discrepancy is flagged for authorized review before final acceptance
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Final billing and intake guards [INS-10] material capacity discrepancy blocks handover for review
 
 
 ## SRV Repair calls and service visits
 
 ### SRV-01 Complaint before faulty part is known
-P0 | Source: Missing workflow | Execution: FAIL
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A customer reports low output but cannot name a component
 
@@ -1294,12 +1492,12 @@ P0 | Source: Missing workflow | Execution: FAIL
 
 **Expected:** A customer-and-site ticket can be saved without guessing a warranty or faulty asset
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Complaint without a preselected warranty returned HTTP 400; current contract requires warranty_id before diagnosis.
+**Observed:** Passed: Review regressions and real operational requests [SRV-01 SRV-02 SRV-03 SEC-03] unknown-component complaint, full installed list and different repair worker access
 
 ### SRV-02 Assigned repair worker gets full installed list
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A coordinator assigns a repair visit
 
@@ -1307,10 +1505,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Installed quantities, serials, locations, delivery dates, warranty terms and repair history load for that site
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SRV-01 SRV-02 SRV-03 SEC-03] unknown-component complaint, full installed list and different repair worker access
 
 ### SRV-03 Technician changes between original install and repair
-P0 | Source: Missing workflow | Execution: FAIL
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A different qualified worker receives the repair visit
 
@@ -1318,12 +1518,12 @@ P0 | Source: Missing workflow | Execution: FAIL
 
 **Expected:** Repair assignment grants necessary site access without exposing every customer
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** A different technician assigned to this repair received HTTP 403 when opening the site project.
+**Observed:** Passed: Review regressions and real operational requests [SRV-01 SRV-02 SRV-03 SEC-03] unknown-component complaint, full installed list and different repair worker access
 
 ### SRV-04 Two open faults at one customer
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** An inverter warning and damaged cable are separately reported
 
@@ -1331,10 +1531,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Distinct faults can coexist and duplicate detection suggests linking related work
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Independent faults coexist, including the 20-call test, but automatic duplicate suggestions are not implemented.
 
 ### SRV-05 Repeated call about same unresolved fault
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** An existing open complaint matches the site and symptom
 
@@ -1342,10 +1544,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** It appends contact history or links the duplicate without losing either caller report
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Customer follow-up and workflow compatibility [SRV-05 SEC-06] coordinator has explicit call intake powers and support can append a repeated call without duplicating work
 
 ### SRV-06 Remote fix avoids a visit
-P1 | Source: Policy decision | Execution: NOT RUN
+P1 | Source: Policy decision | Execution: BLOCKED
 
 **Given:** A permitted nonhazardous issue is resolved by guided support
 
@@ -1353,10 +1557,12 @@ P1 | Source: Policy decision | Execution: NOT RUN
 
 **Expected:** The case records remote resolution and no fake onsite photos or visit hours are created
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** A remote-resolution policy and remote-completion route without onsite evidence are not implemented.
 
 ### SRV-07 Repair cancelled before attendance
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** Customer withdraws the request
 
@@ -1364,10 +1570,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The visit slot and reserved parts are released with a reason and history
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [SRV-07] support cancellation releases appointment and records reason
 
 ### SRV-08 First visit diagnoses but cannot fix
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A specialist part is required
 
@@ -1375,10 +1583,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The case stays open with a separate return visit and parts task
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SRV-08 SRV-09 EVD-08] no access and waiting-for-parts preserve open work; a customer dispute prevents closure
 
 ### SRV-09 Customer unavailable at repair visit
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** Technician arrives but cannot access the property
 
@@ -1386,10 +1596,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The ticket stays unresolved and rescheduling or a reviewed callout charge follows policy
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SRV-08 SRV-09 EVD-08] no access and waiting-for-parts preserve open work; a customer dispute prevents closure
 
 ### SRV-10 Customer calls after alleged repair failed
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A closed issue recurs
 
@@ -1397,13 +1609,15 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Original evidence and charges remain immutable and repeat-fault history is visible
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Customer follow-up and workflow compatibility [SRV-10 RMA-08] failed replacement follow-up retains both identities, original bill and evidence
 
 
 ## DIA Diagnosis and component selection
 
 ### DIA-01 Select multiple faulty installed components
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** The asset list includes an inverter and a controller
 
@@ -1411,10 +1625,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Separate diagnosis lines retain component identity, quantity and coverage decision
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DIA-01 WAR-03 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost
 
 ### DIA-02 Select another customer's serial
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A serial belongs to another installation
 
@@ -1422,10 +1638,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The server rejects the cross-customer component
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DIA-02 DIA-03 CON-03] foreign component, excessive quantity and stale diagnosis are rejected
 
 ### DIA-03 Diagnose a quantity-tracked panel
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Panels were tracked by quantity rather than unique serial
 
@@ -1433,10 +1651,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Affected quantity is bounded by installed quantity and references the original order line
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DIA-02 DIA-03 CON-03] foreign component, excessive quantity and stale diagnosis are rejected
 
 ### DIA-04 Part not supplied by this company
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A third-party component caused the symptom
 
@@ -1444,10 +1664,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** It is clearly marked external and is not automatically covered by an unrelated company warranty
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Diagnosis only accepts installed order components; external/third-party equipment records are not implemented.
 
 ### DIA-05 No fault found
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Diagnostics pass and no component is marked faulty
 
@@ -1455,10 +1677,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The visit can close under a reviewed no-fault policy without fabricating a replacement
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Diagnosis requires at least one faulty item; reviewed no-fault closure is not implemented.
 
 ### DIA-06 Diagnosis changes before approval
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A previously selected component is found healthy
 
@@ -1466,10 +1690,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Draft bill and parts reservation refresh while the revision history is retained
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DIA-06 BIL-06] editing diagnosis invalidates approval and unapproved work cannot create an invoice
 
 ### DIA-07 Diagnosis changes after billing
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A service invoice is already issued
 
@@ -1477,10 +1703,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Issued lines remain frozen; correction uses a reviewed revision or credit workflow
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against the complete acceptance requirement; partial passing runtime evidence is retained separately.
+
+**Observed:** Issued diagnosis and invoice edits are correctly blocked, but the required reviewed correction or credit workflow is not implemented.
 
 ### DIA-08 Customer disputes diagnosis
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Customer declines the proposed replacement
 
@@ -1488,10 +1716,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** No chargeable work starts without the required approval and the dispute remains visible
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Customer follow-up and workflow compatibility [DIA-08] declined diagnosis stays disputed with no invoice or unapproved replacement
 
 ### DIA-09 One of many panels is replaced repeatedly
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A quantity-tracked line has several panels
 
@@ -1499,10 +1729,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Cumulative replacement quantities do not exceed identifiable entitlement without review
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** A diagnosis cannot exceed installed quantity, but cumulative quantity-only replacement entitlement is not tracked.
 
 ### DIA-10 Retired serial selected again
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** An old device is marked replaced
 
@@ -1510,7 +1742,9 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The app directs staff to the current replacement identity and retains old history
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Field work and service [DIA-10] traces replacement serials and preserves the original warranty dates
 
 
 ## WAR Coverage decisions per component
@@ -1524,9 +1758,9 @@ P0 | Source: Present in source | Execution: PASS
 
 **Expected:** Coverage decision and reason use saved delivery and expiry dates
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Active device ticket saved covered=true with delivery-based reason.
+**Observed:** Passed: Additional acceptance boundaries [WAR-01 WAR-02 WAR-04 WAR-05] coverage follows complaint instant, with exclusive expiry, even after policy expires before visit
 
 ### WAR-02 Expired component at ticket opening
 P0 | Source: Present in source | Execution: PASS
@@ -1537,12 +1771,12 @@ P0 | Source: Present in source | Execution: PASS
 
 **Expected:** It is not treated as covered solely because other system parts remain covered
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Expired device ticket saved covered=false.
+**Observed:** Passed: Additional acceptance boundaries [WAR-01 WAR-02 WAR-04 WAR-05] coverage follows complaint instant, with exclusive expiry, even after policy expires before visit
 
 ### WAR-03 Different cover within the same system
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Panel warranty is active but inverter warranty expired
 
@@ -1550,10 +1784,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Each line gets an independent decision and the whole ticket is not globally free or charged
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DIA-01 WAR-03 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost
 
 ### WAR-04 Exact expiry boundary
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** The complaint arrives exactly at expiry
 
@@ -1561,10 +1797,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** The agreed exclusive expiry rule is consistently applied in the server and shown to staff
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [WAR-01 WAR-02 WAR-04 WAR-05] coverage follows complaint instant, with exclusive expiry, even after policy expires before visit
 
 ### WAR-05 Warranty expires before the booked visit
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** Complaint was recorded while cover was active
 
@@ -1572,10 +1810,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Coverage follows the documented complaint-date rule unless a reviewed exclusion applies
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [WAR-01 WAR-02 WAR-04 WAR-05] coverage follows complaint instant, with exclusive expiry, even after policy expires before visit
 
 ### WAR-06 Excluded accidental damage
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A device is within time cover but diagnosis shows an excluded cause
 
@@ -1583,10 +1823,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Coverage is not auto-approved by date alone; reason, reviewer and evidence are saved
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Authorized exclusion with reason and actor is tested; requiring diagnostic evidence before an exclusion remains unimplemented.
 
 ### WAR-07 Unknown or missing policy
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Imported equipment has no reliable policy dates
 
@@ -1594,10 +1836,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The line is pending review rather than silently free or chargeable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Final billing and intake guards [WAR-07] missing promised policy requires a reviewed decision, never silent billing
 
 ### WAR-08 Parts covered but labour excluded
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** The policy covers an inverter but not callout labour
 
@@ -1605,10 +1849,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Part charge is zero while approved labour is billed separately
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [WAR-08 BIL-04] covered parts can have approved charged labour and callout, while full cover credits all three
 
 ### WAR-09 Manufacturer reimbursement differs from customer cover
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Company promises cover while supplier claim is disputed
 
@@ -1616,10 +1862,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Customer entitlement remains independent of the supplier recovery balance
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Customer coverage exists; supplier recovery balances and independent manufacturer claims are not implemented.
 
 ### WAR-10 Warranty override
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** An authorized manager grants goodwill or corrects a coverage decision
 
@@ -1627,13 +1875,15 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Original decision, new decision, reason and actor are retained; technician cannot self-approve
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [WAR-06 WAR-10 SEC-02 SEC-05] coverage review needs authorization and reason; coordinator cannot collect money or fake field completion
 
 
 ## RMA Replacement returns and supplier handling
 
 ### RMA-01 Compatible replacement in stock
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** A diagnosed serial has a matching available replacement
 
@@ -1641,10 +1891,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Old and new identities link, stock reduces once and inherited warranty remains traceable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure
 
 ### RMA-02 Replacement uses an allocated serial
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A candidate replacement is reserved for another order
 
@@ -1652,10 +1904,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The server refuses without stealing stock from the other customer
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [RMA-02 RMA-03] replacement cannot use wrong model or device allocated to another customer
 
 ### RMA-03 Replacement is a different product
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A wrong inverter model is scanned
 
@@ -1663,10 +1917,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The server rejects incompatible substitution without changing either device
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [RMA-02 RMA-03] replacement cannot use wrong model or device allocated to another customer
 
 ### RMA-04 Different compatible model approved
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Original model is discontinued
 
@@ -1674,10 +1930,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Compatibility, customer agreement and any price adjustment are explicit and auditable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Only the same product can replace an installed device; approved cross-model engineering substitutions are not implemented.
 
 ### RMA-05 Faulty part returned to warehouse
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Technician removes a failed device onsite
 
@@ -1685,10 +1943,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Custody changes to quarantine, never saleable Available stock
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure
 
 ### RMA-06 Faulty part not yet returned
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** A new part was issued but old part is still onsite
 
@@ -1696,10 +1956,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** An outstanding-return task remains visible without falsifying receipt
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure
 
 ### RMA-07 No replacement stock available
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Diagnosis needs an unavailable part
 
@@ -1707,10 +1969,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The case shows waiting for parts and does not promise a completion date as confirmed
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Waiting-for-parts and return visits exist, but parts procurement/readiness is not tied to follow-up completion-date promises.
 
 ### RMA-08 Replacement fails immediately
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** A newly fitted replacement does not work
 
@@ -1718,10 +1982,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Both serials and failure events remain visible without losing original warranty lineage
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Customer follow-up and workflow compatibility [SRV-10 RMA-08] failed replacement follow-up retains both identities, original bill and evidence
 
 ### RMA-09 Supplier accepts or rejects claim
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A quarantined device was sent to supplier
 
@@ -1729,7 +1995,9 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Supplier credit or returned stock follows its own record and does not rewrite the customer's invoice
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Return receipt stops at quarantine; supplier claim decisions, credits and supplier custody are not implemented.
 
 ### RMA-10 Replacement retains original coverage
 P0 | Source: Present in source | Execution: PASS
@@ -1740,15 +2008,15 @@ P0 | Source: Present in source | Execution: PASS
 
 **Expected:** The documented inherited-date policy applies rather than silently granting a new full term
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Replacement warranty dates compared directly with the original saved dates.
+**Observed:** Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure
 
 
 ## BIL Repair estimates and service invoices
 
 ### BIL-01 Covered replacement shown at zero
-P0 | Source: Missing workflow | Execution: FAIL
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A covered inverter is replaced
 
@@ -1756,12 +2024,12 @@ P0 | Source: Missing workflow | Execution: FAIL
 
 **Expected:** The replacement name, quantity and serials appear with INR 0 customer charge and a coverage reason
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Covered replacement created 0 service documents; required a visible zero-payable replacement line.
+**Observed:** Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure
 
 ### BIL-02 Mixed coverage service bill
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** One covered inverter and two chargeable connectors are replaced
 
@@ -1769,7 +2037,9 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** All lines are visible and only uncovered items plus approved labour and travel are payable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DIA-01 WAR-03 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost
 
 ### BIL-03 Separate service invoice from original sale
 P0 | Source: Partial | Execution: PASS
@@ -1780,12 +2050,12 @@ P0 | Source: Partial | Execution: PASS
 
 **Expected:** A separately numbered linked service invoice is created; initial lines remain unchanged
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Compared complete original invoice and lines before/after repair; checked a separate linked service invoice exists.
+**Observed:** Passed: Review regressions and real operational requests [BIL-05 BIL-03 PAY-08] customer retail differs from acquisition cost and service part-payments leave initial invoice unchanged
 
 ### BIL-04 All repair lines covered
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Every part and labour line is covered
 
@@ -1793,10 +2063,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** A zero-payable service statement records the work; no payment is demanded
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure; Passed: Review regressions and real operational requests [WAR-08 BIL-04] covered parts can have approved charged labour and callout, while full cover credits all three
 
 ### BIL-05 Internal cost differs from selling price
-P0 | Source: Missing workflow | Execution: FAIL
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A replacement cost the company INR 14000 but agreed retail is INR 18000
 
@@ -1804,12 +2076,12 @@ P0 | Source: Missing workflow | Execution: FAIL
 
 **Expected:** Customer charge uses approved selling price; internal cost remains separately reportable
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Replacement customer charge was INR 14000; approved-price fixture is INR 18000 and acquisition cost INR 14000.
+**Observed:** Passed: Review regressions and real operational requests [BIL-05 BIL-03 PAY-08] customer retail differs from acquisition cost and service part-payments leave initial invoice unchanged
 
 ### BIL-06 Customer rejects paid estimate
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** An uncovered repair estimate awaits consent
 
@@ -1817,10 +2089,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** No chargeable replacement is executed or invoiced as accepted work
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DIA-06 BIL-06] editing diagnosis invalidates approval and unapproved work cannot create an invoice
 
 ### BIL-07 Resolution retried after timeout
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** Repair and invoice committed but response was lost
 
@@ -1828,10 +2102,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** No second replacement, stock movement or service invoice is created
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure
 
 ### BIL-08 Invoice correction after issue
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A service bill has an incorrect approved line
 
@@ -1839,10 +2115,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** An authorized credit or revised document links back without overwriting issued history
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Issued work cannot be edited; credit notes and approved revised invoices are not implemented.
 
 ### BIL-09 Financial totals for mixed repair
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Worked fixture MIX1 totals INR 1700 customer payable
 
@@ -1850,10 +2128,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Invoice lines total 1700; covered costs remain company costs and are not recorded as zero cost
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DIA-01 WAR-03 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost
 
 ### BIL-10 Tax and warranty document treatment unconfigured
-P1 | Source: Policy decision | Execution: NOT RUN
+P1 | Source: Policy decision | Execution: PASS
 
 **Given:** The app has no verified tax configuration
 
@@ -1861,13 +2141,15 @@ P1 | Source: Policy decision | Execution: NOT RUN
 
 **Expected:** It is labelled as a demo service statement and does not claim legally compliant tax invoicing
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/e2e/repairs.spec.ts
+
+**Observed:** Passed: [CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (chromium); Passed: [CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (webkit)
 
 
 ## EVD Repair photos completion and confirmation
 
 ### EVD-01 After-repair photo required
-P0 | Source: Missing workflow | Execution: FAIL
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** An onsite repair has no saved completion photo
 
@@ -1875,12 +2157,12 @@ P0 | Source: Missing workflow | Execution: FAIL
 
 **Expected:** Completion is blocked until a valid visit-linked photo is saved
 
-**Evidence:** scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json
+**Evidence:** tests/integration/lifecycle.test.ts
 
-**Observed:** Repair resolution without any repair photo returned HTTP 200; required completion rejection.
+**Observed:** Passed: Review regressions and real operational requests [EVD-01] valid diagnosis and approval still cannot complete without this visit photo
 
 ### EVD-02 Diagnosis photo linked to faulty item
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Several components were inspected
 
@@ -1888,10 +2170,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The photo links to the correct visit and component rather than a generic customer album
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Evidence links to a ticket, visit and diagnosis revision, but not to an individual faulty component.
 
 ### EVD-03 Wrong file masquerades as photo
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** An executable is renamed to JPG
 
@@ -1899,10 +2183,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Content validation rejects it and no downloadable unsafe file is stored
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [EVD-03 EVD-10] disguised executable rejected and private evidence cannot be opened anonymously
 
 ### EVD-04 Upload loses connection midway
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A repair photo upload is interrupted
 
@@ -1910,10 +2196,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** No partial image is treated as evidence; retry creates one usable record
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Bad uploads are rejected, but transport interruption and content-deduplicated retry were not tested; upload deduplication is not implemented.
 
 ### EVD-05 Device permission denied
-P1 | Source: Partial | Execution: NOT RUN
+P1 | Source: Partial | Execution: BLOCKED
 
 **Given:** Technician denies camera permission
 
@@ -1921,10 +2209,12 @@ P1 | Source: Partial | Execution: NOT RUN
 
 **Expected:** A clear explanation and permitted file-picker alternative are offered
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** A file picker is available; camera-denial recovery still needs a physical-device test.
 
 ### EVD-06 Customer signs before final changes
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A signed service report is later changed
 
@@ -1932,10 +2222,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Signature is invalidated for the changed version and fresh confirmation is requested
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Final concurrency and revision checks [EVD-06 EVD-09 DIA-07] changed diagnosis invalidates earlier evidence and issued work cannot be edited or erased
 
 ### EVD-07 Customer confirms by phone
-P1 | Source: Partial | Execution: NOT RUN
+P1 | Source: Partial | Execution: PASS
 
 **Given:** Customer cannot sign onsite but accepts the result by phone
 
@@ -1943,10 +2235,12 @@ P1 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Method, actor, time and stated confirmer are saved without pretending a handwritten signature exists
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure
 
 ### EVD-08 Customer disputes closure
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Technician marks work done but customer reports failure
 
@@ -1954,10 +2248,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Case remains awaiting review and is not silently counted as customer-confirmed
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SRV-08 SRV-09 EVD-08] no access and waiting-for-parts preserve open work; a customer dispute prevents closure
 
 ### EVD-09 Technician attempts to erase evidence
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A photo belongs to an issued report
 
@@ -1965,10 +2261,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Issued evidence history remains protected and any correction is versioned
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Final concurrency and revision checks [EVD-06 EVD-09 DIA-07] changed diagnosis invalidates earlier evidence and issued work cannot be edited or erased
 
 ### EVD-10 Unauthenticated person opens a photo URL
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A private image URL is copied outside the staff session
 
@@ -1976,13 +2274,15 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The server denies private evidence access
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [EVD-03 EVD-10] disguised executable rejected and private evidence cannot be opened anonymously
 
 
 ## SEC Roles staffing and access boundaries
 
 ### SEC-01 Support creates installation request
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Support has a verified customer call
 
@@ -1990,10 +2290,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Support can create intake without gaining price, stock or payout authority
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [INT-01 SEC-01] support creates audited installation intake without gaining stock or finance authority
 
 ### SEC-02 Coordinator manages visits
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** A service coordinator has no finance role
 
@@ -2001,10 +2303,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Scheduling is allowed while invoice edits and staff payouts remain denied
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [WAR-06 WAR-10 SEC-02 SEC-05] coverage review needs authorization and reason; coordinator cannot collect money or fake field completion
 
 ### SEC-03 Technician sees assigned repair only
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Two workers have different repair visits
 
@@ -2012,10 +2316,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Server rejects unrelated details and photos even through direct URLs
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [SRV-01 SRV-02 SRV-03 SEC-03] unknown-component complaint, full installed list and different repair worker access
 
 ### SEC-04 Warehouse cannot approve customer discount
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** Warehouse has stock permissions
 
@@ -2023,10 +2329,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** The server denies the action regardless of hidden UI controls
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [SEC-04 SEC-07 SEC-10] admin access changes take effect on open sessions and flag assigned work
 
 ### SEC-05 Accounts cannot fake technical completion
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Accounts can invoice but is not the assigned worker
 
@@ -2034,10 +2342,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Technical completion is denied while authorized payment work stays available
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [WAR-06 WAR-10 SEC-02 SEC-05] coverage review needs authorization and reason; coordinator cannot collect money or fake field completion
 
 ### SEC-06 One employee covers two duties
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** A small company has a coordinator who also answers calls
 
@@ -2045,10 +2355,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Permissions are explicit and audited without sharing another person's password
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Customer follow-up and workflow compatibility [SRV-05 SEC-06] coordinator has explicit call intake powers and support can append a repeated call without duplicating work
 
 ### SEC-07 Employee leaves the company
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** A staff account has active sessions and future visits
 
@@ -2056,10 +2368,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Sessions become unusable and affected appointments enter reassignment review
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [SEC-04 SEC-07 SEC-10] admin access changes take effect on open sessions and flag assigned work
 
 ### SEC-08 Two support agents work concurrently
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** Support team contains two named users
 
@@ -2067,10 +2381,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Separate actor identities are retained; no shared login is required
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DSP-01 SEC-08] twenty concurrent calls survive without appointments or shared identities
 
 ### SEC-09 Only administrator sees staff directory
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A nonadmin staff member opens Team or its API
 
@@ -2078,10 +2394,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The server refuses access to the administrative directory
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Session and authorization [SEC-09] protects the staff directory and complete barcode library by role
 
 ### SEC-10 Permission changed while screen is open
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** A user loses a permission after loading a form
 
@@ -2089,13 +2407,15 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Current server permissions win and the operation is denied
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [SEC-04 SEC-07 SEC-10] admin access changes take effect on open sessions and flag assigned work
 
 
 ## CON Concurrency retry and integrity
 
 ### CON-01 Same idempotency key same request
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A command completed and its response was lost
 
@@ -2103,10 +2423,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The saved result returns without repeating business effects
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Sales lifecycle and snapshots [QUO-02 QUO-03 CON-01] acceptance is idempotent and material prices remain snapshots
 
 ### CON-02 Same idempotency key changed request
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A key was used for one command body
 
@@ -2114,10 +2436,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** The server rejects the conflicting retry
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Sales lifecycle and snapshots [PAY-04 PAY-05 CON-02 CON-08] does not duplicate payments and blocks overpayment or changed retries
 
 ### CON-03 Two workers diagnose same service visit
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Both opened the same draft revision
 
@@ -2125,10 +2449,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** A version conflict is shown instead of losing either diagnosis silently
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DIA-02 DIA-03 CON-03] foreign component, excessive quantity and stale diagnosis are rejected
 
 ### CON-04 Two repair tickets replace the same original
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** Two open tickets reference one delivered serial
 
@@ -2136,10 +2462,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Only one replacement succeeds and the other detects the changed original state
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Final concurrency and revision checks [CON-04] competing tickets cannot replace one original device twice
 
 ### CON-05 Reservation races with service replacement
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** One unreserved serial is needed by both workflows
 
@@ -2147,10 +2475,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Stock, reservation and replacement ownership remain consistent
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Final concurrency and revision checks [CON-05] last unreserved device cannot be promised to both sale and replacement
 
 ### CON-06 Failure after stock update before invoice
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** A database error occurs during repair resolution
 
@@ -2158,10 +2488,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Stock, old serial, warranty, ticket and invoice all roll back together
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [CON-06] database failure after replacement changes rolls back stock, original serial, invoice and ticket together
 
 ### CON-07 Two coordinators reschedule the same visit
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: PASS
 
 **Given:** Both opened the same appointment revision
 
@@ -2169,10 +2501,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** One coherent appointment remains and the stale change is rejected
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Review regressions and real operational requests [DSP-05 DSP-09 CON-07] rescheduling releases old time atomically, rejects stale revision and supports retry
 
 ### CON-08 Payment response lost after commit
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** The payment was saved but client times out
 
@@ -2180,10 +2514,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** One receipt remains and the UI recovers the committed outcome
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Sales lifecycle and snapshots [PAY-04 PAY-05 CON-02 CON-08] does not duplicate payments and blocks overpayment or changed retries
 
 ### CON-09 Double tap completion
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** A technician taps Complete twice rapidly
 
@@ -2191,10 +2527,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** One handover and one payable cost record exist
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost
 
 ### CON-10 Database rejects a foreign identifier
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** An action references a deleted or nonexistent record
 
@@ -2202,13 +2540,15 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** A controlled error is returned and no orphan business records appear
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Additional acceptance boundaries [CON-10] nonexistent record yields controlled error without an orphan ticket
 
 
 ## OPS Reliability reporting and recovery
 
 ### OPS-01 Server restarts after saved action
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** A committed project and session exist
 
@@ -2216,10 +2556,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Saved work remains and valid session behavior follows configured persistence
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Field work and service [OPS-01] persists committed data across a new application instance
 
 ### OPS-02 Database connection fails during save
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: BLOCKED
 
 **Given:** The database becomes unreachable
 
@@ -2227,10 +2569,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** No success is shown and retry cannot duplicate a partially committed action
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Transactional rollback was tested with an injected database error; a real database outage during save was not exercised.
 
 ### OPS-03 Evidence disk is full
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: BLOCKED
 
 **Given:** Metadata storage works but file storage cannot write
 
@@ -2238,10 +2582,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** The app reports failure and does not record nonexistent evidence as saved
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** File-write errors occur before evidence metadata insertion, but actual disk-full failure injection was not exercised.
 
 ### OPS-04 Restore a backup
-P0 | Source: Needs verification | Execution: NOT RUN
+P0 | Source: Needs verification | Execution: PASS
 
 **Given:** A backup includes database and private files
 
@@ -2249,10 +2595,12 @@ P0 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Records and evidence links reconcile and restored totals match the backup checkpoint
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** scripts/check-backup-restore.ts
+
+**Observed:** Passed: [OPS-04] PostgreSQL dump and restore, financial totals and private photo bytes
 
 ### OPS-05 Dashboard distinguishes backlog from active work
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** Many requests are waiting for parts or appointments
 
@@ -2260,10 +2608,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Counts separate unassigned, scheduled, blocked, in-progress and overdue visits
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Capacity, payroll and workload verification [OPS-05] work queue distinguishes new, scheduled, active, blocked and awaiting-confirmation work
 
 ### OPS-06 Report distinguishes cash and profit
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** An invoice is unpaid or only partly paid
 
@@ -2271,10 +2621,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Cash collected, outstanding and completed contribution are separate figures
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Field work and service [OPS-06] reconciles report amounts against invoice, material and labour records
 
 ### OPS-07 Covered repair still costs money
-P0 | Source: Present in source | Execution: NOT RUN
+P0 | Source: Present in source | Execution: PASS
 
 **Given:** Customer pays zero but the company uses parts and labour
 
@@ -2282,10 +2634,12 @@ P0 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Internal repair costs reduce contribution even with no customer charge
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Field work and service [OPS-07] keeps covered repair free but accounts for internal costs
 
 ### OPS-08 Search handles growing workload
-P1 | Source: Needs verification | Execution: NOT RUN
+P1 | Source: Needs verification | Execution: PASS
 
 **Given:** Fixture LOAD1 has 1000 projects and 200 open service requests
 
@@ -2293,10 +2647,12 @@ P1 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** Pagination preserves all results and agreed response-time targets are measured, not assumed
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Capacity, payroll and workload verification [OPS-08] LOAD1 preserves all 1000 searchable projects and 200 requests with measured local response time
 
 ### OPS-09 Audit reconstructs a disputed repair
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** A customer questions who changed assignment or coverage
 
@@ -2304,10 +2660,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Actor, time, old and new states, reasons and related documents are available
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Final concurrency and revision checks [OPS-09] repair review audit retains before and after decisions with actor and time
 
 ### OPS-10 Demo reset cannot erase operational data
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: BLOCKED
 
 **Given:** A training fixture needs to be replayed
 
@@ -2315,13 +2673,15 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Only the explicitly selected test dataset changes; live/demo customer work is preserved
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Seed reruns preserve operational data; a user-selectable training-dataset reset/replay command is not implemented.
 
 
 ## UXP Mobile Windows navigation and device behavior
 
 ### UXP-01 Return to filtered project list
-P1 | Source: Present in source | Execution: NOT RUN
+P1 | Source: Present in source | Execution: PASS
 
 **Given:** Staff opens a project from a searched stage-filtered list
 
@@ -2329,10 +2689,12 @@ P1 | Source: Present in source | Execution: NOT RUN
 
 **Expected:** Search, stage and page context are retained
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/e2e/navigation.spec.ts
+
+**Observed:** Passed: [UXP-01] project next step and back navigation preserve search and stage (chromium); Passed: [UXP-01] project next step and back navigation preserve search and stage (webkit)
 
 ### UXP-02 Next task follows actual saved state
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: PASS
 
 **Given:** A project moves from survey to payment or packing
 
@@ -2340,10 +2702,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** The next-step message matches saved progress and the user's permitted action
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/e2e/navigation.spec.ts; tests/e2e/workflow.spec.ts
+
+**Observed:** Passed: [UXP-02] staff roles show permitted next steps, different workspaces and server access rules (chromium); Passed: [UXP-02] staff roles show permitted next steps, different workspaces and server access rules (webkit); Passed: [UXP-02] responsive navigation, saved next steps and accessible core screens (chromium); Passed: [UXP-02] responsive navigation, saved next steps and accessible core screens (webkit)
 
 ### UXP-03 Navigate away from unsaved form
-P0 | Source: Missing workflow | Execution: NOT RUN
+P0 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** Staff edits a long form without saving
 
@@ -2351,10 +2715,12 @@ P0 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** A stay/discard choice prevents accidental data loss
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Browser unload warns on dirty shared forms; in-app navigation and phone Back do not yet consistently show stay/discard.
 
 ### UXP-04 Small phone with keyboard open
-P1 | Source: Needs verification | Execution: NOT RUN
+P1 | Source: Needs verification | Execution: BLOCKED
 
 **Given:** A 360px screen shows a long repair form
 
@@ -2362,10 +2728,12 @@ P1 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** The field, error and submit action remain reachable without whole-page overflow
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Responsive browser widths pass, but a physical phone with the software keyboard open was not tested.
 
 ### UXP-05 Screen reader and keyboard operation
-P1 | Source: Partial | Execution: NOT RUN
+P1 | Source: Partial | Execution: BLOCKED
 
 **Given:** A user cannot use a mouse or read color cues
 
@@ -2373,10 +2741,12 @@ P1 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Labels, focus order, status messages and keyboard actions remain understandable
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Automated accessibility checks and Escape behavior pass; a full screen-reader and keyboard-only walkthrough remains unverified.
 
 ### UXP-06 Android native app against same backend
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A signed Android build uses the shared API
 
@@ -2384,10 +2754,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Identity, photos, invoice rules and server permissions match the desktop workflow
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** No signed Android native build exists. Responsive mobile web/PWA is the implemented client.
 
 ### UXP-07 Windows native app against same backend
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Given:** A signed Windows build is installed
 
@@ -2395,10 +2767,12 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** The installed client uses the same authoritative rules and handles printing and file permissions
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** No signed Windows native build exists. Desktop web/PWA is the implemented client.
 
 ### UXP-08 Offline during field visit
-P0 | Source: Partial | Execution: NOT RUN
+P0 | Source: Partial | Execution: BLOCKED
 
 **Given:** A technician loses network after opening a visit
 
@@ -2406,10 +2780,12 @@ P0 | Source: Partial | Execution: NOT RUN
 
 **Expected:** Offline state is explicit and no unsynced work is shown as committed; draft policy is defined
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** Network errors do not report success, but a complete offline draft/sync policy and field-offline journey are missing.
 
 ### UXP-09 Barcode camera on a physical phone
-P1 | Source: Needs verification | Execution: NOT RUN
+P1 | Source: Needs verification | Execution: BLOCKED
 
 **Given:** A real device grants camera access in a supported secure context
 
@@ -2417,10 +2793,12 @@ P1 | Source: Needs verification | Execution: NOT RUN
 
 **Expected:** The actual serial is decoded and server eligibility checks still run
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+
+**Observed:** All generated barcode images can be decoded by software; physical-phone camera scanning in HTTPS remains unverified.
 
 ### UXP-10 Client is older than backend
-P1 | Source: Missing workflow | Execution: NOT RUN
+P1 | Source: Missing workflow | Execution: PASS
 
 **Given:** A native or cached web client uses an older request shape
 
@@ -2428,4 +2806,6 @@ P1 | Source: Missing workflow | Execution: NOT RUN
 
 **Expected:** Version compatibility or a clear update message prevents silent corruption
 
-**Evidence:** No scenario-specific execution recorded.
+**Evidence:** tests/integration/lifecycle.test.ts
+
+**Observed:** Passed: Customer follow-up and workflow compatibility [UXP-10] older repair payload cannot silently supply a charge or replacement outside approved diagnosis

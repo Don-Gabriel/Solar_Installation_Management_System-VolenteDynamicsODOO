@@ -17,5 +17,5 @@ Use only tools actually exposed by the host. If Ruflo/ToolSearch is unavailable,
 - Use relevant installed skills when their task applies. Skills are implementation guidance, not product dependencies or permission to publish/send data.
 - Do not load every skill at once or import Ruflo/AgentDB/neural infrastructure into this business application.
 - Maintain genuine small commits. Keep secrets, runtime files, local PDFs and machine-specific research inventories out of Git.
-- Working deadline updated by the user: 1 November 2026, 07:00 IST. No official event deadline is confirmed. Target feature freeze by 05:00; preserve regression/demo/submission time.
+- Working deadline updated by the user: 31 October 2026, 14:45 IST. Prioritize technician scheduling and warranty billing, then scenario verification and rehearsal. This supersedes earlier November deadlines.
 - Only mark a milestone complete after its observable gate passes. Report actual checks and remaining limitations.

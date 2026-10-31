@@ -59,3 +59,7 @@ Ruflo MCP tools and ToolSearch were not exposed in this Codex chat. Their absenc
 - [shadcn/ui](https://github.com/shadcn-ui/ui)
 
 Use the commit-pinned links in the source manifest for reproducibility. No third-party skill files are vendored into this application repository; the repository records their provenance and intended use.
+
+## Operational revision, 31 October 2026
+
+Applied the PostgreSQL schema, API design and authentication guidance to authoritative scheduling, approval, evidence and billing rules. Used the responsive UI and accessibility guidance for coordinator and technician screens, and webapp-testing guidance for real browser journeys. The bundled PDF skill guided the regenerated screen guide, scenario register and barcode pack; rendered pages and barcode decoding were checked. No Ruflo service or Claude model was invoked.

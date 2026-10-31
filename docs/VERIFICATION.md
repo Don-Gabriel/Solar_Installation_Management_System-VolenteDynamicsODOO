@@ -1,5 +1,21 @@
 # Verification record
 
+## Scheduling and warranty revision — 31 October 2026
+
+Application source commit `3f337d4` passed the independent [GitHub Actions run](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO/actions/runs/41186050178): clean dependency installation, TypeScript checks, **76 PostgreSQL/API tests**, production build and **21 browser tests across Chromium, Firefox and WebKit**. Local Windows checks passed all 76 backend tests and 14 Chromium/WebKit journeys. Firefox was verified on Linux CI; its local Windows runtime cannot launch on this machine.
+
+All six initial review failures passed focused retests: support installation intake (INT-01), complaint before component diagnosis (SRV-01), repair-assigned worker access (SRV-03), required repair photo (EVD-01), a visible zero-payable replacement document (BIL-01), and selling price separate from company cost (BIL-05).
+
+The complete 200-case acceptance register currently contains **137 PASS and 63 BLOCKED**, with zero executed failures. This is not a 200-case pass or a complete release. Blockers include missing workflows and unavailable device/native environments. Partial checks remain attached to blocked scenarios; for example, protecting an issued invoice does not prove that its missing credit-note correction workflow exists. See [the exact register](scenarios/EXECUTION.md).
+
+Scheduling checks cover the 13-busy/two-free interval, qualifications, leave, office hours, 30-minute buffers, installation/repair conflicts, multi-worker crews, simultaneous coordinators, stale suggestions and atomic rescheduling. The load fixture contains 1,000 projects and 200 service requests; all searchable records were recovered. Ten concurrent users had maximum local search time below 35 ms and availability time below 200 ms in the recorded run, against 2,000/3,000 ms limits. These are local Fastify/PostgreSQL measurements, not internet or production capacity guarantees.
+
+Warranty checks cover per-component decisions, independent labour cover, callout lines, complaint-date expiry, unknown-policy review, approval invalidation, current-visit/current-diagnosis photos, quarantined returns, serial lineage, stock races and rollback after an injected invoice error. MIX1 uses a real connector product fixture and verifies ₹900 connectors + ₹600 labour + ₹200 callout = ₹1,700, while the ₹18,000 covered inverter remains visible at zero payable. A separate check verifies both charged and credited callout treatment.
+
+The live synthetic workspace preserves 40 projects, 34 employees across eight roles and 198 device identities. The optional service rehearsal script adds two completed synthetic repair examples and one unassigned request through the real API; its second run preserved the existing examples. Evidence images explicitly identify themselves as simulations. Database dump/restore reconciled all 37 table counts, invoiced and collected totals, and both live private-file hashes in an isolated database. An additional synthetic photo roundtrip verified a restored evidence link, byte size and SHA-256.
+
+Physical phone camera/printer checks, installed native applications and full assistive-technology evaluation remain unverified. Automated accessibility samples and mobile emulation are narrower checks. Older records below describe earlier revisions and retain their historical counts.
+
 Verified locally on Windows, 31 October 2026, using Node 24.15.0 and dedicated PostgreSQL 18.6. Results describe this build, not a security certification or a claim of production readiness.
 
 The previous [GitHub Actions Linux run for application commit 1aa525c](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO/actions/runs/41173148316) completed successfully: clean `npm ci`, type checks, **20 integration tests**, production build and **6 browser tests across Chromium, Firefox and WebKit**. The new usability revision is recorded separately below.

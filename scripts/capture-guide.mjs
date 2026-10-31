@@ -10,6 +10,7 @@ const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
 });
 const page = await context.newPage();
+let captured = 0;
 const base = "http://127.0.0.1:3001";
 async function shot(id) {
   await page.locator("h1,h2").first().waitFor();
@@ -18,6 +19,7 @@ async function shot(id) {
     path: `output/guide-screens/${id}.png`,
     fullPage: false,
   });
+  captured++;
 }
 await page.goto(base);
 await shot("login");
@@ -35,6 +37,7 @@ for (const [id, url] of [
   ["team", "/team"],
   ["jobs", "/jobs"],
   ["service", "/service"],
+  ["schedule", "/schedule"],
   ["reports", "/reports"],
   ["help", "/help"],
 ]) {
@@ -43,6 +46,21 @@ for (const [id, url] of [
     .getByRole("status", { name: "Loading records" })
     .waitFor({ state: "hidden" });
   await shot(id);
+}
+const repairs = await page.request
+  .get(base + "/api/tickets")
+  .then((r) => r.json());
+const example = repairs.find(
+  (t) =>
+    t.complaint ===
+    "SYNTHETIC DEMO: parts covered, agreed labour and callout charged",
+);
+if (example) {
+  await page.goto(base + "/service?ticket=" + example.id);
+  await page.locator(".service-document").waitFor();
+  await shot("repair-detail");
+  await page.locator(".service-document").scrollIntoViewIfNeeded();
+  await shot("service-invoice");
 }
 const chosen = {
   survey: data.projects.find((p) => p.customer_name === "Thomas George"),
@@ -75,4 +93,4 @@ await page
   .waitFor();
 await shot("mobile-home");
 await browser.close();
-console.log("Captured 21 guide screenshots from the running app.");
+console.log(`Captured ${captured} guide screenshots from the running app.`);

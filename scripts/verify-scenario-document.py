@@ -24,7 +24,7 @@ text='\n'.join(p.get_text() for p in doc)
 assert '\ufffd' not in text
 for c in catalog['cases']:
     assert re.search(r'\b'+c['id']+r'\b',text),c['id']
-assert all(s in text for s in ['INR 1700','27 distinct','07:00 IST','NOT RUN','FAIL'])
+assert all(s in text for s in ['INR 1700','27 distinct','14:45 IST','PASS','BLOCKED'])
 review=root/'output/scenario-review';review.mkdir(exist_ok=True)
 tiles=[];overflow=[]
 for i,page in enumerate(doc):
@@ -37,4 +37,4 @@ for k in range(0,len(tiles),16):
     for j,t in enumerate(subset):canvas.paste(t,((j%4)*240,(j//4)*330))
     canvas.save(review/f'final-contact-{k//16+1}.png')
 assert not overflow,overflow[:10]
-print(json.dumps({'pages':len(doc),'scenarios':200,'fixture_staff':27,'fixture_technicians':15,'text_bounds':'passed','all_scenario_ids_present':True,'execution':{s:sum(c['execution']['status']==s for c in catalog['cases']) for s in ['PASS','FAIL','NOT RUN']}}))
+print(json.dumps({'pages':len(doc),'scenarios':200,'fixture_staff':27,'fixture_technicians':15,'text_bounds':'passed','all_scenario_ids_present':True,'execution':{s:sum(c['execution']['status']==s for c in catalog['cases']) for s in ['PASS','FAIL','BLOCKED','NOT RUN']}}))

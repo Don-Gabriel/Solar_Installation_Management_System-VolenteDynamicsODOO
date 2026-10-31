@@ -1,0 +1,380 @@
+{
+  "INT-02": {
+    "status": "BLOCKED",
+    "observed": "Capacity is still mandatory at enquiry intake; an explicit unknown-size state and later survey sizing are missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-INT-02"
+  },
+  "INT-03": {
+    "status": "BLOCKED",
+    "observed": "Installation enquiry intake does not suggest duplicates or append to an existing installation contact log.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-INT-03"
+  },
+  "INT-04": {
+    "status": "BLOCKED",
+    "observed": "Each installation enquiry still creates a customer record; a shared customer with multiple separately linked sites is not supported by intake.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-INT-04"
+  },
+  "INT-05": {
+    "status": "BLOCKED",
+    "observed": "A follow-up date and notes exist, but a structured customer appointment preference separate from confirmation is missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-INT-05"
+  },
+  "INT-06": {
+    "status": "BLOCKED",
+    "observed": "Urgent repair priority exists; installation-call hazard triage and a tracked human escalation are missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-INT-06"
+  },
+  "INT-08": {
+    "status": "BLOCKED",
+    "observed": "Pre-survey installation cancellation and release of related visits are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-INT-08"
+  },
+  "INT-09": {
+    "status": "BLOCKED",
+    "observed": "Inputs survive a request error while the form stays open; durable interrupted-entry recovery is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-INT-09"
+  },
+  "CRM-03": {
+    "status": "BLOCKED",
+    "observed": "Separate installation projects can be selected, but a shared-site view linking multiple systems is missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-CRM-03"
+  },
+  "CRM-04": {
+    "status": "BLOCKED",
+    "observed": "Customer correction with issued-document name snapshots is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-CRM-04"
+  },
+  "CRM-05": {
+    "status": "BLOCKED",
+    "observed": "Verified contact-number updates with restricted old-value history are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-CRM-05"
+  },
+  "CRM-06": {
+    "status": "BLOCKED",
+    "observed": "Repair contact notes are visible to the assigned crew; a dedicated persisted site-access record and a focused access-instruction test are missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-CRM-06"
+  },
+  "CRM-07": {
+    "status": "BLOCKED",
+    "observed": "Separate service and billing addresses are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-CRM-07"
+  },
+  "CRM-08": {
+    "status": "BLOCKED",
+    "observed": "An administrator-reviewed customer merge workflow is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-CRM-08"
+  },
+  "CRM-10": {
+    "status": "BLOCKED",
+    "observed": "Customer contact editing with optimistic version checks is not implemented; ticket and visit version checks do exist.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-CRM-10"
+  },
+  "QUO-05": {
+    "status": "BLOCKED",
+    "observed": "Discount limits, requests and approval workflow are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-QUO-05"
+  },
+  "QUO-06": {
+    "status": "BLOCKED",
+    "observed": "Acceptance selects the current quote server-side, but the caller cannot explicitly submit a quote version for stale-acceptance detection.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-QUO-06"
+  },
+  "QUO-07": {
+    "status": "BLOCKED",
+    "observed": "Quote expiry and renewal exceptions are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-QUO-07"
+  },
+  "QUO-08": {
+    "status": "BLOCKED",
+    "observed": "Paid-order cancellation, refunds and reservation release are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-QUO-08"
+  },
+  "QUO-09": {
+    "status": "BLOCKED",
+    "observed": "Accepted-order additions need a change-order workflow which is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-QUO-09"
+  },
+  "PAY-07": {
+    "status": "BLOCKED",
+    "observed": "Collections are manually recorded as received; pending/verified settlement states and payment-provider verification are missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-PAY-07"
+  },
+  "PAY-09": {
+    "status": "BLOCKED",
+    "observed": "Receipt reversal with retained financial history is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-PAY-09"
+  },
+  "STK-08": {
+    "status": "BLOCKED",
+    "observed": "Repair returns can enter quarantine; damaged reserved sale stock still lacks quarantine/substitution handling.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-STK-08"
+  },
+  "STK-10": {
+    "status": "BLOCKED",
+    "observed": "Reasoned physical-count adjustments and approval are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-STK-10"
+  },
+  "DLV-06": {
+    "status": "BLOCKED",
+    "observed": "Delivery remains all-or-nothing; partial line delivery and per-line receipt dates are missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DLV-06"
+  },
+  "DLV-07": {
+    "status": "BLOCKED",
+    "observed": "Failed/wrong-destination delivery and driver custody events are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DLV-07"
+  },
+  "DLV-08": {
+    "status": "BLOCKED",
+    "observed": "Transit incident handling and replacement-delivery records are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DLV-08"
+  },
+  "DLV-09": {
+    "status": "BLOCKED",
+    "observed": "Delivery refusal with a return task is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DLV-09"
+  },
+  "DSP-02": {
+    "status": "BLOCKED",
+    "observed": "Priority is visible and available candidates have stable names; due-date/travel/workload ranking and anti-starvation rules are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DSP-02"
+  },
+  "DSP-03": {
+    "status": "BLOCKED",
+    "observed": "Urgent requests are highlighted, but a tracked hazard-escalation and displaced-customer contact workflow is missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DSP-03"
+  },
+  "DSP-06": {
+    "status": "BLOCKED",
+    "observed": "An in-progress appointment cannot yet be extended with downstream-conflict alerts.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DSP-06"
+  },
+  "DSP-07": {
+    "status": "BLOCKED",
+    "observed": "An assigned worker can cancel a visit with a reason; a dedicated decline/acknowledgement workflow and focused decline test are not recorded.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DSP-07"
+  },
+  "DSP-08": {
+    "status": "BLOCKED",
+    "observed": "Worker acknowledgement deadlines and coordinator alerts are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DSP-08"
+  },
+  "INS-09": {
+    "status": "BLOCKED",
+    "observed": "Missing signature blocks completion; an explicit installation dispute/review state is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-INS-09"
+  },
+  "SRV-04": {
+    "status": "BLOCKED",
+    "observed": "Independent faults coexist, including the 20-call test, but automatic duplicate suggestions are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-SRV-04"
+  },
+  "SRV-06": {
+    "status": "BLOCKED",
+    "observed": "A remote-resolution policy and remote-completion route without onsite evidence are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-SRV-06"
+  },
+  "DIA-04": {
+    "status": "BLOCKED",
+    "observed": "Diagnosis only accepts installed order components; external/third-party equipment records are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DIA-04"
+  },
+  "DIA-05": {
+    "status": "BLOCKED",
+    "observed": "Diagnosis requires at least one faulty item; reviewed no-fault closure is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DIA-05"
+  },
+  "DIA-09": {
+    "status": "BLOCKED",
+    "observed": "A diagnosis cannot exceed installed quantity, but cumulative quantity-only replacement entitlement is not tracked.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DIA-09"
+  },
+  "WAR-09": {
+    "status": "BLOCKED",
+    "observed": "Customer coverage exists; supplier recovery balances and independent manufacturer claims are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-WAR-09"
+  },
+  "RMA-04": {
+    "status": "BLOCKED",
+    "observed": "Only the same product can replace an installed device; approved cross-model engineering substitutions are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-RMA-04"
+  },
+  "RMA-07": {
+    "status": "BLOCKED",
+    "observed": "Waiting-for-parts and return visits exist, but parts procurement/readiness is not tied to follow-up completion-date promises.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-RMA-07"
+  },
+  "RMA-09": {
+    "status": "BLOCKED",
+    "observed": "Return receipt stops at quarantine; supplier claim decisions, credits and supplier custody are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-RMA-09"
+  },
+  "BIL-08": {
+    "status": "BLOCKED",
+    "observed": "Issued work cannot be edited; credit notes and approved revised invoices are not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-BIL-08"
+  },
+  "EVD-02": {
+    "status": "BLOCKED",
+    "observed": "Evidence links to a ticket, visit and diagnosis revision, but not to an individual faulty component.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-EVD-02"
+  },
+  "EVD-04": {
+    "status": "BLOCKED",
+    "observed": "Bad uploads are rejected, but transport interruption and content-deduplicated retry were not tested; upload deduplication is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-EVD-04"
+  },
+  "EVD-05": {
+    "status": "BLOCKED",
+    "observed": "A file picker is available; camera-denial recovery still needs a physical-device test.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-EVD-05"
+  },
+  "OPS-02": {
+    "status": "BLOCKED",
+    "observed": "Transactional rollback was tested with an injected database error; a real database outage during save was not exercised.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-OPS-02"
+  },
+  "OPS-03": {
+    "status": "BLOCKED",
+    "observed": "File-write errors occur before evidence metadata insertion, but actual disk-full failure injection was not exercised.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-OPS-03"
+  },
+  "UXP-03": {
+    "status": "BLOCKED",
+    "observed": "Browser unload warns on dirty shared forms; in-app navigation and phone Back do not yet consistently show stay/discard.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-UXP-03"
+  },
+  "UXP-04": {
+    "status": "BLOCKED",
+    "observed": "Responsive browser widths pass, but a physical phone with the software keyboard open was not tested.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-UXP-04"
+  },
+  "UXP-05": {
+    "status": "BLOCKED",
+    "observed": "Automated accessibility checks and Escape behavior pass; a full screen-reader and keyboard-only walkthrough remains unverified.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-UXP-05"
+  },
+  "UXP-06": {
+    "status": "BLOCKED",
+    "observed": "No signed Android native build exists. Responsive mobile web/PWA is the implemented client.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-UXP-06"
+  },
+  "UXP-07": {
+    "status": "BLOCKED",
+    "observed": "No signed Windows native build exists. Desktop web/PWA is the implemented client.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-UXP-07"
+  },
+  "UXP-08": {
+    "status": "BLOCKED",
+    "observed": "Network errors do not report success, but a complete offline draft/sync policy and field-offline journey are missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-UXP-08"
+  },
+  "UXP-09": {
+    "status": "BLOCKED",
+    "observed": "All generated barcode images can be decoded by software; physical-phone camera scanning in HTTPS remains unverified.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-UXP-09"
+  },
+  "SUR-07": {
+    "status": "BLOCKED",
+    "observed": "No-access survey outcome and reason are tested; an automatic reschedule task is not created.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-SUR-07"
+  },
+  "SUR-10": {
+    "status": "BLOCKED",
+    "observed": "Accepted commercial records are protected, but the required approved change-order path is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-SUR-10"
+  },
+  "DSP-04": {
+    "status": "BLOCKED",
+    "observed": "Leave flags and conflict-checked reassignment pass; a separate tracked customer-contact task is missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-DSP-04"
+  },
+  "SCH-09": {
+    "status": "BLOCKED",
+    "observed": "Weekly nonworking days and calendar-day targets are implemented and tested; a dated company-holiday calendar is missing.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-SCH-09"
+  },
+  "WAR-06": {
+    "status": "BLOCKED",
+    "observed": "Authorized exclusion with reason and actor is tested; requiring diagnostic evidence before an exclusion remains unimplemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-WAR-06"
+  },
+  "OPS-10": {
+    "status": "BLOCKED",
+    "observed": "Seed reruns preserve operational data; a user-selectable training-dataset reset/replay command is not implemented.",
+    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "defect": "GAP-OPS-10"
+  },
+  "DIA-07": {
+    "status": "BLOCKED",
+    "observed": "Issued diagnosis and invoice edits are correctly blocked, but the required reviewed correction or credit workflow is not implemented.",
+    "evidence": "Current source review against the complete acceptance requirement; partial passing runtime evidence is retained separately.",
+    "defect": "GAP-DIA-07"
+  },
+  "SCH-02": {
+    "status": "BLOCKED",
+    "observed": "Availability returns explicit next dates and an escalation instruction, but no dedicated persisted escalation task is created when the requested window is full.",
+    "evidence": "Current source review against the complete acceptance requirement; partial passing runtime evidence is retained separately.",
+    "defect": "GAP-SCH-02"
+  }
+}

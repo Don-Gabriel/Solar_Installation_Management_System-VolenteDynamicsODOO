@@ -1,6 +1,6 @@
 # SunPower real world scenarios and acceptance plan
 
-Prepared 31 October 2026 for the user's revised working deadline of **1 November 2026 at 07:00 IST**. There is no confirmed official event deadline. The aim is a working, demonstrable operational system, not a large checklist with invented passes.
+Prepared 31 October 2026 for the user's revised working deadline of **31 October 2026 at 14:45 IST**. There is no confirmed official event deadline. The aim is a working, demonstrable operational system, not a large checklist with invented passes.
 
 ## Purpose and scope
 
@@ -23,15 +23,17 @@ Every execution result must separately be PASS, FAIL, BLOCKED or NOT RUN. Keep o
 
 ## What the current application actually supports
 
-The current build has seven staff roles, 32 seeded staff accounts and 19 installer accounts. Each installation has a single assigned technician. That is different from having only one installer account. There are no crew membership records, shared installation-and-repair visit calendar, leave calendar, skill-based availability search or repair-specific evidence records.
+The implemented build has **eight staff roles and 34 preserved demo accounts**: two administrators, three sales staff, two surveyors, two support staff, two service coordinators, two warehouse staff, two accounts staff and 19 technician identities. Fifteen technicians form the active dispatch roster; four older identities remain for historical work. No customer login is needed for the phone-led service workflow.
 
-Installation assignment rejects overlapping installation jobs. It does not yet solve the user's days 3 to 5 repair availability search. Repair tickets currently require one warranty record before diagnosis, have one covered flag, and can be resolved by administrator/support. Assigned repair technicians cannot currently use a complete repair-work flow. Project access for technicians follows the installation assignment, not a later repair assignment.
+Support can create installation requests and repair complaints before a faulty part is known. Coordinators search dates, skills and crew size, reserve qualified workers atomically, reschedule visits and see leave conflicts. Installation and repair bookings share availability checks. Weekly working days, 09:00 to 17:00 IST hours and a 30-minute buffer are enforced. Geographic route planning and a dated holiday calendar are not implemented.
 
-Covered repairs currently have zero customer charge but no zero-value invoice is created. Chargeable repairs create generic parts and labour lines. Replacement cost is derived from acquisition cost. These facts do not satisfy itemized mixed coverage, approved selling prices, technician diagnosis or after-repair photographs. The existing initial installation invoice must remain separate and immutable when service billing is added.
+Assigned repair technicians can open site and installed-component history, select faulty items, propose replacements and attach completion photos. Approval is tied to diagnosis revision. Completion requires a photo from the current visit and diagnosis, and repeated completion cannot issue stock or bills twice. The original installation invoice remains unchanged. Service invoices show covered and charged lines, warranty credits and original/replacement serials, including a zero-payable document when fully covered. Selling prices and internal costs are separate. Returned components enter quarantine. Support records customer confirmation, disputes or a linked follow-up request.
+
+Installation crews record individual time and cost, and accounts can pay crew members separately without duplicate payment. Administrators can change staff access and qualifications with an audit reason; deactivation revokes sessions. These are implemented capabilities, not a claim that every exception in the catalogue is complete. The execution register contains 137 passed cases and 63 blocked cases at this revision. All six original review failures have passing focused retests.
 
 ## Roles and realistic staffing
 
-Recommended target: **eight permission roles and 27 distinct demo employees**, including exactly **15 field technicians**. These are proposed fixture sizes for a 40-installations-per-month company, not a proven optimal hiring plan. Actual staffing depends on geography, average job duration and repair volume. Do not expand every role to 50 people.
+Standalone acceptance fixture: **eight permission roles and 27 distinct demo employees**, including exactly **15 field technicians**. These are proposed fixture sizes for a 40-installations-per-month company, not a proven optimal hiring plan. Actual staffing depends on geography, average job duration and repair volume. Do not expand every role to 50 people.
 
 | Permission role | People | Why this size | Main powers | Boundary |
 | --- | ---: | --- | --- | --- |
@@ -44,13 +46,13 @@ Recommended target: **eight permission roles and 27 distinct demo employees**, i
 | Field technician | 15 | Matches the problem statement and reviewer example | Assigned visits, diagnosis, component selection, evidence and actual work time | Cannot access unrelated customers or approve their own charge exceptions |
 | Accounts | 1 | Modest initial invoice volume with owner backup | Payment verification, approved service bills, credits and cost reporting | Cannot mark physical work complete or fabricate evidence |
 
-The **new missing permission role is Service coordinator**. Dispatching and service supervision are responsibilities inside this role; they do not need two separate permission roles yet. Lead installer, assistant, driver and purchasing clerk are job responsibilities or qualifications, not automatically separate login roles. Record each person's identity; never share a team password.
+The **newly implemented permission role is Service coordinator**. Dispatching and service supervision are responsibilities inside this role; they do not need two separate permission roles yet. Lead installer, assistant, driver and purchasing clerk are job responsibilities or qualifications, not automatically separate login roles. Record each person's identity; never share a team password.
 
 The target has one owner and one accountant, with explicit backup arrangements rather than duplicate daily roles. Sales, surveys, support, coordination and stock are each two-person teams. Technicians are the large team. A possible skills fixture is four lead-capable technicians, nine qualified general technicians and two supervised assistants. Skills and crew membership must constrain assignments; a free assistant cannot become an independent electrical lead simply because the calendar is empty. Qualifications here are synthetic test attributes, not real-world certifications.
 
 One employee may cover several duties in a small business, but the current database has one role per user. Define the combined capabilities and conflicts before adding multi-role support. A coordinator may also handle calls through explicitly granted intake permission. Financial override, payment approval and technical completion should remain independently attributable. A reporting-only owner delegate may be added later if actually needed; no separate customer, supplier, HR or driver login is required for this demo.
 
-Do not delete the existing 32 demo users to reach 27. Add a separate F15 acceptance fixture, retaining historical references. After implementation, select the coherent 27-person fixture for demonstrations; archiving old accounts requires a reviewed migration and reassignment of future work.
+The live demo preserves its original 32 employees and adds two named coordinators, giving 34 accounts. The standalone F15 planning fixture has 27 people; it does not replace the live staff directory. The demo seeds 15 active dispatch technicians, with 13 occupied in the 13:00 to 15:00 IST interval on days 3 through 5. Working dates and the two free names are recorded in the demo settings. Existing users, payments and historical work are not deleted.
 
 ## Appointment and work model
 
@@ -94,7 +96,7 @@ React Native is a feasible mobile client direction, and React Native Windows is 
 
 Keep Fastify and PostgreSQL as the shared authoritative backend. Build a small native proof first: sign in, assigned visits, installed-component list, photo upload and completion, plus a Windows staff view. Pin a compatible React Native and React Native Windows version pair after checking their current compatibility. Do not upgrade the web app blindly to match a native runtime. Local iOS development requires its Apple toolchain; device testing and distribution are separate release gates. No native binary exists in the reviewed build.
 
-Recommended order under the 07:00 target: implement and test the shared scheduling, repair and billing rules first; prove the native path with a narrow client; then package only platforms whose build and device gates actually pass. Keep the browser client available for rehearsal. Installing a web app is not the same as shipping a React Native app.
+Recommended order under the 14:45 target: implement and test the shared scheduling, repair and billing rules first; prove the native path with a narrow client; then package only platforms whose build and device gates actually pass. Keep the browser client available for rehearsal. Installing a web app is not the same as shipping a React Native app.
 
 ## Test data and evidence
 
@@ -118,7 +120,7 @@ Run each automated case in a resettable isolated database schema with synthetic 
 5. Add realistic fixture people and competing workloads; then the narrow native client proof, only after shared API behavior is stable.
 6. Execute the entire catalogue, resolve defects, rerun failures and affected regressions, then rehearse the review examples with actual saved data.
 
-Aim to freeze new scope by 05:00 IST and reserve 05:00 to 07:00 for regression, artifact generation and rehearsal. This is a planning target, not a promise that 200 scenarios or every native platform can be completed in that time. If the deadline becomes incompatible with required work, report the exact unfinished cases rather than hiding them or marking them passed.
+Use the remaining time before 14:45 IST for regression, artifact generation and rehearsal of scheduling and warranty billing. This is a planning target, not a promise that 200 scenarios or every native platform can be completed in that time. If the deadline becomes incompatible with required work, report the exact unfinished cases rather than hiding them or marking them passed.
 
 A release may be called verified for this catalogue only when every required case has a recorded executed result, no unresolved required failures, and no required blocked cases. Any deferred P1/P2 scenario must be listed and accepted as a limitation; it must not be relabelled PASS. Security, monetary and stock integrity failures prevent a clean-release claim. Physical-device and restore gates cannot be replaced by source inspection. An explicit owner-approved scope change is required to remove a requirement.
 
@@ -126,7 +128,7 @@ A release may be called verified for this catalogue only when every required cas
 
 The original user-supplied Solar Installation Management System PDF was read on 31 October 2026. It is kept outside Git. The user's review messages and staffing clarification are primary requirements; the calendar window and target staffing numbers are labelled proposals.
 
-Repository evidence: `apps/api/src/routes.ts` for role boundaries; `modules/field.ts` for single-worker scheduling and installation checks; `modules/service.ts` for one-warranty repair and billing; `modules/queries.ts` for technician project access and financial views; `plugins/files.ts` for installation evidence; `packages/contracts/src/index.ts` for accepted payloads; `db/migrations/001_core.sql` for current entities; `tests/integration/lifecycle.test.ts` and `tests/e2e` for existing checks.
+Repository evidence: `apps/api/src/routes.ts` for role boundaries; `modules/scheduling.ts` for shared worker availability; `modules/field.ts` for installation crews and individual payouts; `modules/service-operations.ts` for diagnosis, coverage and billing; `modules/staff.ts` for access changes; `modules/queries.ts` for restricted views; `plugins/files.ts` for private installation and repair evidence; migrations 003 through 009 for service operations; `tests/integration/lifecycle.test.ts` and `tests/e2e` for executed checks. The original catalogue source classifications remain historical baseline assessments; current execution status is authoritative for test results.
 
 - React Native platform-specific code: https://reactnative.dev/docs/platform-specific-code
 - React Native environment setup: https://reactnative.dev/docs/set-up-your-environment

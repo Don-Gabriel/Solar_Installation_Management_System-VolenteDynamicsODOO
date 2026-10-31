@@ -2,7 +2,7 @@
 
 A working responsive operations application for a rooftop solar company. Enquiries, approved surveys, itemized quotations, payments, serialized inventory, delivery-based warranties, installation evidence, repairs and financial reporting share one PostgreSQL database.
 
-Built for a solo hackathon entry due **1 November 2026, 09:00 IST**. All seeded customers and records are synthetic.
+Built for a solo hackathon entry. The latest working target is **31 October 2026, 14:45 IST**. All seeded customers and records are synthetic.
 
 ## Start locally
 
@@ -30,8 +30,10 @@ For development, run `npm run dev` and open http://127.0.0.1:5173. The frontend 
 - Sales pipeline, survey qualification and approval, 15 package recipes across 1–5 kW, immutable accepted quotation snapshots and itemized invoices.
 - Payment recording, advance gate, stock receipts and costs, atomic reservations, mandatory device serial scans and delivery confirmation.
 - Asset passports, warranties beginning at delivery, replacement serial traceability and inherited warranty dates.
-- Technician assignment with overlap checks, installation checklist, commissioning values, private photos, drawn/uploaded signature and handover.
-- Covered and expired repairs, separate internal repair cost and customer charge, customer confirmation and service invoices.
+- Eight staff roles, audited account controls, shared installation/repair availability, skills, leave, crews, conflict-safe booking and rescheduling.
+- Installation checklist, commissioning values, individual crew time and payouts, private photos, drawn/uploaded signature and handover.
+- Component diagnosis, independent parts/labour cover, approved itemized callout charges, required repair photos, zero-payable service statements, returns quarantine and linked follow-ups.
+- Separate company cost and customer selling price, with the original installation invoice preserved.
 - Cash, outstanding invoices, completed-job contribution, loss-making projects, technician payable records, subsidy checklist, CSV export and printing.
 - Server-side roles, session cookies, CSRF protection, request validation, retry-safe commands, audit events and private image access.
 - Responsive desktop/phone layouts and a lightweight PWA shell. Private API responses are not cached for offline use.
@@ -84,12 +86,13 @@ The app uses port 3001 on loopback; stop a local server using that port first. D
 
 This release uses a 30% advance gate, 8 m²/kW roof requirement, 24-month serialized-device warranty and 240-month panel warranty. Replacements inherit original coverage. These are documented demo policies, not asserted manufacturer terms. Tax is unconfigured and subsidies are tracking only.
 
-One lead technician is assigned per installation. Full payroll, tax filing, payment gateways, credit notes/cancellations, multi-company support, catalogue/account administration screens and offline transaction synchronization are outside this release. Contribution subtracts recorded materials, installation labour and service costs; it is not company net profit. See [ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Installations and repair visits can have multiple named workers with one qualified lead. Full payroll, tax filing, payment gateways, credit notes/order cancellations, supplier claims, multi-company support, catalogue administration and offline transaction synchronization remain incomplete. Account access editing is implemented. Contribution subtracts recorded materials, installation labour and service costs; it is not company net profit. See [ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 Actual phone camera scanning requires reachable trusted HTTPS; laptop localhost does not secure a plain HTTP LAN URL. Manual serial entry and file upload are available. Physical phone hardware has not been verified.
 
 ## Project documentation
 
+- [Scheduling and warranty review walkthrough](docs/OPERATIONS_DEMO.md)
 - [Real-world scenarios, staffing and acceptance register](docs/SCENARIO_CATALOG.md)
 - [Screen guide, barcode pack and test helpers](docs/USER_GUIDE.md)
 - [UI/UX research and implemented improvements](docs/UX_REVIEW.md)

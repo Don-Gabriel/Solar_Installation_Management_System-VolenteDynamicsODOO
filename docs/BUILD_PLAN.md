@@ -1,18 +1,18 @@
 # Build plan
 
-Revision 5 · 31 October 2026 · Solo developer · User's working deadline 1 November 2026, 07:00 IST; official event deadline unconfirmed.
+Revision 6 · 31 October 2026 · Solo developer · Latest user deadline: **today at 14:45 IST**.
 
 ## Current implementation status
 
-The initial review introduced a larger operational scope: support-led phone intake, shared survey/installation/repair scheduling, crews, skill and leave constraints, technician-led repair diagnosis, repair evidence and itemized mixed-warranty billing. The new [200-case acceptance catalogue](SCENARIO_CATALOG.md) records current support and gaps. Its target staffing fixture has eight roles and 27 employees including 15 field technicians; the coordinator role and fixture are specifications, not yet integrated application features. A React Native mobile/Windows client is a proposed separate delivery track sharing the existing backend. It has not replaced the implemented React web client.
+The operational revision adds the service coordinator role, 15-person dispatch roster, installation and visit crews, working-day/skill/leave checks, a shared calendar, conflict-safe booking and rescheduling, component diagnosis, separate parts/labour coverage, approval, repair photos, returns quarantine and itemized service documents. Staff access can be edited with audit history; individual installation crew time and payouts are recorded separately. Follow-up faults link back to the original request.
 
-Prioritize shared business rules before native packaging. Target 05:00 IST scope freeze and 05:00 to 07:00 regression and rehearsal. The older milestone times below are historical planning, superseded by this working deadline. Do not claim all 200 cases pass based on the earlier regression suite.
+The existing responsive React/TypeScript/Vite, Fastify and local PostgreSQL stack remains in use. There is no customer login. Support can record calls and new installation enquiries. The optional anonymous enquiry form remains. React Native Android and Windows builds are still a separate, unimplemented delivery track.
 
-The first working build implements the enquiry-to-installation lifecycle, serialized inventory, warranty service, role-based access, evidence storage and financial reports. The native local PostgreSQL setup is running. See [VERIFICATION.md](VERIFICATION.md) for passed checks and gaps, and [DEMO.md](DEMO.md) for rehearsal.
+Preserved demo data contains 40 customer projects, 34 staff accounts across eight roles and 198 serialized devices. Fifteen technicians are eligible for new dispatch; four historical technician identities retain their existing work. This is distinct from the standalone 27-person F15 planning fixture.
 
-The usability revision adds project next-step guidance, return links that preserve list context, accessible mobile navigation, categorized fields and opt-in synthetic presets. New barcode, staff-directory and screen-guide screens support demonstration. The additive demo seed now contains 40 customer projects, 32 staff and 198 serialized devices. Illustrated PDFs and the barcode test kit are generated locally; see [USER_GUIDE.md](USER_GUIDE.md). Staff account editing remains outside scope.
+Release gates: focused retest of all six initial failures; backend and browser regressions; scenario-specific execution register for all 200 entries; backup/restore and measured load checks; usable local app and updated instructions. PASS, FAIL and BLOCKED remain distinct. A blocked scenario is not a pass or a completed feature. See [scenarios/EXECUTION.md](scenarios/EXECUTION.md) for the current exact result.
 
-The schedule below remains the original planning baseline. Remaining release work is physical-phone/HTTPS verification, Docker execution, demo rehearsal and the organizer's actual submission. Chromium, Firefox and WebKit journeys passed in Linux CI; the local Windows Firefox runtime cannot launch. Catalogue and user administration screens, full payroll, cancellation/refund flows and offline synchronization are outside this first build.
+The original milestone schedule below is historical. The latest 14:45 deadline supersedes it. Refunds/credit notes, change orders, supplier claims, physical-device checks and native installers must not be claimed from a web/API test pass.
 
 Canonical repository: [Solar_Installation_Management_System-VolenteDynamicsODOO](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO).
 

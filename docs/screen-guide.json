@@ -29,9 +29,7 @@
     "id": "public",
     "title": "Customer enquiry",
     "path": "/enquire",
-    "roles": [
-      "public"
-    ],
+    "roles": ["public"],
     "purpose": "Let a customer request a solar installation without a staff account.",
     "options": [
       "Send enquiry",
@@ -67,9 +65,7 @@
       "Recent projects and installer schedule",
       "Money totals only for permitted roles"
     ],
-    "fields": [
-      "No typing is required."
-    ],
+    "fields": ["No typing is required."],
     "next": "Choose a work shortcut or project. Installers see their assigned projects only."
   },
   {
@@ -104,12 +100,7 @@
     "id": "new",
     "title": "New staff enquiry",
     "path": "/projects/new",
-    "roles": [
-      "admin",
-      "sales",
-      "support",
-      "coordinator"
-    ],
+    "roles": ["admin", "sales", "support", "coordinator"],
     "purpose": "Create a customer request received by the staff team.",
     "options": [
       "Create project",
@@ -145,20 +136,14 @@
       "Project sections: survey, quote/payment, packing/delivery, installation, device history, subsidy, activity",
       "Customer address and phone link"
     ],
-    "fields": [
-      "The summary itself has no form."
-    ],
+    "fields": ["The summary itself has no form."],
     "next": "The recommended section depends on the saved state and your role. A handoff message explains which team owns a step you cannot perform."
   },
   {
     "id": "survey",
     "title": "Site survey",
     "path": "Project > Site survey",
-    "roles": [
-      "admin",
-      "sales",
-      "surveyor"
-    ],
+    "roles": ["admin", "sales", "surveyor"],
     "purpose": "Check that the roof and power supply are suitable before quoting.",
     "options": [
       "Record site survey / Record new survey",
@@ -177,11 +162,7 @@
     "id": "quote",
     "title": "Quotation & payment",
     "path": "Project > Quotation & payment",
-    "roles": [
-      "admin",
-      "sales",
-      "accounts"
-    ],
+    "roles": ["admin", "sales", "accounts"],
     "purpose": "Prepare a price list, record acceptance and track customer payments.",
     "options": [
       "Generate quotation or Issue new version: administrator/sales after survey approval",
@@ -201,11 +182,7 @@
     "id": "packing",
     "title": "Packing & delivery",
     "path": "Project > Packing & delivery",
-    "roles": [
-      "admin",
-      "warehouse",
-      "sales"
-    ],
+    "roles": ["admin", "warehouse", "sales"],
     "purpose": "Set aside the right equipment, check its serials and record delivery.",
     "options": [
       "Reserve stock: administrator/stock team",
@@ -272,20 +249,14 @@
       "Review old and replacement devices",
       "Open related service work where allowed"
     ],
-    "fields": [
-      "No manual data entry on this section."
-    ],
+    "fields": ["No manual data entry on this section."],
     "next": "Use the serial or customer search in Repairs & warranty when a fault is reported. Printing or scanning a barcode never resets coverage."
   },
   {
     "id": "subsidy",
     "title": "Subsidy records",
     "path": "Project > Subsidy",
-    "roles": [
-      "admin",
-      "sales",
-      "accounts"
-    ],
+    "roles": ["admin", "sales", "accounts"],
     "purpose": "Track the paperwork for a subsidy application.",
     "options": [
       "Choose application status",
@@ -327,11 +298,7 @@
     "id": "stock",
     "title": "Stock & deliveries",
     "path": "/inventory",
-    "roles": [
-      "admin",
-      "warehouse",
-      "accounts"
-    ],
+    "roles": ["admin", "warehouse", "accounts"],
     "purpose": "Check equipment quantities, device serials and purchases.",
     "options": [
       "Packing queue links to a project",
@@ -351,13 +318,7 @@
     "id": "jobs",
     "title": "Installation jobs",
     "path": "/jobs",
-    "roles": [
-      "admin",
-      "technician",
-      "surveyor",
-      "sales",
-      "coordinator"
-    ],
+    "roles": ["admin", "technician", "surveyor", "sales", "coordinator"],
     "purpose": "Review upcoming, in-progress and completed installation work.",
     "options": [
       "Open a job directly on its Installation section",
@@ -404,16 +365,67 @@
     "next": "Physical completion creates a separate service document, including zero-payable covered lines. Support closes the request only after customer confirmation."
   },
   {
-    "id": "schedule",
-    "title": "Visits & scheduling",
-    "path": "/schedule",
+    "id": "repair-detail",
+    "title": "Repair visit and diagnosis",
+    "path": "/service?ticket=...",
     "roles": [
       "admin",
       "coordinator",
-      "technician",
       "support",
-      "surveyor"
+      "technician",
+      "warehouse",
+      "accounts"
     ],
+    "purpose": "Follow one reported problem from a phone call to a completed visit and customer confirmation. Technicians can open only assigned work.",
+    "options": [
+      "Read the installed equipment, current serials, warranty dates and previous repair history",
+      "Open the visit, start work or record no access",
+      "Select each faulty component and a compatible replacement from saved stock",
+      "Save findings, quantities and work time; the coordinator reviews coverage and selling prices",
+      "Record customer approval, upload a fresh completion photo and complete the repair",
+      "Record a phone confirmation, dispute, contact note or linked follow-up"
+    ],
+    "fields": [
+      "The version check prevents a later save from silently overwriting another employee's changes.",
+      "Changing diagnosis removes approval and makes earlier photos/signatures historical evidence.",
+      "Callout charge starts at zero and uses the saved labour coverage decision. Agree any charge before completion.",
+      "Synthetic rehearsal evidence is clearly labelled and is not proof of actual site work."
+    ],
+    "next": "Completion creates one service document and a pending return for replaced equipment. Support closes the request only after customer confirmation."
+  },
+  {
+    "id": "service-invoice",
+    "title": "Service invoice or zero-payable statement",
+    "path": "Repair request > service document",
+    "roles": [
+      "admin",
+      "coordinator",
+      "support",
+      "technician",
+      "accounts",
+      "warehouse"
+    ],
+    "purpose": "Explain what was replaced and what the customer owes without changing the original installation invoice.",
+    "options": [
+      "See replacement names, quantities and old/new serials",
+      "Compare selling value, warranty credit and payable amount",
+      "See labour and callout as separate lines",
+      "Print the saved service document",
+      "Accounts records payment against this service invoice using its payment form"
+    ],
+    "fields": [
+      "A covered replacement stays visible with zero payable.",
+      "Parts, labour and callout use saved coverage decisions and reviewed prices.",
+      "Company acquisition and labour costs stay separate from customer selling prices.",
+      "The document is labelled as a demo because tax configuration has not been verified."
+    ],
+    "next": "The issued document is frozen. Refunds and credit-note corrections are not implemented and remain blocked acceptance cases."
+  },
+  {
+    "id": "schedule",
+    "title": "Visits & scheduling",
+    "path": "/schedule",
+    "roles": ["admin", "coordinator", "technician", "support", "surveyor"],
     "purpose": "Plan field visits against real availability, with installation bookings, repair visits, travel and leave checked together.",
     "options": [
       "Choose a repair request or survey site",
@@ -435,10 +447,7 @@
     "id": "reports",
     "title": "Money & reports",
     "path": "/reports",
-    "roles": [
-      "admin",
-      "accounts"
-    ],
+    "roles": ["admin", "accounts"],
     "purpose": "Separate money received, unpaid invoices and installation costs.",
     "options": [
       "Choose Today, This week, This month or All time",
@@ -459,11 +468,7 @@
     "id": "barcodes",
     "title": "Barcode labels",
     "path": "/barcodes",
-    "roles": [
-      "admin",
-      "warehouse",
-      "accounts"
-    ],
+    "roles": ["admin", "warehouse", "accounts"],
     "purpose": "Use ready-made Code 128 barcodes for all saved serialized devices.",
     "options": [
       "Filter product and stock status",
@@ -472,18 +477,14 @@
       "Print these labels",
       "Back to stock"
     ],
-    "fields": [
-      "Filters: select product/status; optional serial search."
-    ],
+    "fields": ["Filters: select product/status; optional serial search."],
     "next": "Use Available devices of the required product for successful packing. Used-device labels can test rejection. Printing does not make an allocated serial reusable. Regenerate the PDF after adding new devices."
   },
   {
     "id": "team",
     "title": "Team & access",
     "path": "/team",
-    "roles": [
-      "admin"
-    ],
+    "roles": ["admin"],
     "purpose": "Administrators manage each named employee without sharing accounts.",
     "options": [
       "Filter by role or search by name",
@@ -518,9 +519,7 @@
       "Open screens that your role can access",
       "Read form categories and test steps"
     ],
-    "fields": [
-      "Optional screen search."
-    ],
+    "fields": ["Optional screen search."],
     "next": "Keep the PDF guide alongside the app during testing and presentation."
   }
 ]
