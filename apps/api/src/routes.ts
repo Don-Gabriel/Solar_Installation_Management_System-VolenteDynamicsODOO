@@ -266,7 +266,7 @@ export async function routes(app: FastifyInstance) {
     return {
       items: (
         await pool.query(
-          "SELECT u.id,u.name,u.email,u.role,u.active,u.dispatch_enabled,u.skills,u.working_days,(SELECT count(*)::integer FROM jobs j WHERE j.technician_id=u.id AND j.status NOT IN ('completed','cancelled')) AS open_jobs FROM users u ORDER BY u.role,u.name",
+          "SELECT u.id,u.name,u.email,u.role,u.active,u.dispatch_enabled,u.skills,u.working_days,(SELECT count(*)::integer FROM jobs j WHERE j.technician_id=u.id AND j.status NOT IN ('completed','cancelled')) AS open_jobs FROM users u WHERE u.role<>'customer' ORDER BY u.role,u.name",
         )
       ).rows,
     };
@@ -310,7 +310,7 @@ export async function routes(app: FastifyInstance) {
   app.get("/api/users", async () => ({
     items: (
       await pool.query(
-        "SELECT id,name,email,role,hourly_rate_minor FROM users WHERE active ORDER BY name",
+        "SELECT id,name,email,role,hourly_rate_minor FROM users WHERE active AND role<>'customer' ORDER BY name",
       )
     ).rows.map(({ hourly_rate_minor, ...u }) => u),
   }));
@@ -565,7 +565,7 @@ export async function routes(app: FastifyInstance) {
       return {
         items: (
           await pool.query(
-            "SELECT h.*,u.name AS actor_name FROM customer_history h JOIN users u ON u.id=h.actor_id WHERE customer_id=$1 ORDER BY created_at DESC",
+            "SELECT h.*,u.name AS actor_name FROM customer_history h JOIN users u ON u.id=h.actor_id WHERE h.customer_id=$1 ORDER BY h.created_at DESC",
             [(req.params as any).id],
           )
         ).rows,

@@ -65,6 +65,19 @@ export async function auth(app: FastifyInstance) {
       role: session.role,
     };
     req.csrfToken = session.csrf_token;
+    if (session.role === "customer") {
+      const route = req.routeOptions.url;
+      ensure(
+        [
+          "/api/me",
+          "/api/logout",
+          "/api/customer/home",
+          "/api/customer/notifications/:id/read",
+        ].includes(route || ""),
+        "Customer accounts can only open their own solar service portal.",
+        403,
+      );
+    }
     if (!["GET", "HEAD", "OPTIONS"].includes(req.method))
       ensure(
         req.headers["x-csrf-token"] === session.csrf_token,

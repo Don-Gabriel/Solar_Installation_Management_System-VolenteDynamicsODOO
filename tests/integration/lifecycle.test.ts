@@ -12,6 +12,75 @@ let app: FastifyInstance,
   db: any,
   accounts: Record<string, { cookie: string; csrf: string; id: string }> = {};
 const id = () => randomUUID();
+it("customer accounts see only their own systems, appointments, invoices and notifications", async () => {
+  await login("customerA", "lakshmi.customer@sunpower.local");
+  await login("customerB", "sneha.customer@sunpower.local");
+  const a = await get("/customer/home", "customerA");
+  const b = await get("/customer/home", "customerB");
+  expect(a.customer.name).toBe("Lakshmi Iyer");
+  expect(b.customer.name).toBe("Sneha & Arun");
+  expect(a.projects.length).toBeGreaterThan(0);
+  expect(a.invoices.length).toBeGreaterThan(0);
+  const ids = a.projects.map((p: any) => p.id);
+  expect(b.projects.some((p: any) => ids.includes(p.id))).toBe(false);
+  for (const kind of ["invoices", "visits", "tickets", "notifications"])
+    expect(a[kind].every((item: any) => ids.includes(item.project_id))).toBe(
+      true,
+    );
+  expect(JSON.stringify(a)).not.toMatch(
+    /password_hash|hourly_rate_minor|cost_minor|csrf_token/,
+  );
+  const notice = a.notifications[0];
+  expect(
+    (
+      await req(
+        "POST",
+        `/customer/notifications/${notice.id}/read`,
+        {},
+        "customerB",
+      )
+    ).statusCode,
+  ).toBe(404);
+  await post(`/customer/notifications/${notice.id}/read`, {}, "customerA");
+  const once = await get("/customer/home", "customerA");
+  await post(`/customer/notifications/${notice.id}/read`, {}, "customerA");
+  const twice = await get("/customer/home", "customerA");
+  expect(twice.notifications.find((n: any) => n.id === notice.id).read_at).toBe(
+    once.notifications.find((n: any) => n.id === notice.id).read_at,
+  );
+});
+it("customer role cannot open staff APIs, other customer projects or private files", async () => {
+  await login("portal", "lakshmi.customer@sunpower.local");
+  for (const path of [
+    "/projects",
+    "/users",
+    "/team",
+    "/inventory",
+    "/schedule",
+    "/reports",
+    "/demo-tools",
+    "/docs",
+    `/projects/${id()}`,
+    `/files/${id()}`,
+  ])
+    expect((await req("GET", path, undefined, "portal")).statusCode, path).toBe(
+      403,
+    );
+  expect((await req("POST", "/projects", {}, "portal")).statusCode).toBe(403);
+  expect(
+    (await req("GET", "/customer/home", undefined, "support")).statusCode,
+  ).toBe(403);
+  const staff = await get("/users");
+  expect(JSON.stringify(staff)).not.toContain("lakshmi.customer");
+  const notice = (await get("/customer/home", "portal")).notifications[0];
+  const noCsrf = await app.inject({
+    method: "POST",
+    url: `/api/customer/notifications/${notice.id}/read`,
+    headers: { cookie: accounts.portal.cookie },
+    payload: {},
+  });
+  expect(noCsrf.statusCode).toBe(403);
+});
 async function login(role: string, email = `${role}@sunpower.local`) {
   const r = await app.inject({
     method: "POST",
@@ -4912,4 +4981,64 @@ it("[DSP-03] urgent fault creates human hazard escalation and displaced customer
     ),
   ).toBe(true);
   repairDay += 14;
+});
+
+it("business events notify the linked customer once and roll back with failed changes", async () => {
+  await login("coordinator");
+  const f = await operationFixture();
+  const customer = (
+    await db.query(
+      "SELECT s.customer_id FROM projects p JOIN sites s ON s.id=p.site_id WHERE p.id=$1",
+      [f.project.project.id],
+    )
+  ).rows[0].customer_id;
+  const notices = (
+    await db.query("SELECT * FROM customer_notifications WHERE project_id=$1", [
+      f.project.project.id,
+    ])
+  ).rows;
+  expect(notices.every((n: any) => n.customer_id === customer)).toBe(true);
+  for (const title of [
+    "New invoice",
+    "Repair request received",
+    "Visit updated",
+    "Order updated",
+  ])
+    expect(
+      notices.some((n: any) => n.title === title),
+      title,
+    ).toBe(true);
+  const key = id();
+  const body = {
+    project_id: f.project.project.id,
+    complaint: "Separate customer notification check",
+    fault_code: "Monitoring app",
+    priority: "routine",
+  };
+  const first = await post("/tickets", body, "support", key);
+  expect((await post("/tickets", body, "support", key)).id).toBe(first.id);
+  const after = (
+    await db.query("SELECT * FROM customer_notifications WHERE project_id=$1", [
+      f.project.project.id,
+    ])
+  ).rows;
+  expect(after.length).toBe(notices.length + 1);
+  const client = await db.connect();
+  try {
+    await client.query("BEGIN");
+    await client.query("UPDATE tickets SET status='cancelled' WHERE id=$1", [
+      first.id,
+    ]);
+    await client.query("ROLLBACK");
+  } finally {
+    client.release();
+  }
+  expect(
+    (
+      await db.query(
+        "SELECT count(*)::int n FROM customer_notifications WHERE project_id=$1",
+        [f.project.project.id],
+      )
+    ).rows[0].n,
+  ).toBe(after.length);
 });

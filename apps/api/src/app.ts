@@ -9,6 +9,7 @@ import swaggerUi from "@fastify/swagger-ui";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { auth } from "./plugins/auth.js";
+import { customerPortalRoutes } from "./modules/customer-portal.js";
 import { fileRoutes } from "./plugins/files.js";
 import { routes } from "./routes.js";
 import { pool, AppError } from "./db.js";
@@ -60,6 +61,7 @@ export async function buildApp(
     return { status: "ok", database: "connected" };
   });
   await routes(app);
+  await customerPortalRoutes(app);
   await fileRoutes(app);
   app.setErrorHandler((error, req, reply) => {
     const e = error as any;

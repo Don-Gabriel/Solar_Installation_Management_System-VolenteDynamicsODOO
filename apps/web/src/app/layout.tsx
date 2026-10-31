@@ -119,8 +119,11 @@ export function Layout() {
       await api("/logout", { method: "POST" });
       clearDrafts();
       setCsrf("");
-      queryClient.clear();
+      await queryClient.cancelQueries();
       queryClient.setQueryData(["session"], null);
+      queryClient.removeQueries({
+        predicate: (q) => q.queryKey[0] !== "session",
+      });
     } catch {
       setLogoutError("Could not sign out. Check your connection and retry.");
     }

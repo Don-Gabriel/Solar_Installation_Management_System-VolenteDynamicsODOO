@@ -377,7 +377,8 @@ export type Role =
   | "technician"
   | "support"
   | "accounts"
-  | "coordinator";
+  | "coordinator"
+  | "customer";
 // Coordinators schedule and review service work; they do not gain financial administration.
 export type User = { id: string; name: string; email: string; role: Role };
 

@@ -4,7 +4,7 @@ export async function updateStaff(db: Db, actor: User, id: string, b: any) {
   await db.query("SELECT pg_advisory_xact_lock(991203)");
   const old = await one(
     db,
-    "SELECT id,role,active,dispatch_enabled,skills,working_days FROM users WHERE id=$1 FOR UPDATE",
+    "SELECT id,role,active,dispatch_enabled,skills,working_days FROM users WHERE id=$1 AND role<>'customer' FOR UPDATE",
     [id],
   );
   ensure(old, "Staff member not found", 404);

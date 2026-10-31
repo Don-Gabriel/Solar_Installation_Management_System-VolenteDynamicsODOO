@@ -19,6 +19,11 @@ import "./styles.css";
 const Barcodes = lazy(() =>
   import("@/features/barcodes").then((m) => ({ default: m.Barcodes })),
 );
+const CustomerPortal = lazy(() =>
+  import("@/features/customer-portal").then((m) => ({
+    default: m.CustomerPortal,
+  })),
+);
 const Team = lazy(() =>
   import("@/features/team").then((m) => ({ default: m.Team })),
 );
@@ -97,6 +102,14 @@ function Workspace() {
       </div>
     );
   if (!session.data) return <Login />;
+  if (session.data.user.role === "customer")
+    return (
+      <SessionContext value={{ user: session.data.user }}>
+        <Suspense fallback={<Loading />}>
+          <CustomerPortal />
+        </Suspense>
+      </SessionContext>
+    );
   return (
     <SessionContext value={{ user: session.data.user }}>
       <Routes>

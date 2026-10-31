@@ -1,6 +1,7 @@
 import argon2 from "argon2";
 import { seedExpanded } from "./expanded.js";
 import { seedOperations } from "./operations.js";
+import { seedCustomerPortal } from "./customer-portal.js";
 import { pool, transaction, one } from "../../apps/api/src/db.js";
 import * as sales from "../../apps/api/src/modules/sales.js";
 import * as stock from "../../apps/api/src/modules/inventory.js";
@@ -302,6 +303,7 @@ try {
     "UPDATE job_crew c SET labour_minutes=j.labour_minutes,hourly_rate_minor=j.hourly_rate_minor,labour_cost_minor=j.labour_cost_minor FROM jobs j WHERE c.job_id=j.id AND j.status='completed' AND c.labour_cost_minor IS NULL",
   );
   await seedOperations(hash);
+  await seedCustomerPortal(hash);
 } finally {
   await pool.end();
 }

@@ -72,7 +72,7 @@ export function Login() {
             <Sun /> sunpower
           </span>
           <h2>Welcome back</h2>
-          <p>Sign in to your operations workspace.</p>
+          <p>Sign in to your staff workspace or customer account.</p>
           <SmartForm
             fields={[
               { name: "email", label: "Email address", type: "email" },
