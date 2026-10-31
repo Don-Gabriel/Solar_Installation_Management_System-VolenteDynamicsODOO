@@ -159,6 +159,69 @@ afterAll(async () => {
   await adminDb.end();
 });
 describe("Session and authorization", () => {
+  it("protects the staff directory and complete barcode library by role", async () => {
+    const staff = (await get("/team")).items;
+    expect(staff).toHaveLength(32);
+    expect(staff.every((u: any) => !("password_hash" in u))).toBe(true);
+    for (const role of [
+      "warehouse",
+      "sales",
+      "surveyor",
+      "support",
+      "accounts",
+      "technician",
+    ])
+      expect((await req("GET", "/team", undefined, role)).statusCode).toBe(403);
+    const devices = (await get("/barcodes", "warehouse")).items;
+    expect(devices).toHaveLength(198);
+    expect(new Set(devices.map((a: any) => a.serial)).size).toBe(198);
+    expect((await get("/barcodes", "accounts")).items).toHaveLength(198);
+    for (const role of ["sales", "surveyor", "support", "technician"])
+      expect((await req("GET", "/barcodes", undefined, role)).statusCode).toBe(
+        403,
+      );
+  });
+  it("keeps the optional serial picker read-only, role-limited and switchable", async () => {
+    const previous = process.env.DEMO_TOOLS;
+    const order = (
+      await db.query(
+        "SELECT id FROM orders WHERE status='packing' AND EXISTS (SELECT 1 FROM order_lines l WHERE l.order_id=orders.id AND l.reserved) LIMIT 1",
+      )
+    ).rows[0];
+    const url = `/orders/${order.id}/available-serials`;
+    try {
+      process.env.DEMO_TOOLS = "false";
+      expect((await req("GET", url, undefined, "warehouse")).statusCode).toBe(
+        404,
+      );
+      process.env.DEMO_TOOLS = "true";
+      expect((await req("GET", url, undefined, "sales")).statusCode).toBe(403);
+      const before = (
+        await db.query(
+          "SELECT id,serial,status,order_line_id FROM assets ORDER BY id",
+        )
+      ).rows;
+      const choices = (await get(url, "warehouse")).items;
+      expect(choices.length).toBeGreaterThan(0);
+      expect(
+        choices.every((a: any) =>
+          before.some(
+            (b: any) => b.serial === a.serial && b.status === "available",
+          ),
+        ),
+      ).toBe(true);
+      expect(
+        (
+          await db.query(
+            "SELECT id,serial,status,order_line_id FROM assets ORDER BY id",
+          )
+        ).rows,
+      ).toEqual(before);
+    } finally {
+      if (previous === undefined) delete process.env.DEMO_TOOLS;
+      else process.env.DEMO_TOOLS = previous;
+    }
+  });
   it("uses HttpOnly, strict same-site cookies and rejects anonymous requests", async () => {
     const r = await app.inject({ url: "/api/projects" });
     expect(r.statusCode).toBe(401);

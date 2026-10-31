@@ -59,7 +59,7 @@ export async function projectDetail(user: User, id: string) {
       [id],
     ),
     pool.query(
-      "SELECT o.*,coalesce((SELECT json_agg(l ORDER BY l.description) FROM order_lines l WHERE l.order_id=o.id),'[]') AS lines FROM orders o WHERE project_id=$1",
+      "SELECT o.*,(coalesce((SELECT sum(pay.amount_minor) FROM payments pay JOIN invoices i ON i.id=pay.invoice_id WHERE i.order_id=o.id AND i.kind='installation'),0)>=o.minimum_advance_minor) AS advance_received,coalesce((SELECT json_agg(l ORDER BY l.description) FROM order_lines l WHERE l.order_id=o.id),'[]') AS lines FROM orders o WHERE project_id=$1",
       [id],
     ),
     pool.query(

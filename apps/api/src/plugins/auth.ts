@@ -77,7 +77,12 @@ export async function auth(app: FastifyInstance) {
     "/api/login",
     {
       schema: { body: Login, tags: ["Access"] },
-      config: { rateLimit: { max: 10, timeWindow: "1 minute" } },
+      config: {
+        rateLimit: {
+          max: process.env.NODE_ENV === "test" ? 100 : 10,
+          timeWindow: "1 minute",
+        },
+      },
     },
     async (req, reply) => {
       const body = req.body as { email: string; password: string };

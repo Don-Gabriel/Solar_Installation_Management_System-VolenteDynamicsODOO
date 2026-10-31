@@ -1,4 +1,5 @@
 import argon2 from "argon2";
+import { seedExpanded } from "./expanded.js";
 import { pool, transaction, one } from "../../apps/api/src/db.js";
 import * as sales from "../../apps/api/src/modules/sales.js";
 import * as stock from "../../apps/api/src/modules/inventory.js";
@@ -292,6 +293,7 @@ try {
       "Seeded synthetic customer journeys, 15 technicians, 15 packages, stock and warranty scenarios.",
     );
   });
+  await seedExpanded(hash);
 } finally {
   await pool.end();
 }

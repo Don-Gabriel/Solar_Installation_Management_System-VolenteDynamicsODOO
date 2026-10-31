@@ -73,6 +73,46 @@ export async function routes(app: FastifyInstance) {
     );
   }
   app.get("/api/dashboard", (req) => read.dashboard(req.user));
+  app.get("/api/demo-tools", async () => ({
+    enabled: process.env.DEMO_TOOLS === "true",
+  }));
+  app.get("/api/team", async (req) => {
+    allow(req, ["admin"]);
+    return {
+      items: (
+        await pool.query(
+          "SELECT u.id,u.name,u.email,u.role,u.active,(SELECT count(*)::integer FROM jobs j WHERE j.technician_id=u.id AND j.status<>'completed') AS open_jobs FROM users u ORDER BY u.role,u.name",
+        )
+      ).rows,
+    };
+  });
+  app.get("/api/barcodes", async (req) => {
+    allow(req, ["admin", "warehouse", "accounts"]);
+    return {
+      items: (
+        await pool.query(
+          "SELECT a.id,a.serial,a.status,p.id AS product_id,p.name AS product_name,p.sku FROM assets a JOIN products p ON p.id=a.product_id ORDER BY p.sku,a.serial",
+        )
+      ).rows,
+    };
+  });
+  app.get(
+    "/api/orders/:id/available-serials",
+    { schema: { params: C.Params } },
+    async (req) => {
+      allow(req, ["admin", "warehouse"]);
+      ensure(
+        process.env.DEMO_TOOLS === "true",
+        "Test helpers are disabled.",
+        404,
+      );
+      const rows = await pool.query(
+        "SELECT a.serial,p.name AS product_name,p.sku FROM assets a JOIN products p ON p.id=a.product_id JOIN order_lines l ON l.product_id=a.product_id JOIN orders o ON o.id=l.order_id WHERE o.id=$1 AND o.status='packing' AND l.reserved AND a.status='available' ORDER BY p.sku,a.serial",
+        [(req.params as any).id],
+      );
+      return { items: rows.rows };
+    },
+  );
   app.get("/api/projects", { schema: { querystring: C.ListQuery } }, (req) =>
     read.listProjects(req.user, req.query),
   );
