@@ -6,6 +6,7 @@ The previous [GitHub Actions Linux run for application commit 1aa525c](https://g
 
 ## Usability revision - 31 October 2026
 
+- Independent [GitHub Actions run for c46de26](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO/actions/runs/41177351599) passed clean installation, type checks, **22 integration tests**, build and **15 browser tests across Chromium, Firefox and WebKit**. This following record update changes documentation only.
 - Type checks and production build passed.
 - **22 PostgreSQL integration tests passed**, including the complete barcode library, administrator-only staff directory, denied access for other roles, disabled test helpers and proof that the available-serial picker does not mutate stock.
 - **10 local browser tests passed across Chromium and WebKit**: full saved installation journey, public enquiry, next-step navigation, retained search/stage after returning and reloading, mobile menu Escape behavior, six screen overflow/accessibility checks, and separate staff-role sessions with server denial checks.
