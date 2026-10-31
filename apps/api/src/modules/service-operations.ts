@@ -128,7 +128,7 @@ export async function accessibleTicket(
 export async function ticketList(user?: User) {
   const rows = (
     await pool.query(
-      `SELECT t.*,c.name AS customer_name,c.phone,s.address,p.number AS project_number,u.name AS technician_name FROM tickets t JOIN projects p ON p.id=t.project_id JOIN sites s ON s.id=p.site_id JOIN customers c ON c.id=s.customer_id LEFT JOIN users u ON u.id=t.assigned_to WHERE ($1::uuid IS NULL OR t.assigned_to=$1 OR EXISTS(SELECT 1 FROM visits v JOIN visit_crew vc ON vc.visit_id=v.id WHERE v.ticket_id=t.id AND vc.user_id=$1 AND v.status<>'cancelled')) ORDER BY CASE WHEN t.priority='urgent' THEN 0 ELSE 1 END,t.opened_at DESC`,
+      `SELECT t.*,c.name AS customer_name,c.phone,s.address,p.number AS project_number,u.name AS technician_name FROM tickets t JOIN projects p ON p.id=t.project_id JOIN sites s ON s.id=p.site_id JOIN customers c ON c.id=s.customer_id LEFT JOIN users u ON u.id=t.assigned_to WHERE ($1::uuid IS NULL OR t.assigned_to=$1 OR EXISTS(SELECT 1 FROM visits v JOIN visit_crew vc ON vc.visit_id=v.id WHERE v.ticket_id=t.id AND vc.user_id=$1 AND v.status<>'cancelled')) ORDER BY CASE WHEN t.opened_at<now()-interval '7 days' AND t.status NOT IN ('closed','cancelled','awaiting_confirmation') THEN 0 WHEN t.priority='urgent' THEN 1 ELSE 2 END,t.opened_at+CASE WHEN t.priority='urgent' THEN interval '0 days' ELSE interval '5 days' END,t.id`,
       [user?.role === "technician" ? user.id : null],
     )
   ).rows;
@@ -137,7 +137,16 @@ export async function ticketList(user?: User) {
       delete t.parts_cost_minor;
       delete t.labour_cost_minor;
     }
-  return rows;
+  return rows.map((t: any) => ({
+    ...t,
+    dispatch_reason:
+      !["closed", "cancelled", "awaiting_confirmation"].includes(t.status) &&
+      Date.now() - new Date(t.opened_at).getTime() > 7 * 86400000
+        ? "Aged request: review first to prevent starvation"
+        : t.priority === "urgent"
+          ? "Urgent: immediate coordinator review"
+          : "Routine target: days 3–5; oldest target first",
+  }));
 }
 export async function detail(user: User, id: string) {
   const ticket = await accessibleTicket(pool, user, id);
@@ -154,7 +163,7 @@ export async function detail(user: User, id: string) {
   );
   const components = (
     await pool.query(
-      `SELECT l.id AS order_line_id,l.quantity,l.description,l.kind,l.product_id,p.price_minor,a.id AS asset_id,a.serial,a.status AS asset_status,w.id AS warranty_id,w.starts_at,w.expires_at,(w.starts_at<=$2 AND w.expires_at>$2) AS covered FROM order_lines l JOIN products p ON p.id=l.product_id LEFT JOIN assets a ON a.order_line_id=l.id LEFT JOIN warranties w ON w.order_line_id=l.id AND (w.asset_id=a.id OR (w.asset_id IS NULL AND a.id IS NULL)) WHERE l.order_id=$1 AND l.kind<>'service' ORDER BY l.description,a.serial`,
+      `SELECT l.id AS order_line_id,l.quantity,l.description,l.kind,coalesce(a.product_id,l.product_id) AS product_id,p.price_minor,a.id AS asset_id,a.serial,a.status AS asset_status,w.id AS warranty_id,w.starts_at,w.expires_at,(w.starts_at<=$2 AND w.expires_at>$2) AS covered FROM order_lines l JOIN products p ON p.id=l.product_id LEFT JOIN assets a ON a.order_line_id=l.id LEFT JOIN warranties w ON w.order_line_id=l.id AND (w.asset_id=a.id OR (w.asset_id IS NULL AND a.id IS NULL)) WHERE l.order_id=$1 AND l.kind<>'service' ORDER BY l.description,a.serial`,
       [project.order_id, ticket.opened_at],
     )
   ).rows;
@@ -196,8 +205,8 @@ export async function detail(user: User, id: string) {
   ).rows;
   const spares = (
     await pool.query(
-      "SELECT a.serial,a.product_id,p.name FROM assets a JOIN products p ON p.id=a.product_id WHERE a.status='available' AND a.product_id IN(SELECT product_id FROM order_lines WHERE order_id=$1)",
-      [project.order_id],
+      "SELECT a.serial,a.product_id,p.name FROM assets a JOIN products p ON p.id=a.product_id WHERE a.status='available' AND (a.product_id IN(SELECT product_id FROM order_lines WHERE order_id=$1) OR a.product_id IN(SELECT replacement_product_id FROM engineering_substitutes WHERE ticket_id=$2))",
+      [project.order_id, id],
     )
   ).rows;
   if (!["admin", "accounts"].includes(user.role)) {
@@ -217,6 +226,24 @@ export async function detail(user: User, id: string) {
     visits,
     evidence,
     invoices,
+    engineering_substitutes: (
+      await pool.query(
+        "SELECT e.*,p.name AS replacement_name FROM engineering_substitutes e JOIN products p ON p.id=e.replacement_product_id WHERE e.ticket_id=$1",
+        [id],
+      )
+    ).rows,
+    parts_requests: (
+      await pool.query(
+        "SELECT r.*,p.name AS product_name FROM service_parts_requests r JOIN products p ON p.id=r.product_id WHERE r.ticket_id=$1 ORDER BY r.created_at",
+        [id],
+      )
+    ).rows,
+    external_equipment: (
+      await pool.query(
+        "SELECT * FROM external_equipment WHERE ticket_id=$1 ORDER BY created_at",
+        [id],
+      )
+    ).rows,
     reviews: (
       await pool.query(
         "SELECT * FROM service_reviews WHERE ticket_id=$1 ORDER BY created_at DESC",
@@ -404,13 +431,27 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
         );
         const replacement = await one(
           db,
-          "SELECT * FROM assets WHERE serial=$1 AND product_id=$2 AND status='available'",
-          [line.replacement_serial.trim().toUpperCase(), l.product_id],
+          "SELECT a.*,p.price_minor,p.name FROM assets a JOIN products p ON p.id=a.product_id WHERE a.serial=$1 AND a.status='available'",
+          [line.replacement_serial.trim().toUpperCase()],
         );
         ensure(
           replacement,
           "Replacement must be available and the same product.",
         );
+        if (replacement.product_id !== (a.product_id || l.product_id)) {
+          const approved = await one(
+            db,
+            "SELECT * FROM engineering_substitutes WHERE ticket_id=$1 AND asset_id=$2 AND replacement_product_id=$3",
+            [id, a.id, replacement.product_id],
+          );
+          ensure(
+            approved,
+            "A coordinator must approve compatibility, customer agreement and price before a different model is selected.",
+          );
+          price = approved.unit_price_minor;
+        } else price = replacement.price_minor;
+        l.product_id = replacement.product_id;
+        l.description = l.description + " / replacement " + replacement.name;
         cost = replacement.cost_minor;
       } else
         cost = l.stock_qty ? Math.round(l.stock_value_minor / l.stock_qty) : 0;

@@ -126,6 +126,36 @@ export async function projectDetail(user: User, id: string) {
   }
   return {
     project,
+    change_orders: (
+      await pool.query(
+        "SELECT id,number,stage,notes FROM projects WHERE parent_project_id=$1 ORDER BY created_at",
+        [id],
+      )
+    ).rows,
+    quote_discounts: canFinance
+      ? (
+          await pool.query(
+            "SELECT d.* FROM quote_discounts d JOIN quotes q ON q.id=d.quote_id WHERE q.project_id=$1 ORDER BY d.created_at DESC",
+            [id],
+          )
+        ).rows
+      : [],
+    order_cancellations: order
+      ? (
+          await pool.query(
+            "SELECT * FROM order_cancellations WHERE order_id=$1 ORDER BY created_at DESC",
+            [order.id],
+          )
+        ).rows
+      : [],
+    delivery_incidents: order
+      ? (
+          await pool.query(
+            "SELECT * FROM delivery_incidents WHERE order_id=$1 ORDER BY created_at DESC",
+            [order.id],
+          )
+        ).rows
+      : [],
     contacts: (
       await pool.query(
         "SELECT n.*,u.name AS actor_name FROM project_contacts n JOIN users u ON u.id=n.actor_id WHERE project_id=$1 ORDER BY created_at DESC",
@@ -162,7 +192,7 @@ export async function dashboard(user: User) {
   ).rows;
   const jobs = (
     await pool.query(
-      `${projectSelect} WHERE j.status<>'completed' AND ($1::uuid IS NULL OR j.technician_id=$1) ORDER BY j.scheduled_at NULLS LAST LIMIT 6`,
+      `${projectSelect} WHERE j.status NOT IN ('completed','cancelled') AND ($1::uuid IS NULL OR j.technician_id=$1) ORDER BY j.scheduled_at NULLS LAST LIMIT 6`,
       [user.role === "technician" ? user.id : null],
     )
   ).rows;

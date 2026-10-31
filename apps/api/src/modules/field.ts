@@ -24,7 +24,7 @@ export async function assignJob(db: Db, user: User, id: string, b: any) {
   await db.query("SELECT pg_advisory_xact_lock(902636)");
   const job = await accessibleJob(db, user, id);
   ensure(
-    !["completed", "in_progress"].includes(job.status),
+    !["completed", "in_progress", "cancelled"].includes(job.status),
     "A started job cannot be reassigned.",
   );
   const ids = [

@@ -446,3 +446,123 @@ export const VisitExtension = Type.Object(
   },
   { additionalProperties: false },
 );
+
+export const ExternalEquipment = Type.Object(
+  { name: text(150), serial: optionalText(100), findings: text(2000) },
+  { additionalProperties: false },
+);
+export const SupplierClaim = Type.Object(
+  {
+    supplier: text(150),
+    reference: text(150),
+    tracking_reference: text(150),
+    requested_minor: Type.Integer({ minimum: 1, maximum: 1000000000000 }),
+  },
+  { additionalProperties: false },
+);
+export const SupplierDecision = Type.Object(
+  {
+    version: Type.Integer({ minimum: 1 }),
+    status: Type.Union(
+      ["approved", "declined", "disputed"].map((v) => Type.Literal(v)),
+    ),
+    amount_minor: Money,
+    note: text(2000),
+  },
+  { additionalProperties: false },
+);
+export const SupplierRecovery = Type.Object(
+  {
+    amount_minor: Type.Integer({ minimum: 1, maximum: 1000000000000 }),
+    reference: text(150),
+  },
+  { additionalProperties: false },
+);
+
+export const PartsRequest = Type.Object(
+  {
+    product_id: Id,
+    quantity: Type.Integer({ minimum: 1, maximum: 1000 }),
+    expected_on: Type.Optional(Type.String({ format: "date" })),
+    note: text(2000),
+  },
+  { additionalProperties: false },
+);
+
+export const DeliveryReceipt = Type.Object(
+  {
+    line_ids: Type.Optional(
+      Type.Array(Id, { minItems: 1, maxItems: 100, uniqueItems: true }),
+    ),
+    received_by: optionalText(150),
+  },
+  { additionalProperties: false },
+);
+export const DeliveryIncident = Type.Object(
+  {
+    kind: Type.Union(
+      ["wrong_destination", "refused", "transit_damage"].map((v) =>
+        Type.Literal(v),
+      ),
+    ),
+    custody: text(500),
+    reason: text(2000),
+  },
+  { additionalProperties: false },
+);
+export const DeliveryReview = Type.Object(
+  {
+    version: Type.Integer({ minimum: 1 }),
+    status: Type.Union(["retry", "returned"].map((v) => Type.Literal(v))),
+    custody: text(500),
+    outcome: text(2000),
+  },
+  { additionalProperties: false },
+);
+
+export const StockCount = Type.Object(
+  {
+    product_id: Id,
+    counted_quantity: Type.Integer({ minimum: 0, maximum: 10000000 }),
+    reason: text(2000),
+  },
+  { additionalProperties: false },
+);
+
+export const QuoteDiscount = Type.Object(
+  { percent: Type.Integer({ minimum: 1, maximum: 20 }), reason: text(2000) },
+  { additionalProperties: false },
+);
+
+export const EngineeringSubstitute = Type.Object(
+  {
+    asset_id: Id,
+    replacement_product_id: Id,
+    compatibility_note: text(2000),
+    customer_agreement: text(2000),
+    unit_price_minor: Money,
+  },
+  { additionalProperties: false },
+);
+
+export const ChangeOrder = Type.Object(
+  {
+    reason: text(2000),
+    lines: Type.Array(
+      Type.Object(
+        {
+          product_id: Id,
+          quantity: Type.Integer({ minimum: 1, maximum: 1000 }),
+        },
+        { additionalProperties: false },
+      ),
+      { minItems: 1, maxItems: 30 },
+    ),
+  },
+  { additionalProperties: false },
+);
+
+export const TransitReplacement = Type.Object(
+  { asset_id: Id, replacement_serial: text(100), note: text(2000) },
+  { additionalProperties: false },
+);

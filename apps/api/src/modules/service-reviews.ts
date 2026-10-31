@@ -150,7 +150,7 @@ export async function decide(db: Db, user: User, id: string, b: any) {
       const worker = await one(
         db,
         "SELECT hourly_rate_minor FROM users WHERE id=$1",
-        [r.requested_by],
+        [t.assigned_to || r.requested_by],
       );
       const order = await one(db, "SELECT id FROM orders WHERE project_id=$1", [
         t.project_id,

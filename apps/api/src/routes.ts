@@ -1,3 +1,11 @@
+import * as changeOrders from "./modules/change-orders.js";
+import * as engineering from "./modules/engineering.js";
+import * as discount from "./modules/quote-discounts.js";
+import * as orderCancel from "./modules/order-cancellation.js";
+import * as stockReview from "./modules/stock-review.js";
+import * as delivery from "./modules/delivery.js";
+import * as parts from "./modules/parts.js";
+import * as supplier from "./modules/supplier-claims.js";
 import * as serviceReview from "./modules/service-reviews.js";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { TSchema } from "typebox";
@@ -78,6 +86,122 @@ export async function routes(app: FastifyInstance) {
       },
     );
   }
+  app.get("/api/supplier-claims", (req) => {
+    allow(req, ["admin", "warehouse", "accounts"]);
+    return supplier.list();
+  });
+  command(
+    "/tickets/:id/external-equipment",
+    ["admin", "technician"],
+    C.ExternalEquipment,
+    (db, r, id, b) => supplier.external(db, r.user, id, b),
+  );
+  command(
+    "/service-returns/:id/supplier-claim",
+    ["admin", "warehouse"],
+    C.SupplierClaim,
+    (db, r, id, b) => supplier.send(db, r.user, id, b),
+  );
+  command(
+    "/supplier-claims/:id/decision",
+    ["admin", "accounts"],
+    C.SupplierDecision,
+    (db, r, id, b) => supplier.decision(db, r.user, id, b),
+  );
+  command(
+    "/supplier-claims/:id/recoveries",
+    ["admin", "accounts"],
+    C.SupplierRecovery,
+    (db, r, id, b) => supplier.recovery(db, r.user, id, b),
+  );
+  command(
+    "/tickets/:id/parts-requests",
+    ["admin", "coordinator", "technician"],
+    C.PartsRequest,
+    (db, r, id, b) => parts.request(db, r.user, id, b),
+  );
+  command(
+    "/parts-requests/:id/readiness",
+    ["admin", "warehouse"],
+    C.TaskOutcome,
+    (db, r, id, b) => parts.ready(db, r.user, id, b),
+  );
+  command(
+    "/orders/:id/delivery-incidents",
+    ["admin", "warehouse"],
+    C.DeliveryIncident,
+    (db, r, id, b) => delivery.incident(db, r.user.id, id, b),
+  );
+  command(
+    "/delivery-incidents/:id/review",
+    ["admin", "coordinator"],
+    C.DeliveryReview,
+    (db, r, id, b) => delivery.review(db, r.user.id, id, b),
+  );
+  app.get("/api/stock-counts", (req) => {
+    allow(req, ["admin", "warehouse", "accounts"]);
+    return stockReview.counts();
+  });
+  command(
+    "/assets/:id/quarantine",
+    ["admin", "warehouse"],
+    C.FinancialReason,
+    (db, r, id, b) => stockReview.damage(db, r.user.id, id, b),
+  );
+  command(
+    "/stock-counts",
+    ["admin", "warehouse"],
+    C.StockCount,
+    (db, r, id, b) => stockReview.requestCount(db, r.user.id, b),
+  );
+  command(
+    "/stock-counts/:id/review",
+    ["admin", "accounts"],
+    C.ReviewDecision,
+    (db, r, id, b) => stockReview.reviewCount(db, r.user.id, id, b),
+  );
+  command(
+    "/orders/:id/cancellation",
+    ["admin", "sales", "accounts"],
+    C.FinancialReason,
+    (db, r, id, b) => orderCancel.request(db, r.user.id, id, b),
+  );
+  command(
+    "/order-cancellations/:id/review",
+    ["admin", "accounts"],
+    C.ReviewDecision,
+    (db, r, id, b) => orderCancel.review(db, r.user.id, id, b),
+  );
+  command(
+    "/quotes/:id/discount",
+    ["admin", "sales"],
+    C.QuoteDiscount,
+    (db, r, id, b) => discount.request(db, r.user.id, id, b),
+  );
+  command(
+    "/quote-discounts/:id/review",
+    ["admin"],
+    C.ReviewDecision,
+    (db, r, id, b) => discount.review(db, r.user.id, id, b),
+  );
+  command(
+    "/tickets/:id/engineering-substitutes",
+    ["admin", "coordinator"],
+    C.EngineeringSubstitute,
+    (db, r, id, b) => engineering.approve(db, r.user, id, b),
+  );
+  command(
+    "/projects/:id/change-orders",
+    ["admin", "sales"],
+    C.ChangeOrder,
+    (db, r, id, b) => changeOrders.create(db, r.user.id, id, b),
+  );
+  command(
+    "/delivery-incidents/:id/replacements",
+    ["admin", "warehouse"],
+    C.TransitReplacement,
+    (db, r, id, b) => delivery.replaceTransit(db, r.user.id, id, b),
+  );
   app.get("/api/dashboard", (req) => read.dashboard(req.user));
   app.get("/api/operational-tasks", (req) => {
     allow(req, ["admin", "coordinator", "support", "surveyor", "technician"]);
@@ -142,7 +266,7 @@ export async function routes(app: FastifyInstance) {
     return {
       items: (
         await pool.query(
-          "SELECT u.id,u.name,u.email,u.role,u.active,u.dispatch_enabled,u.skills,u.working_days,(SELECT count(*)::integer FROM jobs j WHERE j.technician_id=u.id AND j.status<>'completed') AS open_jobs FROM users u ORDER BY u.role,u.name",
+          "SELECT u.id,u.name,u.email,u.role,u.active,u.dispatch_enabled,u.skills,u.working_days,(SELECT count(*)::integer FROM jobs j WHERE j.technician_id=u.id AND j.status NOT IN ('completed','cancelled')) AS open_jobs FROM users u ORDER BY u.role,u.name",
         )
       ).rows,
     };
@@ -196,7 +320,14 @@ export async function routes(app: FastifyInstance) {
       (await one(pool, "SELECT value FROM settings WHERE key='policy'")).value,
   );
   app.get("/api/products", async (req) => {
-    allow(req, ["admin", "sales", "warehouse", "accounts", "support"]);
+    allow(req, [
+      "admin",
+      "sales",
+      "warehouse",
+      "accounts",
+      "support",
+      "coordinator",
+    ]);
     const rows = (await pool.query("SELECT * FROM products ORDER BY sku")).rows;
     return {
       items: rows.map((p) => {
@@ -560,8 +691,8 @@ export async function routes(app: FastifyInstance) {
   command(
     "/orders/:id/delivery",
     ["admin", "warehouse"],
-    undefined,
-    (db, r, id) => stock.deliverOrder(db, r.user.id, id),
+    C.DeliveryReceipt,
+    (db, r, id, b) => delivery.receiveLines(db, r.user.id, id, b),
   );
   command(
     "/jobs/:id/assignment",

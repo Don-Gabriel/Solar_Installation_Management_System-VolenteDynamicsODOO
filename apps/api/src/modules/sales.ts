@@ -190,8 +190,10 @@ export async function issueQuote(db: Db, userId: string, id: string) {
   ensure(recipe, "No package recipe configured.");
   const lines = (
     await db.query(
-      "SELECT p.*,l.quantity FROM package_lines l JOIN products p ON p.id=l.product_id WHERE l.package_id=$1 ORDER BY p.sku",
-      [recipe.id],
+      p.parent_project_id
+        ? "SELECT p.*,l.quantity FROM change_order_lines l JOIN products p ON p.id=l.product_id WHERE l.project_id=$1 ORDER BY p.sku"
+        : "SELECT p.*,l.quantity FROM package_lines l JOIN products p ON p.id=l.product_id WHERE l.package_id=$1 ORDER BY p.sku",
+      [p.parent_project_id ? p.id : recipe.id],
     )
   ).rows;
   ensure(lines.length, "The package has no bill of materials.");

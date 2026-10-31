@@ -1,3 +1,4 @@
+import { checkReady } from "./parts.js";
 import { audit, ensure, one, pool, type Db } from "../db.js";
 import type { User } from "../../../../packages/contracts/src/index.js";
 import { openTask } from "./operational-tasks.js";
@@ -129,7 +130,7 @@ export async function eligible(
   if (leave) return "On leave";
   const conflict = await one(
     db,
-    `SELECT j.id FROM jobs j WHERE (technician_id=$1 OR EXISTS(SELECT 1 FROM job_crew jc WHERE jc.job_id=j.id AND jc.user_id=$1)) AND ($4::uuid IS NULL OR j.id<>$4) AND status<>'completed' AND scheduled_at<$3::timestamptz+interval '30 minutes' AND scheduled_at+make_interval(hours=>duration_hours)>$2::timestamptz-interval '30 minutes'
+    `SELECT j.id FROM jobs j WHERE (technician_id=$1 OR EXISTS(SELECT 1 FROM job_crew jc WHERE jc.job_id=j.id AND jc.user_id=$1)) AND ($4::uuid IS NULL OR j.id<>$4) AND status IN ('scheduled','in_progress') AND scheduled_at<$3::timestamptz+interval '30 minutes' AND scheduled_at+make_interval(hours=>duration_hours)>$2::timestamptz-interval '30 minutes'
  UNION ALL SELECT v.id FROM visits v JOIN visit_crew c ON c.visit_id=v.id WHERE c.user_id=$1 AND ($5::uuid IS NULL OR v.id<>$5) AND v.status IN ('scheduled','in_progress') AND v.starts_at<$3::timestamptz+interval '30 minutes' AND v.ends_at>$2::timestamptz-interval '30 minutes' LIMIT 1`,
     [tech.id, start, end, excludeJob, excludeVisit],
   );
@@ -151,7 +152,8 @@ export async function availability(
   );
   const techs = (
     await pool.query(
-      "SELECT id,name,skills,working_days,active,dispatch_enabled FROM users WHERE role='technician' ORDER BY name",
+      "SELECT u.id,u.name,u.skills,u.working_days,u.active,u.dispatch_enabled,((SELECT coalesce(sum(extract(epoch FROM (v.ends_at-v.starts_at))/3600),0) FROM visits v JOIN visit_crew vc ON vc.visit_id=v.id WHERE vc.user_id=u.id AND v.status IN ('scheduled','in_progress') AND v.starts_at >= $1::date AND v.starts_at < $2::date+interval '1 day')+(SELECT coalesce(sum(j.duration_hours),0) FROM jobs j WHERE (j.technician_id=u.id OR EXISTS(SELECT 1 FROM job_crew jc WHERE jc.job_id=j.id AND jc.user_id=u.id)) AND j.status IN ('scheduled','in_progress') AND j.scheduled_at >= $1::date AND j.scheduled_at < $2::date+interval '1 day'))::float AS booked_hours FROM users u WHERE u.role='technician' ORDER BY booked_hours,u.name,u.id",
+      [q.from, q.to],
     )
   ).rows;
   const slots = [];
@@ -167,8 +169,8 @@ export async function availability(
             id: t.id,
             name: t.name,
             can_lead: t.skills.includes("crew_lead"),
-            reason:
-              "Skilled, working and free including 30-minute travel buffer",
+            reason: `Qualified and free; ${t.booked_hours} booked hours in this window; 30-minute travel buffer; ties use name then staff ID`,
+            booked_hours: t.booked_hours,
           });
       }
       if (
@@ -211,6 +213,7 @@ export async function bookVisit(db: Db, user: User, b: any) {
       b.ticket_id,
     ]);
     ensure(ticket, "Ticket not found", 404);
+    await checkReady(db, ticket.id);
     ensure(
       !["closed", "cancelled", "awaiting_confirmation"].includes(ticket.status),
       "This ticket cannot be scheduled.",
@@ -430,6 +433,15 @@ export async function visitAction(db: Db, user: User, id: string, b: any) {
       await db.query(
         "UPDATE tickets SET status=CASE WHEN $2='completed' THEN 'waiting_parts' ELSE 'open' END,version=version+1 WHERE id=$1",
         [v.ticket_id, status],
+      );
+    if (b.action === "diagnosis_done" && v.ticket_id)
+      await openTask(
+        db,
+        user.id,
+        v.project_id,
+        "parts",
+        "Diagnosis complete; review parts and arrange a separate return visit.",
+        v.ticket_id,
       );
     if (b.action === "no_access" || b.action === "decline") {
       await openTask(
