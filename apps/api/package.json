@@ -1,0 +1,26 @@
+{
+  "name": "@solar/api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "cd ../.. && tsx watch --env-file=.env apps/api/src/server.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "fastify": "^5",
+    "@fastify/cookie": "latest",
+    "@fastify/helmet": "latest",
+    "@fastify/rate-limit": "latest",
+    "@fastify/multipart": "latest",
+    "@fastify/static": "latest",
+    "@fastify/swagger": "latest",
+    "@fastify/swagger-ui": "latest",
+    "@fastify/type-provider-typebox": "^6",
+    "typebox": "^1",
+    "ajv-formats": "^3",
+    "argon2": "latest",
+    "pg": "^8",
+    "@solar/contracts": "*"
+  }
+}
