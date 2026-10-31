@@ -1,0 +1,28 @@
+# Local research inputs, inventories and generated previews
+/tmp/
+/output/
+
+# Credentials and runtime data
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+/data/
+/uploads/
+/backups/
+
+# Dependencies and build output
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.vite/
+*.log
+
+# Local editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

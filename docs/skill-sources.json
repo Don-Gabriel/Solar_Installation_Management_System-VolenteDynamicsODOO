@@ -1,0 +1,130 @@
+{
+  "installed_date": "2026-10-31",
+  "codex_additions": 12,
+  "claude_additions": 8,
+  "upstream": [
+    {
+      "directory": "supabase-postgres-best-practices",
+      "repository": "supabase/agent-skills",
+      "path": "skills/supabase-postgres-best-practices",
+      "commit": "c9be0e931b7930f7d02126d04774d904c381e7d7",
+      "source_url": "https://github.com/supabase/agent-skills/tree/c9be0e931b7930f7d02126d04774d904c381e7d7/skills/supabase-postgres-best-practices",
+      "skill_sha256": "ad65e776f45e761bafc609d3f506c77c1032225aa65e0c4c02f241b8071e5855",
+      "file_count": 36,
+      "codex": "installed",
+      "claude": "Copied verified installation to Claude user skills"
+    },
+    {
+      "directory": "postgresql-table-design",
+      "repository": "wshobson/agents",
+      "path": "plugins/database-design/skills/postgresql-table-design",
+      "commit": "7e2fb559cf4b824b27f1fec49fe88f7511066d26",
+      "source_url": "https://github.com/wshobson/agents/tree/7e2fb559cf4b824b27f1fec49fe88f7511066d26/plugins/database-design/skills/postgresql-table-design",
+      "skill_sha256": "1e27b0fac6d88a710cd925b831608ca202c40ade4f4e285a8e027dcf2f9a44ea",
+      "file_count": 2,
+      "codex": "installed",
+      "claude": "Copied verified installation to Claude user skills"
+    },
+    {
+      "directory": "api-design-principles",
+      "repository": "wshobson/agents",
+      "path": "plugins/backend-development/skills/api-design-principles",
+      "commit": "7e2fb559cf4b824b27f1fec49fe88f7511066d26",
+      "source_url": "https://github.com/wshobson/agents/tree/7e2fb559cf4b824b27f1fec49fe88f7511066d26/plugins/backend-development/skills/api-design-principles",
+      "skill_sha256": "1f6166c23c0a0f32d703c19d84b3c30c2873daefb9e8732339a009934fa17013",
+      "file_count": 6,
+      "codex": "installed",
+      "claude": "Copied verified installation to Claude user skills"
+    },
+    {
+      "directory": "auth-implementation-patterns",
+      "repository": "wshobson/agents",
+      "path": "plugins/developer-essentials/skills/auth-implementation-patterns",
+      "commit": "7e2fb559cf4b824b27f1fec49fe88f7511066d26",
+      "source_url": "https://github.com/wshobson/agents/tree/7e2fb559cf4b824b27f1fec49fe88f7511066d26/plugins/developer-essentials/skills/auth-implementation-patterns",
+      "skill_sha256": "1fc61d6074ace3d3db9d527ef92a7188118ff305b6ea98e0f9356545c6e15996",
+      "file_count": 2,
+      "codex": "installed",
+      "claude": "Copied verified installation to Claude user skills"
+    },
+    {
+      "directory": "react-best-practices",
+      "repository": "vercel-labs/agent-skills",
+      "path": "skills/react-best-practices",
+      "commit": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62",
+      "source_url": "https://github.com/vercel-labs/agent-skills/tree/1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62/skills/react-best-practices",
+      "skill_sha256": "71ed7794962fa6e803ee83030517b5b93a9f70fbfeb431ec4535c5480a8d8355",
+      "file_count": 76,
+      "codex": "installed",
+      "claude": "Copied verified installation to Claude user skills"
+    },
+    {
+      "directory": "web-design-guidelines",
+      "repository": "vercel-labs/agent-skills",
+      "path": "skills/web-design-guidelines",
+      "commit": "1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62",
+      "source_url": "https://github.com/vercel-labs/agent-skills/tree/1a2c79d4e6c4a2283dc2c614b6538cbe1ed5ca62/skills/web-design-guidelines",
+      "skill_sha256": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f",
+      "file_count": 1,
+      "codex": "installed",
+      "claude": "Copied verified installation to Claude user skills"
+    },
+    {
+      "directory": "frontend-design",
+      "repository": "anthropics/skills",
+      "path": "skills/frontend-design",
+      "commit": "ca45fc496a3436251f191354091d557da31c15b5",
+      "source_url": "https://github.com/anthropics/skills/tree/ca45fc496a3436251f191354091d557da31c15b5/skills/frontend-design",
+      "skill_sha256": "d91970639e9f5c37682ac7ab60094d35f1c7c1f38d731bd56396563aee10c1d3",
+      "file_count": 2,
+      "codex": "installed",
+      "claude": "Existing registered Claude frontend-design plugin preserved"
+    },
+    {
+      "directory": "webapp-testing",
+      "repository": "anthropics/skills",
+      "path": "skills/webapp-testing",
+      "commit": "ca45fc496a3436251f191354091d557da31c15b5",
+      "source_url": "https://github.com/anthropics/skills/tree/ca45fc496a3436251f191354091d557da31c15b5/skills/webapp-testing",
+      "skill_sha256": "51b7349e77ec63b7744a6f63647e7566a0b4d2e301121cc10e8c2113af6556a2",
+      "file_count": 6,
+      "codex": "installed",
+      "claude": "Copied verified installation to Claude user skills"
+    },
+    {
+      "directory": "shadcn",
+      "repository": "shadcn-ui/ui",
+      "path": "skills/shadcn",
+      "commit": "b8d7baa15b1dca5716f13153e63795fc3d741f6b",
+      "source_url": "https://github.com/shadcn-ui/ui/tree/b8d7baa15b1dca5716f13153e63795fc3d741f6b/skills/shadcn",
+      "skill_sha256": "93951e5e83f616a3e046491c00d770bd54c0a64164706cd1191822a233d27592",
+      "file_count": 21,
+      "codex": "installed",
+      "claude": "Copied verified installation to Claude user skills"
+    }
+  ],
+  "reused_local_claude_skills": [
+    {
+      "name": "mobile-ux-design",
+      "source": "existing local Claude user skill",
+      "status": "Copied existing Claude skill to Codex",
+      "files": 5,
+      "skill_sha256": "404fc7cd2a5a518b31cdeee615413256188d3ffc5712712ca88758944751282e"
+    },
+    {
+      "name": "desktop-app-design",
+      "source": "existing local Claude user skill",
+      "status": "Copied existing Claude skill to Codex",
+      "files": 5,
+      "skill_sha256": "f2a279c51f9622c15042e47a0c20d5d815528f420659d7e21192892315ba0c19"
+    },
+    {
+      "name": "accessibility-inclusive-design",
+      "source": "existing local Claude user skill",
+      "status": "Copied existing Claude skill to Codex",
+      "files": 3,
+      "skill_sha256": "3a9b23d35352681f831c33ee1395bfb30bf6dd28e7bcba241400ab311787f1e0"
+    }
+  ],
+  "verification": "Main definitions match inspected commit-pinned files; copied trees match file-by-file. No upstream helper scripts were executed."
+}
