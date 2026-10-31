@@ -1,6 +1,6 @@
 # SunPower real world scenarios and acceptance plan
 
-Prepared 31 October 2026 for the user's revised working deadline of **31 October 2026 at 14:45 IST**. There is no confirmed official event deadline. The aim is a working, demonstrable operational system, not a large checklist with invented passes.
+Updated 31 October 2026. The user extended the 14:45 target and requested completion as soon as possible. There is no confirmed official event deadline. The aim is a working, demonstrable operational system, not a large checklist with invented passes.
 
 ## Purpose and scope
 
@@ -29,7 +29,7 @@ Support can create installation requests and repair complaints before a faulty p
 
 Assigned repair technicians can open site and installed-component history, select faulty items, propose replacements and attach completion photos. Approval is tied to diagnosis revision. Completion requires a photo from the current visit and diagnosis, and repeated completion cannot issue stock or bills twice. The original installation invoice remains unchanged. Service invoices show covered and charged lines, warranty credits and original/replacement serials, including a zero-payable document when fully covered. Selling prices and internal costs are separate. Returned components enter quarantine. Support records customer confirmation, disputes or a linked follow-up request.
 
-Installation crews record individual time and cost, and accounts can pay crew members separately without duplicate payment. Administrators can change staff access and qualifications with an audit reason; deactivation revokes sessions. These are implemented capabilities, not a claim that every exception in the catalogue is complete. The execution register contains 137 passed cases and 63 blocked cases at this revision. All six original review failures have passing focused retests.
+Installation crews record individual time and cost, and accounts can pay crew members separately without duplicate payment. Administrators can change staff access and qualifications with an audit reason; deactivation revokes sessions. These are implemented capabilities, not a claim that every exception in the catalogue is complete. The execution register now contains 194 passed cases and 6 blocked cases; the remaining limits are physical-device/accessibility checks and signed native installers. All six original review failures have passing focused retests.
 
 ## Roles and realistic staffing
 
@@ -96,7 +96,7 @@ React Native is a feasible mobile client direction, and React Native Windows is 
 
 Keep Fastify and PostgreSQL as the shared authoritative backend. Build a small native proof first: sign in, assigned visits, installed-component list, photo upload and completion, plus a Windows staff view. Pin a compatible React Native and React Native Windows version pair after checking their current compatibility. Do not upgrade the web app blindly to match a native runtime. Local iOS development requires its Apple toolchain; device testing and distribution are separate release gates. No native binary exists in the reviewed build.
 
-Recommended order under the 14:45 target: implement and test the shared scheduling, repair and billing rules first; prove the native path with a narrow client; then package only platforms whose build and device gates actually pass. Keep the browser client available for rehearsal. Installing a web app is not the same as shipping a React Native app.
+Recommended implementation order: implement and test the shared scheduling, repair and billing rules first; prove the native path with a narrow client; then package only platforms whose build and device gates actually pass. Keep the browser client available for rehearsal. Installing a web app is not the same as shipping a React Native app.
 
 ## Test data and evidence
 
@@ -120,7 +120,7 @@ Run each automated case in a resettable isolated database schema with synthetic 
 5. Add realistic fixture people and competing workloads; then the narrow native client proof, only after shared API behavior is stable.
 6. Execute the entire catalogue, resolve defects, rerun failures and affected regressions, then rehearse the review examples with actual saved data.
 
-Use the remaining time before 14:45 IST for regression, artifact generation and rehearsal of scheduling and warranty billing. This is a planning target, not a promise that 200 scenarios or every native platform can be completed in that time. If the deadline becomes incompatible with required work, report the exact unfinished cases rather than hiding them or marking them passed.
+Use the remaining time for regression, artifact generation and rehearsal of scheduling and warranty billing. The user extended the deadline; this does not turn unverified device or native-platform cases into passes. If the deadline becomes incompatible with required work, report the exact unfinished cases rather than hiding them or marking them passed.
 
 A release may be called verified for this catalogue only when every required case has a recorded executed result, no unresolved required failures, and no required blocked cases. Any deferred P1/P2 scenario must be listed and accepted as a limitation; it must not be relabelled PASS. Security, monetary and stock integrity failures prevent a clean-release claim. Physical-device and restore gates cannot be replaced by source inspection. An explicit owner-approved scope change is required to remove a requirement.
 
