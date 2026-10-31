@@ -1,14 +1,18 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/manrope";
-@import "@fontsource-variable/dm-sans";
+@import "@fontsource/manrope/latin-400.css";
+@import "@fontsource/manrope/latin-600.css";
+@import "@fontsource/manrope/latin-700.css";
+@import "@fontsource/dm-sans/latin-400.css";
+@import "@fontsource/dm-sans/latin-500.css";
+@import "@fontsource/dm-sans/latin-700.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: "Manrope Variable", sans-serif;
-  --font-sans: "DM Sans Variable", sans-serif;
+  --font-heading: "Manrope", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -89,7 +93,7 @@ h3,
 .metric > strong,
 .pipeline-step > strong,
 .job-system {
-  font-variation-settings: "wght" 750;
+  font-weight: 700;
 }
 .form-dialog {
   overscroll-behavior: contain;
@@ -3160,4 +3164,525 @@ svg {
   .quote-total {
     margin-top: 20px;
   }
+}
+/* Task-focused workspace, shared desktop/phone visual system. */
+body {
+  font-size: 15px;
+  line-height: 1.55;
+}
+h1 {
+  font-size: clamp(25px, 2.2vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+h2 {
+  font-size: 19px;
+  font-weight: 700;
+}
+h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+label,
+[data-slot="field-label"] {
+  font-size: 14px;
+  font-weight: 600;
+}
+input,
+select,
+textarea {
+  font-size: 16px !important;
+}
+small,
+.field-hint {
+  font-size: 13px;
+}
+.form-section {
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.form-section-title {
+  display: block;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 9px;
+  margin-bottom: 16px;
+}
+.sample-fill {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 14px;
+  border: 1px dashed #8fa8b4;
+  border-radius: 8px;
+  background: #f2f7fa;
+  margin-bottom: 18px;
+}
+.sample-fill > span,
+.sample-fill > small {
+  flex-basis: 100%;
+}
+select {
+  min-height: 42px;
+  border: 1px solid var(--input);
+  border-radius: 7px;
+  padding: 8px 12px;
+  background: white;
+  color: var(--foreground);
+  max-width: 100%;
+}
+.nav-item {
+  min-height: 44px;
+  font-size: 14px;
+}
+.nav-item.active {
+  background: #e4eff3;
+  color: #153747;
+  box-shadow: inset 3px 0 #e5ae35;
+}
+.sidebar {
+  overflow-y: auto;
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 18px;
+}
+.sidebar .profile {
+  margin-top: 10px;
+}
+.role-indicator {
+  font-size: 13px;
+  font-weight: 600;
+  color: #255569;
+}
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.breadcrumb a {
+  color: #305f73;
+}
+.navigation-dialog {
+  width: min(390px, calc(100vw - 24px));
+  max-height: calc(100dvh - 28px);
+  overflow-y: auto;
+}
+.navigation-dialog .nav-item {
+  color: #153747;
+}
+.navigation-dialog .profile {
+  color: #153747;
+  border-color: var(--border);
+}
+.navigation-dialog .profile small {
+  color: #596b75;
+}
+.navigation-dialog .profile button {
+  color: #153747;
+}
+.mobile-bottom {
+  display: none;
+}
+.work-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+.work-shortcuts a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 40px 18px 16px;
+  border-bottom: 1px solid var(--border);
+  gap: 4px;
+}
+.work-shortcuts a:hover {
+  background: #f1f6f8;
+}
+.work-shortcuts a > span {
+  color: #4c6979;
+  font-size: 13px;
+}
+.work-shortcuts a > strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.work-shortcuts a > svg {
+  position: absolute;
+  right: 12px;
+  top: 26px;
+  width: 18px;
+}
+.next-step {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+  padding: 22px 24px;
+  border: 1px solid #b9d0db;
+  border-left: 4px solid #2d697f;
+  background: #eef5f8;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+.next-step h2 {
+  margin: 5px 0;
+}
+.next-step p {
+  max-width: 76ch;
+  margin: 0 0 8px;
+}
+.next-step small {
+  display: block;
+  color: #4b6470;
+}
+.next-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #305f73;
+}
+.journey li > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 0;
+  padding: 6px 3px;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+.journey li > button:not(:disabled):hover {
+  text-decoration: underline;
+}
+.journey li > button:disabled {
+  opacity: 0.65;
+}
+#project-work {
+  scroll-margin-top: 20px;
+}
+.project-tabs {
+  flex-wrap: wrap;
+  height: auto !important;
+  gap: 4px;
+}
+.project-tabs [role="tab"] {
+  min-height: 44px;
+  font-size: 14px;
+}
+.login-copy h1 {
+  font-size: clamp(32px, 4vw, 54px);
+}
+.login-photo {
+  margin: 28px 0 20px;
+  max-width: 660px;
+}
+.login-photo img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+.login-photo figcaption {
+  font-size: 11px;
+  color: #b9ccd5;
+  margin-top: 6px;
+}
+.login-story {
+  justify-content: flex-start;
+  gap: 28px;
+}
+.login-story .login-copy {
+  margin: 0;
+}
+.login-page {
+  min-height: 100dvh;
+}
+.barcode-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+.barcode-controls label {
+  display: grid;
+  gap: 6px;
+}
+.barcode-note {
+  margin: 20px 0;
+  max-width: 85ch;
+}
+.barcode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.barcode-card {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 8px;
+  break-inside: avoid;
+}
+.barcode-card header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.device-barcode {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.barcode-card footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.role-card {
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  background: white;
+  color: var(--foreground);
+}
+.role-card.selected {
+  border-color: #316d83;
+  box-shadow: inset 0 0 0 1px #316d83;
+  background: #eef5f8;
+}
+.role-card strong {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.role-card p {
+  font-size: 14px;
+  margin: 7px 0 0;
+  color: #516875;
+}
+.guide-categories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.guide-categories p {
+  margin: 5px 0;
+}
+.guide-search {
+  display: block;
+  margin: 24px 0;
+}
+.guide-item {
+  margin: 10px 0;
+}
+.guide-item summary {
+  cursor: pointer;
+  padding: 18px;
+}
+.guide-item summary span {
+  float: right;
+  font-size: 13px;
+  color: #526a77;
+}
+.guide-item ul {
+  padding-left: 24px;
+  list-style: disc;
+  margin: 8px 0 18px;
+}
+.guide-item li {
+  margin: 6px 0;
+}
+@media (max-width: 1100px) {
+  .work-shortcuts,
+  .barcode-grid,
+  .role-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 800px) {
+  .sidebar {
+    display: none;
+  }
+  .main-shell {
+    margin-left: 0;
+  }
+  .mobile-menu {
+    display: inline-flex;
+  }
+  .app-shell {
+    padding-bottom: 78px;
+  }
+  .mobile-bottom {
+    position: fixed;
+    display: flex;
+    z-index: 30;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 7px 6px max(7px, env(safe-area-inset-bottom));
+    background: white;
+    border-top: 1px solid #d3dfe5;
+  }
+  .mobile-bottom a,
+  .mobile-bottom button {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 5px;
+    min-height: 50px;
+    font-size: 12px;
+    background: transparent;
+    border: 0;
+    color: #526b78;
+  }
+  .mobile-bottom svg {
+    width: 21px;
+    height: 21px;
+  }
+  .mobile-bottom a.active {
+    color: #113e55;
+    background: #eaf2f6;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .next-step {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 18px;
+    gap: 14px;
+  }
+  .project-tabs {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+  .project-tabs [role="tab"] {
+    justify-content: flex-start;
+    white-space: normal;
+  }
+  .barcode-controls {
+    grid-template-columns: 1fr;
+  }
+  .barcode-grid {
+    grid-template-columns: 1fr;
+  }
+  .guide-item summary span {
+    float: none;
+    display: block;
+    margin-top: 5px;
+  }
+  .role-indicator {
+    font-size: 12px;
+  }
+  .demo-indicator {
+    display: none;
+  }
+  .journey {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+  }
+  .journey li {
+    flex-shrink: 0;
+  }
+  main {
+    padding-bottom: 24px;
+  }
+}
+@media (max-width: 540px) {
+  .work-shortcuts,
+  .role-cards,
+  .guide-categories {
+    grid-template-columns: 1fr;
+  }
+  .breadcrumb {
+    font-size: 12px;
+    gap: 6px;
+  }
+  .topbar {
+    padding: 12px 16px;
+  }
+  .project-meta {
+    font-size: 14px;
+  }
+}
+@media print {
+  .sidebar,
+  .topbar,
+  .mobile-bottom,
+  .app-footer,
+  .barcode-controls,
+  .barcode-note,
+  .barcode-card footer button,
+  .page-head .head-actions {
+    display: none !important;
+  }
+  .main-shell {
+    margin: 0 !important;
+  }
+  .app-shell {
+    padding: 0;
+  }
+  main {
+    padding: 0 !important;
+  }
+  .barcode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8mm;
+  }
+  .barcode-card {
+    border: 1px solid #bbb;
+    padding: 4mm;
+  }
+  .barcode-card .status {
+    color: black;
+    background: white;
+  }
+  .device-barcode {
+    width: 100%;
+  }
+}
+@media (max-width: 540px) {
+  [data-slot="tabs-list"] {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: auto;
+  }
+  [data-slot="tabs-trigger"] {
+    min-height: 44px;
+    white-space: normal;
+  }
+  [data-slot="tabs-content"] {
+    min-width: 0;
+  }
+}
+[data-slot="tabs-list"] {
+  background: #e8eef2;
+}
+[data-slot="tabs-trigger"] {
+  color: #365366;
+}
+[data-slot="tabs-trigger"][data-active] {
+  color: #132e3b;
+  background: #fff;
 }

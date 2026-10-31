@@ -19,7 +19,11 @@ export function Jobs() {
   return (
     <>
       <PageHead
-        title={user.role === "technician" ? "My field jobs" : "Field schedule"}
+        title={
+          user.role === "technician"
+            ? "My installation jobs"
+            : "Installation jobs"
+        }
         description="The right crew, the right equipment, a clear handover."
       />
       <div className="section-heading">
@@ -51,7 +55,11 @@ export function Jobs() {
 }
 function JobCard({ job: j }: { job: any }) {
   return (
-    <Link className="job-card" to={`/projects/${j.id}?tab=installation`}>
+    <Link
+      className="job-card"
+      to={`/projects/${j.id}?tab=installation`}
+      state={{ returnTo: "/jobs" }}
+    >
       <div className="job-card-top">
         <span>{projectNumber(j.number)}</span>
         <Status value={j.job_status} />

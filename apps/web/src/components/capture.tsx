@@ -5,8 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { ErrorNotice } from "./shared";
-import { api, queryClient, useCommand } from "@/lib/api";
+import { api, queryClient, useCommand, useData } from "@/lib/api";
 export function SerialScanner({ orderId }: { orderId: string }) {
+  const { data: demo } = useData("/demo-tools");
+  const { data: available } = useData(
+    `/orders/${orderId}/available-serials`,
+    !!demo?.enabled,
+  );
   const [serial, setSerial] = useState(""),
     [camera, setCamera] = useState(false),
     [error, setError] = useState<Error | null>(null);
@@ -50,6 +55,29 @@ export function SerialScanner({ orderId }: { orderId: string }) {
   }, [camera]);
   return (
     <div className="scanner">
+      {demo?.enabled && (
+        <div className="sample-fill">
+          <label htmlFor="demo-serial">
+            Testing: choose an available device
+          </label>
+          <select
+            id="demo-serial"
+            value=""
+            onChange={(e) => setSerial(e.target.value)}
+          >
+            <option value="">Choose the device to check</option>
+            {available?.items.map((a: any) => (
+              <option key={a.serial} value={a.serial}>
+                {a.product_name} — {a.serial}
+              </option>
+            ))}
+          </select>
+          <small>
+            This fills the serial field only. Select Add serial to run the
+            normal stock checks.
+          </small>
+        </div>
+      )}
       <form
         onSubmit={(e) => {
           e.preventDefault();

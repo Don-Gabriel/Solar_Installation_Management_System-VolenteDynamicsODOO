@@ -30,25 +30,25 @@ export function Login() {
         <div className="login-copy">
           <span className="login-pill">Built for the people behind solar</span>
           <h1>
-            Good energy.
+            Solar work,
             <br />
-            Great operations.
+            clearly managed.
           </h1>
           <p>
             From the first conversation to the final connection. Keep your
             customers, crew and every solar asset moving together.
           </p>
-          <div className="solar-illustration" aria-hidden="true">
-            <div className="sun-disc" />
-            <div className="panel-array">
-              {Array.from({ length: 6 }, (_, i) => (
-                <div key={i} className="solar-panel" />
-              ))}
-            </div>
-            <span className="diagram-label">
-              One connected installation journey
-            </span>
-          </div>
+          <figure className="login-photo">
+            <img
+              src="/images/solar-team.png"
+              width="1536"
+              height="1024"
+              alt="Illustration of two solar installers checking a rooftop system"
+            />
+            <figcaption>
+              AI-generated illustration. Not a customer installation.
+            </figcaption>
+          </figure>
           <div className="login-points">
             <span>
               <PanelTop />
@@ -60,7 +60,7 @@ export function Login() {
             </span>
             <span>
               <ShieldCheck />
-              Lifetime service
+              Repairs & warranty
             </span>
           </div>
         </div>

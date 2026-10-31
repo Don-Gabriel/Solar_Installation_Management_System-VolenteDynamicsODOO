@@ -17,9 +17,9 @@ import {
 import { useData, date, money } from "@/lib/api";
 import { Can, useSession } from "@/app/session";
 export function Service() {
-  const [params] = useSearchParams(),
-    [search, setSearch] = useState(params.get("search") || ""),
-    [selected, setSelected] = useState<any>(null),
+  const [params, setParams] = useSearchParams();
+  const search = params.get("search") || "";
+  const [selected, setSelected] = useState<any>(null),
     [resolving, setResolving] = useState<any>(null),
     [confirm, setConfirm] = useState<any>(null);
   const { user } = useSession();
@@ -33,7 +33,7 @@ export function Service() {
   return (
     <>
       <PageHead
-        title="Service & warranty"
+        title="Repairs & warranty"
         description="Keep every customer’s system generating, long after handover."
       />
       <Can roles={["admin", "support"]}>
@@ -51,7 +51,11 @@ export function Service() {
                 id="service-search"
                 placeholder="Try SP-INV3-0001, a customer name or phone…"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) =>
+                  setParams(e.target.value ? { search: e.target.value } : {}, {
+                    replace: true,
+                  })
+                }
               />
             </div>
           </Field>
@@ -166,6 +170,11 @@ export function Service() {
                     render={
                       <Link
                         to={`/projects/${t.project_id}?tab=${user.role === "accounts" ? "quote" : "passport"}`}
+                        state={{
+                          returnTo:
+                            "/service" +
+                            (params.size ? "?" + params.toString() : ""),
+                        }}
                       />
                     }
                     nativeButton={false}
@@ -198,7 +207,20 @@ export function Service() {
             defaults={{ fault_code: "", complaint: "" }}
             transform={(b) => ({ ...b, warranty_id: selected.id })}
             fields={[
-              { name: "fault_code", label: "Fault code / category" },
+              {
+                name: "fault_code",
+                label: "Problem category",
+                type: "select",
+                options: [
+                  "No power",
+                  "Low generation",
+                  "Inverter warning",
+                  "Battery issue",
+                  "Wiring or connection",
+                  "Physical damage",
+                  "Other",
+                ].map((v) => ({ value: v, label: v })),
+              },
               {
                 name: "complaint",
                 label: "Customer complaint",
@@ -272,6 +294,7 @@ export function Service() {
             path={`/tickets/${confirm.id}/confirmation`}
             onDone={() => setConfirm(null)}
             submit="Confirm resolution & close ticket"
+            defaults={{ confirmed_by: confirm.customer_name }}
             fields={[
               {
                 name: "confirmed_by",

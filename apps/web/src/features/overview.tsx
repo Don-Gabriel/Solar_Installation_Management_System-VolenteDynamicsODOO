@@ -41,31 +41,60 @@ export function Overview() {
           <NewProjectLink />
         </Can>
       </PageHead>
-      <div className="overview-banner">
-        <div>
-          <Sun />
-          <span>From rooftop to real impact</span>
-          <h2>{active} projects moving toward clean energy.</h2>
-          <p>Keep the next step clear. Your team’s work starts here.</p>
-          <Button
-            variant="secondary"
-            render={<Link to="/projects" />}
-            nativeButton={false}
-          >
-            View project pipeline <ArrowUpRight data-icon="inline-end" />
-          </Button>
+      <Panel
+        title="What would you like to work on?"
+        description="Choose a task. Each project shows the next step and the team responsible."
+      >
+        <div className="work-shortcuts">
+          <Link to="/projects">
+            <span>Customers & projects</span>
+            <strong>Find a customer or continue a project</strong>
+            <ArrowUpRight />
+          </Link>
+          <Can roles={["admin", "warehouse"]}>
+            <Link to="/inventory">
+              <span>Stock & delivery</span>
+              <strong>Pack equipment or confirm delivery</strong>
+              <ArrowUpRight />
+            </Link>
+          </Can>
+          <Can roles={["admin", "surveyor"]}>
+            <Link to="/projects?status=survey">
+              <span>Roof surveys</span>
+              <strong>Review site checks and approvals</strong>
+              <ArrowUpRight />
+            </Link>
+          </Can>
+          <Can roles={["admin", "technician"]}>
+            <Link to="/jobs">
+              <span>Installation jobs</span>
+              <strong>Open assigned work and handover</strong>
+              <ArrowUpRight />
+            </Link>
+          </Can>
+          <Can roles={["admin", "sales"]}>
+            <Link to="/projects?status=quoted">
+              <span>Customer decisions</span>
+              <strong>Follow up on quotations</strong>
+              <ArrowUpRight />
+            </Link>
+          </Can>
+          <Can roles={["admin", "support"]}>
+            <Link to="/service">
+              <span>Repairs</span>
+              <strong>Check a warranty or resolve a fault</strong>
+              <ArrowUpRight />
+            </Link>
+          </Can>
+          <Can roles={["admin", "accounts"]}>
+            <Link to="/reports">
+              <span>Money</span>
+              <strong>Review payments and job costs</strong>
+              <ArrowUpRight />
+            </Link>
+          </Can>
         </div>
-        <div className="energy-art" aria-hidden="true">
-          <div className="orbit one" />
-          <div className="orbit two" />
-          <Sun className="art-sun" />
-          <div className="art-panels">
-            <span />
-            <span />
-            <span />
-          </div>
-        </div>
-      </div>
+      </Panel>
       <div className="metrics">
         <div className="metric">
           <span>
@@ -81,7 +110,7 @@ export function Overview() {
         <div className="metric">
           <span>
             <ShieldCheck />
-            Commissioned
+            Installed
           </span>
           <strong>{completed}</strong>
           <p>Installations handed over</p>

@@ -1,6 +1,6 @@
 import { useId, useEffect, type ReactNode } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import {
   AlertCircle,
   ArrowUpRight,
@@ -176,6 +176,7 @@ export function Modal({
   );
 }
 export type FormField = {
+  group?: string;
   name: string;
   label: string;
   type?: string;
@@ -196,6 +197,7 @@ export function SmartForm({
   pending = false,
   error = null,
   children,
+  presets,
 }: {
   fields: FormField[];
   defaults?: any;
@@ -204,12 +206,14 @@ export function SmartForm({
   pending?: boolean;
   error?: Error | null;
   children?: ReactNode;
+  presets?: { label: string; values: Record<string, unknown> }[];
 }) {
   const prefix = useId();
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors, isDirty },
   } = useForm({ defaultValues: defaults });
   useEffect(() => {
@@ -231,120 +235,174 @@ export function SmartForm({
       })}
       className="smart-form"
     >
-      <FieldGroup className="form-grid">
-        {fields.map((f) => {
-          const id = `${prefix}-${f.name}`,
-            invalid = errors[f.name];
-          return (
-            <Field
-              key={f.name}
-              data-invalid={!!invalid}
-              className={cn(
-                f.full && "field-full",
-                f.type === "checkbox" && "check-field",
-              )}
-              orientation={f.type === "checkbox" ? "horizontal" : "vertical"}
+      {presets?.length ? (
+        <div className="sample-fill">
+          <span>Test helper — review before saving</span>
+          {presets.map((p) => (
+            <Button
+              key={p.label}
+              type="button"
+              variant="outline"
+              onClick={() => reset({ ...defaults, ...p.values })}
             >
-              {f.type !== "checkbox" && (
-                <FieldLabel htmlFor={id}>
-                  {f.label}
-                  {f.required !== false && <span aria-hidden="true"> *</span>}
-                </FieldLabel>
-              )}
-              {f.type === "checkbox" ? (
-                <Controller
-                  control={control}
-                  name={f.name}
-                  defaultValue={false}
-                  render={({ field }) => (
-                    <Checkbox
+              {p.label}
+            </Button>
+          ))}
+        </div>
+      ) : null}
+      {Object.entries(
+        fields.reduce<Record<string, FormField[]>>((groups, f) => {
+          const group = f.group || "";
+          (groups[group] ||= []).push(f);
+          return groups;
+        }, {}),
+      ).map(([group, section]) => (
+        <fieldset key={group} className="form-section">
+          <legend className={group ? "form-section-title" : "sr-only"}>
+            {group || "Details"}
+          </legend>
+          <FieldGroup className="form-grid">
+            {section.map((f) => {
+              const id = `${prefix}-${f.name}`,
+                invalid = errors[f.name];
+              return (
+                <Field
+                  key={f.name}
+                  data-invalid={!!invalid}
+                  className={cn(
+                    f.full && "field-full",
+                    f.type === "checkbox" && "check-field",
+                  )}
+                  orientation={
+                    f.type === "checkbox" ? "horizontal" : "vertical"
+                  }
+                >
+                  {f.type !== "checkbox" && (
+                    <FieldLabel htmlFor={id}>
+                      {f.label}
+                      {f.required !== false && (
+                        <span aria-hidden="true"> *</span>
+                      )}
+                    </FieldLabel>
+                  )}
+                  {f.type === "checkbox" ? (
+                    <Controller
+                      control={control}
+                      name={f.name}
+                      defaultValue={false}
+                      render={({ field }) => (
+                        <Checkbox
+                          id={id}
+                          checked={!!field.value}
+                          onCheckedChange={field.onChange}
+                          disabled={pending}
+                        />
+                      )}
+                    />
+                  ) : f.type === "select" ? (
+                    <NativeSelect
                       id={id}
-                      checked={!!field.value}
-                      onCheckedChange={field.onChange}
                       disabled={pending}
+                      aria-invalid={!!invalid}
+                      {...register(f.name, {
+                        required:
+                          f.required !== false ? "Choose an option." : false,
+                      })}
+                    >
+                      <NativeSelectOption value="">
+                        {f.required === false
+                          ? "None / not chosen"
+                          : "Choose an option"}
+                      </NativeSelectOption>
+                      {f.options?.map((o) => (
+                        <NativeSelectOption key={o.value} value={o.value}>
+                          {o.label}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  ) : f.type === "textarea" ? (
+                    <Textarea
+                      id={id}
+                      aria-invalid={!!invalid}
+                      {...register(f.name, {
+                        required:
+                          f.required !== false
+                            ? "Enter this information."
+                            : false,
+                      })}
+                    />
+                  ) : (
+                    <Input
+                      id={id}
+                      type={f.type || "text"}
+                      autoComplete={
+                        f.type === "password"
+                          ? "current-password"
+                          : f.type === "email"
+                            ? "username"
+                            : f.name === "phone"
+                              ? "tel"
+                              : f.name === "name"
+                                ? "name"
+                                : "off"
+                      }
+                      spellCheck={
+                        f.type === "email" || f.type === "password"
+                          ? false
+                          : undefined
+                      }
+                      inputMode={
+                        f.type === "number"
+                          ? "decimal"
+                          : f.type === "tel"
+                            ? "tel"
+                            : undefined
+                      }
+                      step={
+                        f.step ||
+                        (f.type === "number" || f.money ? "any" : undefined)
+                      }
+                      min={f.min}
+                      max={f.max}
+                      aria-invalid={!!invalid}
+                      {...register(f.name, {
+                        required:
+                          f.required !== false
+                            ? "Enter this information."
+                            : false,
+                        ...(f.type === "number" ? { valueAsNumber: true } : {}),
+                        ...(f.min !== undefined
+                          ? {
+                              min: {
+                                value: f.min,
+                                message: `Minimum ${f.min}.`,
+                              },
+                            }
+                          : {}),
+                        ...(f.max !== undefined
+                          ? {
+                              max: {
+                                value: f.max,
+                                message: `Maximum ${f.max}.`,
+                              },
+                            }
+                          : {}),
+                      })}
                     />
                   )}
-                />
-              ) : f.type === "select" ? (
-                <NativeSelect
-                  id={id}
-                  aria-invalid={!!invalid}
-                  {...register(f.name, {
-                    required:
-                      f.required !== false ? "Choose an option." : false,
-                  })}
-                >
-                  {f.options?.map((o) => (
-                    <NativeSelectOption key={o.value} value={o.value}>
-                      {o.label}
-                    </NativeSelectOption>
-                  ))}
-                </NativeSelect>
-              ) : f.type === "textarea" ? (
-                <Textarea
-                  id={id}
-                  aria-invalid={!!invalid}
-                  {...register(f.name, {
-                    required:
-                      f.required !== false ? "Enter this information." : false,
-                  })}
-                />
-              ) : (
-                <Input
-                  id={id}
-                  type={f.type || "text"}
-                  autoComplete={
-                    f.type === "password"
-                      ? "current-password"
-                      : f.type === "email"
-                        ? "username"
-                        : f.name === "phone"
-                          ? "tel"
-                          : f.name === "name"
-                            ? "name"
-                            : "off"
-                  }
-                  spellCheck={
-                    f.type === "email" || f.type === "password"
-                      ? false
-                      : undefined
-                  }
-                  inputMode={
-                    f.type === "number"
-                      ? "decimal"
-                      : f.type === "tel"
-                        ? "tel"
-                        : undefined
-                  }
-                  step={
-                    f.step ||
-                    (f.type === "number" || f.money ? "any" : undefined)
-                  }
-                  min={f.min}
-                  max={f.max}
-                  aria-invalid={!!invalid}
-                  {...register(f.name, {
-                    required:
-                      f.required !== false ? "Enter this information." : false,
-                    ...(f.type === "number" ? { valueAsNumber: true } : {}),
-                    ...(f.min !== undefined
-                      ? { min: { value: f.min, message: `Minimum ${f.min}.` } }
-                      : {}),
-                    ...(f.max !== undefined
-                      ? { max: { value: f.max, message: `Maximum ${f.max}.` } }
-                      : {}),
-                  })}
-                />
-              )}
-              {f.type === "checkbox" && (
-                <FieldLabel htmlFor={id}>{f.label}</FieldLabel>
-              )}
-              {f.hint && <p className="field-hint">{f.hint}</p>}
-              {invalid && <FieldError>{String(invalid.message)}</FieldError>}
-            </Field>
-          );
-        })}
-      </FieldGroup>
+                  {f.type === "checkbox" && (
+                    <FieldLabel htmlFor={id}>{f.label}</FieldLabel>
+                  )}
+                  {f.hint && <p className="field-hint">{f.hint}</p>}
+                  {invalid && (
+                    <FieldError>{String(invalid.message)}</FieldError>
+                  )}
+                </Field>
+              );
+            })}
+          </FieldGroup>
+        </fieldset>
+      ))}
       {children}
       <ErrorNotice error={error} />
       <Button type="submit" disabled={pending} className="submit-button">
@@ -417,6 +475,7 @@ export function ProjectList({
   items: any[];
   compact?: boolean;
 }) {
+  const location = useLocation();
   if (!items.length)
     return (
       <Blank title="No matching projects">
@@ -433,7 +492,12 @@ export function ProjectList({
         <span />
       </div>
       {items.map((p) => (
-        <Link className="project-row" key={p.id} to={`/projects/${p.id}`}>
+        <Link
+          className="project-row"
+          key={p.id}
+          to={`/projects/${p.id}`}
+          state={{ returnTo: location.pathname + location.search }}
+        >
           <div className="customer-cell">
             <span className="initials">
               {p.customer_name

@@ -1,0 +1,415 @@
+[
+  {
+    "id": "login",
+    "title": "Sign in",
+    "path": "/ (when signed out)",
+    "roles": [
+      "admin",
+      "sales",
+      "surveyor",
+      "warehouse",
+      "technician",
+      "support",
+      "accounts"
+    ],
+    "purpose": "Enter your staff account. Your role controls the screens and actions you can use.",
+    "options": [
+      "Email address and password",
+      "Sign in",
+      "Customer enquiry form for visitors"
+    ],
+    "fields": [
+      "Email: type your account address.",
+      "Password: enter the configured demo password."
+    ],
+    "next": "Home opens after sign-in. To test another role, sign out and use its own account. There is no identity-switch bypass."
+  },
+  {
+    "id": "public",
+    "title": "Customer enquiry",
+    "path": "/enquire",
+    "roles": ["public"],
+    "purpose": "Let a customer request a solar installation without a staff account.",
+    "options": [
+      "Send enquiry",
+      "Send another enquiry after success",
+      "Staff sign in"
+    ],
+    "fields": [
+      "Customer and site: name, phone and installation address.",
+      "Solar system: choose 1-5 kW; on-grid, off-grid with battery, or panel hardware set.",
+      "Optional: requirements notes and subsidy interest."
+    ],
+    "next": "The saved enquiry appears in the staff project list. Customers do not receive access to staff screens."
+  },
+  {
+    "id": "home",
+    "title": "Home",
+    "path": "/",
+    "roles": [
+      "admin",
+      "sales",
+      "surveyor",
+      "warehouse",
+      "technician",
+      "support",
+      "accounts"
+    ],
+    "purpose": "See current work and open the right task quickly.",
+    "options": [
+      "Role-specific shortcuts",
+      "Counts for active and finished projects",
+      "Stage links filter the project list",
+      "Recent projects and installer schedule",
+      "Money totals only for permitted roles"
+    ],
+    "fields": ["No typing is required."],
+    "next": "Choose a work shortcut or project. Installers see their assigned projects only."
+  },
+  {
+    "id": "projects",
+    "title": "Customers & projects",
+    "path": "/projects",
+    "roles": [
+      "admin",
+      "sales",
+      "surveyor",
+      "warehouse",
+      "technician",
+      "support",
+      "accounts"
+    ],
+    "purpose": "Find a customer, installation site or project.",
+    "options": [
+      "Search by customer, phone, site or project number",
+      "Filter by stage",
+      "Previous and Next pages",
+      "Open project",
+      "New enquiry for administrator and sales"
+    ],
+    "fields": [
+      "Search: free text.",
+      "Stage: choose from the saved project stages."
+    ],
+    "next": "Your search, stage and page stay in the address. Back to project list keeps these filters."
+  },
+  {
+    "id": "new",
+    "title": "New staff enquiry",
+    "path": "/projects/new",
+    "roles": ["admin", "sales"],
+    "purpose": "Create a customer request received by the staff team.",
+    "options": [
+      "Create project",
+      "Back to project list",
+      "Fill sample enquiry when local test helpers are enabled; review and save separately"
+    ],
+    "fields": [
+      "Customer and site: name, phone, address.",
+      "Solar system: capacity, system type, notes, subsidy interest.",
+      "Follow-up: source (Website, Referral, Phone, WhatsApp, Walk-in), optional date and responsible sales/admin staff."
+    ],
+    "next": "The new project opens. Record the site survey next."
+  },
+  {
+    "id": "detail",
+    "title": "Project workspace",
+    "path": "/projects/:id",
+    "roles": [
+      "admin",
+      "sales",
+      "surveyor",
+      "warehouse",
+      "technician",
+      "support",
+      "accounts"
+    ],
+    "purpose": "Keep one customer journey together and show what happens next.",
+    "options": [
+      "Back to the screen you came from",
+      "Next-step explanation and Go to this step",
+      "Clickable journey stages where your role has access",
+      "Project sections: survey, quote/payment, packing/delivery, installation, device history, subsidy, activity",
+      "Customer address and phone link"
+    ],
+    "fields": ["The summary itself has no form."],
+    "next": "The recommended section depends on the saved state and your role. A handoff message explains which team owns a step you cannot perform."
+  },
+  {
+    "id": "survey",
+    "title": "Site survey",
+    "path": "Project > Site survey",
+    "roles": ["admin", "sales", "surveyor"],
+    "purpose": "Check that the roof and power supply are suitable before quoting.",
+    "options": [
+      "Record site survey / Record new survey",
+      "Save survey",
+      "Approve survey / Reject survey: administrator and surveyor only",
+      "View latest measurements, survey status, customer needs and follow-up date"
+    ],
+    "fields": [
+      "Roof measurements: usable area in square metres, direction selected from eight compass directions, tilt in degrees, cable distance in metres.",
+      "Electricity: actual monthly bill and grid-suitability checkbox.",
+      "Site notes: type observations that fixed choices cannot describe."
+    ],
+    "next": "Approval enables a quotation. Measurements must describe the actual site; demo defaults are not engineering advice."
+  },
+  {
+    "id": "quote",
+    "title": "Quotation & payment",
+    "path": "Project > Quotation & payment",
+    "roles": ["admin", "sales", "accounts"],
+    "purpose": "Prepare a price list, record acceptance and track customer payments.",
+    "options": [
+      "Generate quotation or Issue new version: administrator/sales after survey approval",
+      "Print quotation/invoice view",
+      "Record customer acceptance: administrator/sales",
+      "View itemized invoice, paid amount and balance",
+      "Record payment: administrator/sales/accounts"
+    ],
+    "fields": [
+      "Quote: equipment quantities and prices fill from the selected package.",
+      "Payment: actual amount in rupees, payment method and transaction/receipt reference.",
+      "Payment methods: bank transfer, UPI, cash or card."
+    ],
+    "next": "Acceptance freezes the quoted prices and creates the order. Record the advance before stock is reserved. A payment reference identifies the real receipt; do not invent one for real transactions."
+  },
+  {
+    "id": "packing",
+    "title": "Packing & delivery",
+    "path": "Project > Packing & delivery",
+    "roles": ["admin", "warehouse", "sales"],
+    "purpose": "Set aside the right equipment, check its serials and record delivery.",
+    "options": [
+      "Reserve stock: administrator/stock team",
+      "View required quantities and scanned counts",
+      "Type/scan serial, Use camera, Add serial",
+      "Optional test picker fills a valid stock serial without saving",
+      "Confirm packing & dispatch",
+      "Confirm customer delivery",
+      "View allocated devices and delivery dates"
+    ],
+    "fields": [
+      "Serial: scan the generated Code 128 label, paste it, or use the local test picker.",
+      "Delivery is an explicit action; there is no automatic delivery date when dispatching."
+    ],
+    "next": "Every required inverter, controller and battery must be scanned before dispatch. Delivery starts warranties exactly once."
+  },
+  {
+    "id": "installation",
+    "title": "Installation & handover",
+    "path": "Project > Installation",
+    "roles": ["admin", "technician", "sales", "surveyor", "support"],
+    "purpose": "Assign the job, record work and save proof of handover.",
+    "options": [
+      "Assign technician & time: administrator",
+      "Start installation: administrator/assigned installer after delivery",
+      "Choose photo / camera file picker",
+      "Draw signature, Clear, Save signature or upload PNG alternative",
+      "Complete safety checklist and handover",
+      "View saved evidence after refresh"
+    ],
+    "fields": [
+      "Assignment: choose active installer, start date/time and expected duration in hours.",
+      "Handover: installed capacity, measured generation, labour minutes, homeowner name.",
+      "Checks: mounting, earthing/safety, wiring/protection, inverter/generation and homeowner instruction.",
+      "Evidence: real test photo and drawn or uploaded signature."
+    ],
+    "next": "Completion requires saved photo, signature and checks. Only the assigned installer can open and complete their job; administrators can manage all jobs."
+  },
+  {
+    "id": "passport",
+    "title": "Device history (asset passport)",
+    "path": "Project > Asset passport",
+    "roles": [
+      "admin",
+      "sales",
+      "surveyor",
+      "warehouse",
+      "technician",
+      "support",
+      "accounts"
+    ],
+    "purpose": "Trace delivered equipment, coverage and replacements.",
+    "options": [
+      "View product or serial, delivery date, expiry date and coverage",
+      "Review old and replacement devices",
+      "Open related service work where allowed"
+    ],
+    "fields": ["No manual data entry on this section."],
+    "next": "Use the serial or customer search in Repairs & warranty when a fault is reported. Printing or scanning a barcode never resets coverage."
+  },
+  {
+    "id": "subsidy",
+    "title": "Subsidy records",
+    "path": "Project > Subsidy",
+    "roles": ["admin", "sales", "accounts"],
+    "purpose": "Track the paperwork for a subsidy application.",
+    "options": [
+      "Choose application status",
+      "Save application reference, case owner and next action",
+      "Check identity, electricity bill, bank details and installation proof documents"
+    ],
+    "fields": [
+      "Status: documents pending, submitted, approved, received or not applicable. Choose the responsible staff member as owner.",
+      "Reference and next action: type actual case details.",
+      "Documents: tick only after checking that they were collected or verified."
+    ],
+    "next": "This is a tracking checklist. It does not determine government eligibility or submit an application."
+  },
+  {
+    "id": "activity",
+    "title": "Activity history",
+    "path": "Project > Activity",
+    "roles": [
+      "admin",
+      "sales",
+      "surveyor",
+      "warehouse",
+      "technician",
+      "support",
+      "accounts"
+    ],
+    "purpose": "See who saved important changes and when.",
+    "options": [
+      "Read chronological events and actor names",
+      "View details allowed for your role"
+    ],
+    "fields": [
+      "No manual entry. Events are created by successful saved actions."
+    ],
+    "next": "Use this to explain or trace a change. Financial event details are withheld from roles without financial access."
+  },
+  {
+    "id": "stock",
+    "title": "Stock & deliveries",
+    "path": "/inventory",
+    "roles": ["admin", "warehouse", "accounts"],
+    "purpose": "Check equipment quantities, device serials and purchases.",
+    "options": [
+      "Packing queue links to a project",
+      "Stock levels: on hand, reserved, available and tracking type",
+      "Device serials: search and status",
+      "Purchase receipts: supplier, reference, quantity, cost and date",
+      "Receive stock: administrator/stock team",
+      "Barcode labels"
+    ],
+    "fields": [
+      "Receipt: choose product; enter supplier, purchase reference, received quantity and unit cost.",
+      "Serialized product: one genuine or synthetic test serial per device, one per line. Quantity-tracked materials need no device serial."
+    ],
+    "next": "Duplicate serials are rejected. Labels are printed from records already in the database; a print action never receives stock."
+  },
+  {
+    "id": "jobs",
+    "title": "Installation jobs",
+    "path": "/jobs",
+    "roles": ["admin", "technician", "surveyor", "sales"],
+    "purpose": "Review upcoming, in-progress and completed installation work.",
+    "options": [
+      "Open a job directly on its Installation section",
+      "See customer, site, capacity, assigned installer and schedule",
+      "Installers see only their own work"
+    ],
+    "fields": [
+      "No typing on the job list. Assignment and completion happen inside the project."
+    ],
+    "next": "Open the job to continue, then use Back to jobs to return."
+  },
+  {
+    "id": "service",
+    "title": "Repairs & warranty",
+    "path": "/service",
+    "roles": ["admin", "support", "accounts"],
+    "purpose": "Find coverage, track a repair and record customer confirmation.",
+    "options": [
+      "Search customer/device/phone: administrator/support",
+      "Open ticket: select problem category and write complaint",
+      "Record repair or replacement: administrator/support",
+      "View free covered charge or itemized expired charge",
+      "Record customer confirmation only after repair",
+      "Open related project; accounts can review charges"
+    ],
+    "fields": [
+      "Problem category: No power, Low generation, Inverter warning, Battery issue, Wiring or connection, Physical damage, Other.",
+      "Repair: actual work performed, parts cost, labour cost, optional replacement serial of the same product.",
+      "Confirmation: customer name prefilled for review; record only after customer agreement."
+    ],
+    "next": "Covered service is free to the customer but keeps its internal cost. Expired service creates a bill. A replacement inherits original warranty dates. Customer confirmation closes the ticket."
+  },
+  {
+    "id": "reports",
+    "title": "Money & reports",
+    "path": "/reports",
+    "roles": ["admin", "accounts"],
+    "purpose": "Separate money received, unpaid invoices and installation costs.",
+    "options": [
+      "Choose Today, This week, This month or All time",
+      "View cash received, outstanding amounts, stock purchases and completed-job contribution",
+      "Open project breakdown",
+      "View installer payables; record paid reference",
+      "Export CSV",
+      "Print report"
+    ],
+    "fields": [
+      "Period: select.",
+      "Installer payment: enter the actual receipt/payment reference."
+    ],
+    "next": "Contribution means invoiced amount minus recorded material, installation labour and service costs. It is not company net profit; cash and profit are different."
+  },
+  {
+    "id": "barcodes",
+    "title": "Barcode labels",
+    "path": "/barcodes",
+    "roles": ["admin", "warehouse", "accounts"],
+    "purpose": "Use ready-made Code 128 barcodes for all saved serialized devices.",
+    "options": [
+      "Filter product and stock status",
+      "Search serial",
+      "Copy serial",
+      "Print these labels",
+      "Back to stock"
+    ],
+    "fields": ["Filters: select product/status; optional serial search."],
+    "next": "Use Available devices of the required product for successful packing. Used-device labels can test rejection. Printing does not make an allocated serial reusable. Regenerate the PDF after adding new devices."
+  },
+  {
+    "id": "team",
+    "title": "Team & access",
+    "path": "/team",
+    "roles": ["admin"],
+    "purpose": "Make role-based access visible using actual synthetic staff accounts.",
+    "options": [
+      "Choose a role card to filter staff",
+      "Search name or email",
+      "View sign-in email, role, active status and open assigned jobs",
+      "Read what each role can do"
+    ],
+    "fields": [
+      "Search/filter only. This screen does not create passwords or change roles."
+    ],
+    "next": "Sign out and use another role account to demonstrate the differences. Customers have an enquiry form, not a staff login."
+  },
+  {
+    "id": "help",
+    "title": "Screen guide",
+    "path": "/help",
+    "roles": [
+      "admin",
+      "sales",
+      "surveyor",
+      "warehouse",
+      "technician",
+      "support",
+      "accounts"
+    ],
+    "purpose": "Read a simple explanation of each screen and the types of fields.",
+    "options": [
+      "Search screen name or purpose",
+      "Open screens that your role can access",
+      "Read form categories and test steps"
+    ],
+    "fields": ["Optional screen search."],
+    "next": "Keep the PDF guide alongside the app during testing and presentation."
+  }
+]

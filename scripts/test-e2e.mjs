@@ -23,6 +23,8 @@ try {
   const baseURL = `http://127.0.0.1:${port}`;
   const env = {
     ...process.env,
+    NODE_ENV: "test",
+    DEMO_TOOLS: "true",
     DATABASE_URL: url.toString(),
     PORT: String(port),
     HOST: "127.0.0.1",

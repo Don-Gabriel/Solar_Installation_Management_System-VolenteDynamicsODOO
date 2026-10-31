@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import {
   Download,
   Printer,
@@ -26,13 +26,14 @@ import {
 } from "@/components/shared";
 import { useData, money, projectNumber, date } from "@/lib/api";
 export function Reports() {
-  const [period, setPeriod] = useState("month"),
-    [pay, setPay] = useState<any>(null);
+  const [params, setParams] = useSearchParams();
+  const period = params.get("period") || "month";
+  const [pay, setPay] = useState<any>(null);
   const { data, error, isPending } = useData(`/reports?period=${period}`);
   return (
     <>
       <PageHead
-        title="Reports & finance"
+        title="Money & reports"
         description="Follow the money, from collections to the cost of each installation."
       >
         <Field>
@@ -42,7 +43,7 @@ export function Reports() {
           <NativeSelect
             id="report-period"
             value={period}
-            onChange={(e) => setPeriod(e.target.value)}
+            onChange={(e) => setParams({ period: e.target.value })}
           >
             {[
               { value: "today", label: "Today" },
@@ -120,7 +121,12 @@ export function Reports() {
             description="Orders confirmed in the selected period. Completed contribution = invoices − consumed materials − installation labour − repair costs. Work in progress is excluded."
           >
             {data.jobs.length ? (
-              <div className="table-scroll">
+              <div
+                className="table-scroll"
+                tabIndex={0}
+                role="region"
+                aria-label="Scrollable records"
+              >
                 <table className="data-table finance-table">
                   <thead>
                     <tr>
@@ -135,7 +141,10 @@ export function Reports() {
                     {data.jobs.map((j: any) => (
                       <tr key={j.project_id}>
                         <td>
-                          <Link to={`/projects/${j.project_id}?tab=quote`}>
+                          <Link
+                            to={`/projects/${j.project_id}?tab=quote`}
+                            state={{ returnTo: "/reports?period=" + period }}
+                          >
                             <strong>{j.customer_name}</strong>
                             <small>
                               {projectNumber(j.number)} · {j.stage}
@@ -188,7 +197,12 @@ export function Reports() {
             title="Technician payables"
             description="All completed jobs. Labour is calculated from recorded minutes and the rate saved at completion."
           >
-            <div className="table-scroll">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Scrollable records"
+            >
               <table className="data-table">
                 <thead>
                   <tr>

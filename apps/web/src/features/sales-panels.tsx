@@ -15,6 +15,7 @@ import { money, date, useData } from "@/lib/api";
 import { Can } from "@/app/session";
 export function SurveyPanel({ data }: { data: any }) {
   const [open, setOpen] = useState(false);
+  const { data: demo } = useData("/demo-tools");
   const p = data.project,
     s = data.surveys[0];
   return (
@@ -127,32 +128,68 @@ export function SurveyPanel({ data }: { data: any }) {
           path={`/projects/${p.id}/surveys`}
           onDone={() => setOpen(false)}
           submit="Save survey"
+          presets={
+            demo?.enabled
+              ? [
+                  {
+                    label: "Fill sample survey",
+                    values: {
+                      roof_area: p.capacity_kw * 12,
+                      bill_minor: 3500,
+                      grid_suitable: true,
+                      direction: "South",
+                      tilt: 12,
+                      cable_distance: 18,
+                      notes: "Synthetic survey values for testing only.",
+                    },
+                  },
+                ]
+              : undefined
+          }
           defaults={{
-            roof_area: p.capacity_kw * 10,
-            bill_minor: 0,
-            grid_suitable: true,
-            direction: "South",
-            tilt: 12,
-            cable_distance: 15,
+            roof_area: "",
+            bill_minor: "",
+            grid_suitable: false,
+            direction: "",
+            tilt: "",
+            cable_distance: "",
             notes: "",
           }}
           fields={[
             {
               name: "roof_area",
+              group: "Roof measurements",
               label: "Usable roof area (m²)",
               type: "number",
               min: 1,
             },
             {
               name: "bill_minor",
+              group: "Electricity supply",
               label: "Monthly bill (₹)",
               type: "number",
               money: true,
               min: 0,
             },
-            { name: "direction", label: "Roof direction" },
+            {
+              name: "direction",
+              label: "Roof direction",
+              type: "select",
+              options: [
+                "North",
+                "North-east",
+                "East",
+                "South-east",
+                "South",
+                "South-west",
+                "West",
+                "North-west",
+              ].map((v) => ({ value: v, label: v })),
+              group: "Roof measurements",
+            },
             {
               name: "tilt",
+              group: "Roof measurements",
               label: "Tilt (degrees)",
               type: "number",
               min: 0,
@@ -160,18 +197,21 @@ export function SurveyPanel({ data }: { data: any }) {
             },
             {
               name: "cable_distance",
+              group: "Roof measurements",
               label: "Cable distance (m)",
               type: "number",
               min: 0,
             },
             {
               name: "grid_suitable",
+              group: "Electricity supply",
               label: "Grid connection is suitable",
               type: "checkbox",
               required: false,
             },
             {
               name: "notes",
+              group: "Site notes",
               label: "Site observations",
               type: "textarea",
               required: false,
@@ -191,7 +231,12 @@ export function LineItems({
   showCost?: boolean;
 }) {
   return (
-    <div className="table-scroll">
+    <div
+      className="table-scroll"
+      tabIndex={0}
+      role="region"
+      aria-label="Scrollable records"
+    >
       <table className="data-table">
         <thead>
           <tr>

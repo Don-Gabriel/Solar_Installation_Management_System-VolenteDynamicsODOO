@@ -63,7 +63,14 @@ test("responsive navigation, persisted enquiry and accessible core screens", asy
   ).toBe(false);
   await page.getByRole("tab", { name: "Site survey", exact: true }).click();
   await page.getByRole("button", { name: "Record site survey" }).click();
+  await page.getByLabel("Usable roof area").fill("36");
   await page.getByLabel("Monthly bill").fill("3500");
+  await page.getByLabel("Roof direction").selectOption("South");
+  await page.getByLabel("Tilt (degrees)").fill("12");
+  await page.getByLabel("Cable distance").fill("18");
+  await page
+    .getByRole("checkbox", { name: "Grid connection is suitable" })
+    .check();
   await page.getByRole("button", { name: "Save survey", exact: true }).click();
   await expect(page.getByRole("dialog")).toBeHidden();
   await page

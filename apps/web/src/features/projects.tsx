@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+  useLocation,
+} from "react-router";
 import {
   Search,
   ArrowLeft,
@@ -46,6 +52,7 @@ import {
   date,
   projectNumber,
 } from "@/lib/api";
+import { nextProjectStep, stageTabs, roleNames } from "@/lib/workflow";
 import { Can, useSession } from "@/app/session";
 import { SurveyPanel, QuotePanel, SubsidyPanel } from "./sales-panels";
 import { DeliveryPanel, InstallationPanel, PassportPanel } from "./work-panels";
@@ -103,7 +110,16 @@ export const enquiryFields: FormField[] = [
 ];
 export function Projects() {
   const [params, setParams] = useSearchParams();
-  const [search, setSearch] = useState(params.get("search") || "");
+  const search = params.get("search") || "";
+  function filter(values: Record<string, string>) {
+    const next = new URLSearchParams(params);
+    next.delete("page");
+    for (const [k, v] of Object.entries(values)) {
+      if (v) next.set(k, v);
+      else next.delete(k);
+    }
+    setParams(next, { replace: true });
+  }
   const status = params.get("status") || "",
     page = Number(params.get("page") || 1);
   const { data, error, isPending } = useData(
@@ -132,8 +148,7 @@ export function Projects() {
                 placeholder="Search customer, phone or site…"
                 value={search}
                 onChange={(e) => {
-                  setSearch(e.target.value);
-                  setParams(status ? { status } : {});
+                  filter({ search: e.target.value });
                 }}
               />
             </div>
@@ -145,9 +160,7 @@ export function Projects() {
             <NativeSelect
               id="stage-filter"
               value={status}
-              onChange={(e) =>
-                setParams(e.target.value ? { status: e.target.value } : {})
-              }
+              onChange={(e) => filter({ status: e.target.value })}
             >
               <NativeSelectOption value="">All stages</NativeSelectOption>
               {stages.map((s) => (
@@ -175,7 +188,7 @@ export function Projects() {
                   disabled={page <= 1}
                   onClick={() =>
                     setParams({
-                      ...(status ? { status } : {}),
+                      ...Object.fromEntries(params),
                       page: String(page - 1),
                     })
                   }
@@ -187,7 +200,7 @@ export function Projects() {
                   disabled={page * 20 >= data.total}
                   onClick={() =>
                     setParams({
-                      ...(status ? { status } : {}),
+                      ...Object.fromEntries(params),
                       page: String(page + 1),
                     })
                   }
@@ -206,6 +219,7 @@ export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
   const navigate = useNavigate();
   const [done, setDone] = useState(false);
   const { data: users } = useData("/users", !publicForm);
+  const { data: demo } = useData("/demo-tools", !publicForm);
   const command = useCommand("/projects", (data) =>
     navigate(`/projects/${data.id}`),
   );
@@ -252,7 +266,36 @@ export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
           description="Fields marked * are required."
         >
           <SmartForm
-            fields={fields}
+            fields={fields.map((f) => ({
+              ...f,
+              group: ["name", "phone", "address"].includes(f.name)
+                ? "Customer and site"
+                : [
+                      "capacity_kw",
+                      "system_type",
+                      "subsidy_interest",
+                      "notes",
+                    ].includes(f.name)
+                  ? "Solar system"
+                  : "Follow-up",
+            }))}
+            presets={
+              demo?.enabled
+                ? [
+                    {
+                      label: "Fill sample enquiry",
+                      values: {
+                        name:
+                          "Demo customer " + Date.now().toString().slice(-5),
+                        phone: "9800099001",
+                        address: "Synthetic test home, Kakkanad, Kochi",
+                        notes:
+                          "Synthetic test enquiry. Review the details before saving.",
+                      },
+                    },
+                  ]
+                : undefined
+            }
             defaults={{
               capacity_kw: "3",
               system_type: "on_grid",
@@ -293,6 +336,14 @@ export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
   );
 }
 export function ProjectDetail() {
+  const location = useLocation();
+  const returnTo =
+    typeof location.state?.returnTo === "string" &&
+    /^\/(projects|inventory|jobs|service|reports)(\?|$)/.test(
+      location.state.returnTo,
+    )
+      ? location.state.returnTo
+      : "/projects";
   const { id } = useParams(),
     [params, setParams] = useSearchParams();
   const { user } = useSession();
@@ -341,12 +392,40 @@ export function ProjectDetail() {
     },
     { value: "activity", label: "Activity", icon: History, show: true },
   ].filter((t) => t.show);
-  const active = params.get("tab") || tabs[0].value;
+  const next = nextProjectStep(data);
+  const preferred =
+    user.role === "technician"
+      ? "installation"
+      : user.role === "warehouse"
+        ? "delivery"
+        : user.role === "accounts"
+          ? "quote"
+          : user.role === "support"
+            ? "passport"
+            : next.tab;
+  const active = params.get("tab") || preferred;
+  function goToTab(tab: string) {
+    setParams({ tab }, { state: location.state });
+    requestAnimationFrame(() =>
+      document
+        .getElementById("project-work")
+        ?.scrollIntoView({ block: "start", behavior: "instant" }),
+    );
+  }
   return (
     <>
-      <Link to="/projects" className="back-link">
+      <Link to={returnTo} className="back-link">
         <ArrowLeft />
-        All projects
+        Back to{" "}
+        {returnTo.startsWith("/projects")
+          ? "project list"
+          : returnTo.startsWith("/inventory")
+            ? "stock"
+            : returnTo.startsWith("/jobs")
+              ? "jobs"
+              : returnTo.startsWith("/service")
+                ? "repairs"
+                : "reports"}
       </Link>
       <PageHead
         title={p.customer_name}
@@ -365,6 +444,23 @@ export function ProjectDetail() {
         </a>
         <span>Owner: {p.owner_name || "Unassigned"}</span>
       </div>
+      <section className="next-step" aria-label="Next project step">
+        <div>
+          <span className="next-label">
+            {p.stage === "completed" ? "Handover saved" : "What happens next"}
+          </span>
+          <h2>{next.title}</h2>
+          <p>{next.detail}</p>
+          <small>
+            {next.roles.includes(user.role)
+              ? "Your role can handle this step."
+              : `Handled by: ${next.roles.map((r) => roleNames[r]).join(", ")}. You can review the information available to your role.`}
+          </small>
+        </div>
+        {tabs.some((t) => t.value === next.tab) && (
+          <Button onClick={() => goToTab(next.tab)}>Go to this step</Button>
+        )}
+      </section>
       <ol className="journey" aria-label="Installation stages">
         {stages.map((s, i) => (
           <li
@@ -372,17 +468,25 @@ export function ProjectDetail() {
             className={i <= stages.indexOf(p.stage) ? "reached" : ""}
             aria-current={p.stage === s ? "step" : undefined}
           >
-            <span>{i < stages.indexOf(p.stage) ? "✓" : i + 1}</span>
-            {human(s)}
+            <button
+              type="button"
+              disabled={!tabs.some((t) => t.value === stageTabs[s])}
+              onClick={() => goToTab(stageTabs[s])}
+            >
+              <span>{i < stages.indexOf(p.stage) ? "✓" : i + 1}</span>
+              {human(s)}
+            </button>
             {i < stages.length - 1 && <ChevronRight aria-hidden="true" />}
           </li>
         ))}
       </ol>
       <Tabs
         value={tabs.some((t) => t.value === active) ? active : tabs[0].value}
-        onValueChange={(value) => setParams({ tab: String(value) })}
+        onValueChange={(value) =>
+          setParams({ tab: String(value) }, { state: location.state })
+        }
       >
-        <div className="tabs-scroll">
+        <div id="project-work" className="tabs-scroll">
           <TabsList variant="line" className="project-tabs">
             {tabs.map((t) => (
               <TabsTrigger key={t.value} value={t.value}>

@@ -3,12 +3,41 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { queryClient, api, setCsrf, ApiError } from "@/lib/api";
-import { SessionContext } from "@/app/session";
+import { SessionContext, useSession } from "@/app/session";
 import { Layout } from "@/app/layout";
 import { Login } from "@/features/login";
 import { Loading, ErrorNotice } from "@/components/shared";
 import { Button } from "@/components/ui/button";
 import "./styles.css";
+const Barcodes = lazy(() =>
+  import("@/features/barcodes").then((m) => ({ default: m.Barcodes })),
+);
+const Team = lazy(() =>
+  import("@/features/team").then((m) => ({ default: m.Team })),
+);
+const Help = lazy(() =>
+  import("@/features/help").then((m) => ({ default: m.Help })),
+);
+function RolePage({
+  roles,
+  children,
+}: {
+  roles: string[];
+  children: React.ReactNode;
+}) {
+  const { user } = useSession();
+  return roles.includes(user.role) ? (
+    children
+  ) : (
+    <div className="panel panel-body">
+      <h1>This screen belongs to another team</h1>
+      <p>
+        Your account cannot open this screen. Use the menu to return to your
+        work.
+      </p>
+    </div>
+  );
+}
 const Overview = lazy(() =>
   import("@/features/overview").then((m) => ({ default: m.Overview })),
 );
@@ -64,12 +93,57 @@ function Workspace() {
         <Route element={<Layout />}>
           <Route index element={<Overview />} />
           <Route path="projects" element={<Projects />} />
-          <Route path="projects/new" element={<NewProject />} />
+          <Route
+            path="projects/new"
+            element={
+              <RolePage roles={["admin", "sales"]}>
+                <NewProject />
+              </RolePage>
+            }
+          />
           <Route path="projects/:id" element={<ProjectDetail />} />
-          <Route path="inventory" element={<Inventory />} />
+          <Route
+            path="inventory"
+            element={
+              <RolePage roles={["admin", "warehouse", "accounts"]}>
+                <Inventory />
+              </RolePage>
+            }
+          />
           <Route path="jobs" element={<Jobs />} />
-          <Route path="service" element={<Service />} />
-          <Route path="reports" element={<Reports />} />
+          <Route
+            path="service"
+            element={
+              <RolePage roles={["admin", "support", "accounts"]}>
+                <Service />
+              </RolePage>
+            }
+          />
+          <Route
+            path="reports"
+            element={
+              <RolePage roles={["admin", "accounts"]}>
+                <Reports />
+              </RolePage>
+            }
+          />
+          <Route
+            path="barcodes"
+            element={
+              <RolePage roles={["admin", "warehouse", "accounts"]}>
+                <Barcodes />
+              </RolePage>
+            }
+          />
+          <Route
+            path="team"
+            element={
+              <RolePage roles={["admin"]}>
+                <Team />
+              </RolePage>
+            }
+          />
+          <Route path="help" element={<Help />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

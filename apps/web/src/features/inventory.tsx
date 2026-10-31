@@ -6,7 +6,7 @@ import {
   Search,
   ArrowUpRight,
 } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -26,8 +26,14 @@ import { Can } from "@/app/session";
 export function Inventory() {
   const { data, error, isPending } = useData("/inventory"),
     { data: projects } = useData("/projects?status=confirmed");
-  const [receive, setReceive] = useState(false),
-    [search, setSearch] = useState("");
+  const [receive, setReceive] = useState(false);
+  const [params, setParams] = useSearchParams();
+  const search = params.get("search") || "";
+  function change(key: string, value: string) {
+    const p = new URLSearchParams(params);
+    value ? p.set(key, value) : p.delete(key);
+    setParams(p, { replace: true });
+  }
   if (isPending) return <Loading />;
   if (error) return <ErrorNotice error={error} />;
   const products = data.products.filter((p: any) => p.kind !== "service"),
@@ -39,9 +45,16 @@ export function Inventory() {
   return (
     <>
       <PageHead
-        title="Warehouse"
+        title="Stock & deliveries"
         description="Know what’s available, what’s reserved and where every device goes."
       >
+        <Button
+          variant="outline"
+          render={<Link to="/barcodes" />}
+          nativeButton={false}
+        >
+          Print barcode labels
+        </Button>
         <Can roles={["admin", "warehouse"]}>
           <Button onClick={() => setReceive(true)}>
             <PackagePlus data-icon="inline-start" />
@@ -84,7 +97,14 @@ export function Inventory() {
         >
           <div className="packing-queue">
             {projects.items.map((p: any) => (
-              <Link key={p.id} to={`/projects/${p.id}?tab=delivery`}>
+              <Link
+                key={p.id}
+                to={`/projects/${p.id}?tab=delivery`}
+                state={{
+                  returnTo:
+                    "/inventory" + (params.size ? "?" + params.toString() : ""),
+                }}
+              >
                 <Package />
                 <div>
                   <strong>{p.customer_name}</strong>
@@ -98,7 +118,10 @@ export function Inventory() {
           </div>
         </Panel>
       )}
-      <Tabs defaultValue="stock">
+      <Tabs
+        value={params.get("tab") || "stock"}
+        onValueChange={(v) => change("tab", String(v))}
+      >
         <TabsList>
           <TabsTrigger value="stock">Stock levels</TabsTrigger>
           <TabsTrigger value="serials">Device serials</TabsTrigger>
@@ -109,7 +132,12 @@ export function Inventory() {
             title="Product availability"
             description="Available = on hand − reserved for confirmed projects."
           >
-            <div className="table-scroll">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Scrollable records"
+            >
               <table className="data-table">
                 <thead>
                   <tr>
@@ -139,6 +167,13 @@ export function Inventory() {
                         >
                           {p.stock_qty - p.reserved_qty}
                         </span>
+                        <small>
+                          {p.stock_qty - p.reserved_qty === 0
+                            ? "Out of stock"
+                            : p.stock_qty - p.reserved_qty < 5
+                              ? "Low stock"
+                              : "Available"}
+                        </small>
                       </td>
                       <td>
                         <Status value={p.kind} />
@@ -164,12 +199,17 @@ export function Inventory() {
                 <Input
                   id="asset-search"
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) => change("search", e.target.value)}
                   placeholder="Find serial or product…"
                 />
               </div>
             </Field>
-            <div className="table-scroll">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Scrollable records"
+            >
               <table className="data-table">
                 <thead>
                   <tr>
@@ -201,7 +241,12 @@ export function Inventory() {
             title="Purchase receipts"
             description="Acquisition costs feed the cost of dispatched materials."
           >
-            <div className="table-scroll">
+            <div
+              className="table-scroll"
+              tabIndex={0}
+              role="region"
+              aria-label="Scrollable records"
+            >
               <table className="data-table">
                 <thead>
                   <tr>
@@ -257,6 +302,7 @@ export function Inventory() {
           fields={[
             {
               name: "product_id",
+              group: "Equipment",
               label: "Product",
               type: "select",
               full: true,
@@ -265,10 +311,15 @@ export function Inventory() {
                 label: `${p.sku} · ${p.name}`,
               })),
             },
-            { name: "supplier", label: "Supplier" },
-            { name: "reference", label: "Purchase reference" },
+            { name: "supplier", label: "Supplier", group: "Purchase details" },
+            {
+              name: "reference",
+              label: "Purchase reference",
+              group: "Purchase details",
+            },
             {
               name: "quantity",
+              group: "Equipment",
               label: "Quantity received",
               type: "number",
               min: 1,
@@ -276,13 +327,15 @@ export function Inventory() {
             },
             {
               name: "unit_cost_minor",
-              label: "Unit acquisition cost (₹)",
+              group: "Purchase details",
+              label: "Purchase cost per unit (₹)",
               type: "number",
               money: true,
               min: 0,
             },
             {
               name: "serials",
+              group: "Device identity",
               label: "Device serials (one per line)",
               type: "textarea",
               required: false,
