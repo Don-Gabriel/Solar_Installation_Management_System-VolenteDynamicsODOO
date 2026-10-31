@@ -90,6 +90,7 @@ Actual phone camera scanning requires reachable trusted HTTPS; laptop localhost 
 
 ## Project documentation
 
+- [Real-world scenarios, staffing and acceptance register](docs/SCENARIO_CATALOG.md)
 - [Screen guide, barcode pack and test helpers](docs/USER_GUIDE.md)
 - [UI/UX research and implemented improvements](docs/UX_REVIEW.md)
 - [Build plan and current status](docs/BUILD_PLAN.md)

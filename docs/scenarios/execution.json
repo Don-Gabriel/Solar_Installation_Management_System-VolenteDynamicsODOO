@@ -1,0 +1,90 @@
+{
+  "INT-01": {
+    "status": "FAIL",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Support installation intake returned HTTP 403; required success with an audited support actor.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": "GAP-INT-01"
+  },
+  "SRV-01": {
+    "status": "FAIL",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Complaint without a preselected warranty returned HTTP 400; current contract requires warranty_id before diagnosis.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": "GAP-SRV-01"
+  },
+  "WAR-01": {
+    "status": "PASS",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Active device ticket saved covered=true with delivery-based reason.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": ""
+  },
+  "SRV-03": {
+    "status": "FAIL",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "A different technician assigned to this repair received HTTP 403 when opening the site project.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": "GAP-SRV-03"
+  },
+  "EVD-01": {
+    "status": "FAIL",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Repair resolution without any repair photo returned HTTP 200; required completion rejection.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": "GAP-EVD-01"
+  },
+  "BIL-01": {
+    "status": "FAIL",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Covered replacement created 0 service documents; required a visible zero-payable replacement line.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": "GAP-BIL-01"
+  },
+  "RMA-10": {
+    "status": "PASS",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Replacement warranty dates compared directly with the original saved dates.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": ""
+  },
+  "WAR-02": {
+    "status": "PASS",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Expired device ticket saved covered=false.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": ""
+  },
+  "BIL-05": {
+    "status": "FAIL",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Replacement customer charge was INR 14000; approved-price fixture is INR 18000 and acquisition cost INR 14000.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": "GAP-BIL-05"
+  },
+  "BIL-03": {
+    "status": "PASS",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Compared complete original invoice and lines before/after repair; checked a separate linked service invoice exists.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": ""
+  },
+  "SCH-06": {
+    "status": "PASS",
+    "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+    "observed": "Overlapping installation assignment returned HTTP 409; does not test shared repair scheduling.",
+    "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+    "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+    "defect": ""
+  }
+}

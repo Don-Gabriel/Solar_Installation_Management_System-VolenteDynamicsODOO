@@ -1,0 +1,222 @@
+# Format: title | starting situation | action | required result | priority | build assessment
+# Assessments: P=present in source, L=partial, M=missing workflow, V=needs verification, D=policy decision
+## INT | Calls and installation requests
+Support records a new installation call|A new caller has a site and preferred visit date|Support records the enquiry|One numbered request records the caller, site, phone source and support actor|P0|M
+Caller does not know system size|Caller wants advice but cannot choose capacity|Support saves a request awaiting survey|Unknown capacity is explicit and no package is silently promised|P1|M
+Repeated call for the same request|An open installation request exists|Support searches phone and updates the contact log|The existing request is offered and a second project is not silently created|P0|M
+Two unrelated requests from one household|A caller wants installation at two addresses|Support creates two site requests|Separate sites and appointment histories stay linked to the right customer|P1|L
+Customer wants a specific appointment|Customer can attend only Friday afternoon|Support records the preference|Preference is stored separately from a confirmed appointment|P0|M
+Caller reports an electrical hazard|Caller reports smoke or exposed live wiring|Support marks the request urgent and escalates|An urgent queue and human escalation appear without applying the routine 3 to 5 day promise|P0|M
+Wrong phone number entered|Support enters a malformed phone number|Save is attempted|Validation explains the error and no incomplete customer is committed|P1|V
+Customer changes their mind before survey|An enquiry has no accepted order|Support cancels with a reason|Request history is retained and any future appointment is released|P1|M
+Call interrupted during entry|Support has entered customer details|The app loses connection before save|Unsaved information remains recoverable and no success message is shown|P1|L
+Public intake disabled for staff operation|The business chooses phone-led intake only|An anonymous visitor opens the enquiry URL|Public creation is disabled by an explicit setting while staff intake remains available|P1|M
+## CRM | Customers sites and contact history
+Search a returning customer by phone|A customer already has installed equipment|Support searches the full phone number|Matching customers and sites are shown without exposing unrelated private evidence|P0|L
+Shared family phone number|Two distinct customers use the same phone|Support searches and chooses the correct person|Records remain distinguishable by name and site rather than forcibly merging|P1|L
+Multiple systems at one address|One site has an older and newer installation|Support opens a repair request|The affected installation must be selected and both histories remain visible|P0|M
+Correct a customer spelling|An installed project exists with a name typo|Authorized staff corrects the name|Current contact data changes with an audit record while issued document snapshots stay unchanged|P1|M
+Change customer contact number|A customer reports a replacement phone number|Support verifies and updates the number|The old value remains in restricted history and future contact uses the new number|P1|M
+Record access instructions|A roof is accessible only through a locked gate|Support adds access notes|Assigned workers see the notes before departure|P1|L
+Customer address differs from billing address|A company pays for a remote installation|Staff records the two addresses|Work goes to the service address and the invoice uses the agreed billing address|P1|M
+Duplicate records discovered|Two records represent the same person and site|An administrator reviews a merge|No invoices, warranties or evidence are lost and identifiers remain traceable|P2|M
+Wrong customer selected for a complaint|Support has selected a different household|Support changes the selection before submission|Selected devices and proposed visit reset to the correct customer|P0|M
+Customer calls while another employee edits|Two support employees open the same contact record|Both submit conflicting changes|The later save detects a conflict rather than silently losing the earlier change|P1|M
+## SUR | Survey and suitability
+Quote without a survey|A new enquiry has no approved survey|Sales issues a quote|The server refuses and explains that survey approval is required|P0|P
+Insufficient roof area|A 3 kW request has less than the configured roof requirement|Surveyor tries approval|Approval is refused with the actual measured requirement|P0|P
+Unsuitable on-grid connection|The grid-suitability check is false|Surveyor approves an on-grid request|Approval is refused and the survey remains reviewable|P0|P
+Approve a suitable site|Measurements satisfy the configured package rules|Surveyor records and approves the survey|Sales can quote the approved package with the survey reference|P0|P
+New measurements after quote issuance|An unaccepted quote exists and roof measurements change|Surveyor records a new survey|Old approval cannot authorize a quote based on the new unreviewed measurements|P0|V
+Negative or impossible readings|A measurement is negative or outside configured bounds|Surveyor saves|The server rejects invalid values without partially storing the survey|P1|V
+Customer absent for survey|A survey visit was confirmed|Surveyor records no access|The visit is not marked completed and a reschedule task is created|P1|M
+Survey needs two workers|Access requires an assistant under company policy|Coordinator schedules the survey|Both people must be available and the visit records the crew|P1|M
+Rain prevents roof inspection|A scheduled survey cannot safely proceed|Coordinator postpones with a reason|The original slot, reason and revised appointment remain in history|P1|M
+Accepted system requested to change|An accepted order already exists|Staff tries to replace its survey or capacity|The original commercial record is protected and a change-order path is required|P0|L
+## QUO | Quotations acceptance and commercial changes
+Generate a package quote|An approved survey selects a configured capacity and type|Sales issues a quote|Quantities, prices, warranty periods and total match the selected package version|P0|P
+Price changes after acceptance|A customer has accepted a quote|The product list price changes|Accepted quote, order and invoice amounts remain unchanged|P0|P
+Customer accepts twice|One quote is accepted successfully|The acceptance is retried|Only one order, installation invoice and job exist|P0|P
+Two staff accept simultaneously|Sales and administrator accept the same quote at once|Both requests reach the server|One commercial acceptance is committed without duplicate orders|P0|V
+Customer requests a discount|An unaccepted quote exists|Sales requests a discount beyond their limit|An authorized approver and reason are required; original prices remain traceable|P1|M
+Customer accepts an older quote|A newer quote version has been issued|Acceptance references the older version|The selected version is explicit and stale acceptance is rejected or reviewed|P0|L
+Quote expires before acceptance|The quoted validity date has passed|Sales records acceptance|The quote must be renewed or an authorized exception recorded|P1|M
+Customer cancels after paying advance|An order exists with money received|Staff initiates cancellation|A cancellation and refund workflow preserves the original invoice and releases eligible reservations|P1|M
+Customer adds a battery after order acceptance|The original package is frozen|Sales prepares a change order|Only the approved additional work is billed; the original invoice is not overwritten|P1|M
+Package unavailable for requested system|The chosen capacity and type have no active package|Sales issues a quote|A clear configuration error appears and no empty quote or order is created|P0|V
+## PAY | Initial invoices and payments
+Initial installation invoice|A customer accepts a component-and-installation quote|The system creates the invoice|Components and installation appear as distinct lines on one initial invoice|P0|P
+Advance below threshold|An invoice has less than the configured advance received|Stock reservation is requested|Reservation is refused and the shortfall is clear|P0|P
+Advance exactly at threshold|Payment reaches the exact required advance|Stock reservation is requested|Reservation is allowed if stock is sufficient|P0|P
+Payment submitted twice|A receipt has already been recorded|The same payment is retried|No duplicate collection is created|P0|P
+Payment exceeds outstanding amount|Only INR 1000 is due|Staff tries to record INR 1001|The payment is rejected and the balance remains unchanged|P0|P
+Two payments race for final balance|Two cashiers submit payments against the same balance|Requests overlap|The committed sum never exceeds the permitted outstanding amount|P0|V
+UPI payment not actually settled|A customer shows an unverified payment screenshot|Staff records payment status|A pending payment does not count as cleared advance until verified|P1|M
+Part payment against service bill|An issued service invoice has a balance|Accounts records part payment|Only that invoice balance falls and installation payment history remains intact|P0|L
+Incorrect payment needs reversal|A confirmed receipt was entered by mistake|Accounts requests reversal|A traceable reversal is created without deleting historical receipts|P1|M
+Two customers use the same reference text|Different invoices have independently valid receipts|Accounts records both|Uniqueness follows the documented receipt scope and does not merge customers|P1|V
+## STK | Stock receipt and reservation
+Receive serialized equipment|Warehouse receives three new inverters with distinct serials|Staff saves the receipt|Three assets and the correct quantity and value are added atomically|P0|P
+Duplicate serial in a receipt|A batch contains a serial already in stock|Staff saves the batch|The whole invalid receipt rolls back without inflating stock|P0|P
+Insufficient stock for full package|At least one required product is short|Warehouse reserves the order|No partial hidden reservation is left and shortages identify product and quantity|P0|V
+Two orders compete for the last device|One unreserved compatible serial remains|Both orders allocate it concurrently|At most one order owns the serial and the other receives a clear conflict|P0|P
+Wrong product scanned|An inverter is required but a battery serial is scanned|Warehouse adds the serial|The scan is rejected without altering reservations or ownership|P0|P
+Unknown barcode scanned|The serial has never been received|Warehouse scans it into packing|The app refuses the unknown identity rather than inventing stock|P0|P
+Duplicate scan on one order|The device is already allocated to that order|It is scanned again|Required quantity and stock are not counted twice|P0|P
+Stock found damaged before dispatch|A reserved device fails inspection|Warehouse marks it unusable|It is quarantined and a compatible substitute is allocated without double counting|P0|M
+Serial pasted with spaces and case changes|A saved serial is pasted with surrounding spaces or lower case|Warehouse submits the scan|Documented normalization locates the same device without creating a second identity|P1|V
+Stock correction after physical count|A count differs from recorded quantity|Warehouse proposes adjustment|An authorized adjustment records reason, quantity and value without editing history|P1|M
+## DLV | Packing delivery and warranty start
+Dispatch before every required scan|A reserved order is missing one serialized device|Warehouse dispatches|Dispatch is refused with the missing item count|P0|P
+Dispatch a complete packing list|All required quantities and scans are present|Warehouse confirms dispatch|Equipment ownership and dispatch status change once with an audit record|P0|P
+Dispatch does not start warranty|An order has left the warehouse but is undelivered|Support checks warranty dates|No delivery-based warranty has started yet|P0|P
+Delivery starts each line warranty|The customer has received all equipment|Warehouse confirms delivery|Each covered component receives its own policy period from delivery time|P0|P
+Delivery is retried|Delivery was recorded successfully|The same action is repeated|No extra warranty is created and original dates remain unchanged|P0|P
+Partial delivery|Only inverter and some panels arrive|Staff records quantities received|Undelivered lines remain pending and warranty start follows the agreed per-line rule|P1|M
+Wrong customer receives equipment|Driver discovers the wrong destination|Staff records a failed delivery|The intended customer is not marked delivered and custody is traceable|P0|M
+Transit damage|A serial is damaged before customer acceptance|Warehouse records the incident|The damaged device is not commissioned and replacement delivery is tracked|P1|M
+Customer refuses delivery|The customer does not accept the shipment|Warehouse records refusal|No false handover or warranty start occurs; a return task is opened|P1|M
+Delivery time entered in another timezone|The office and device show different timezones|Delivery is viewed on both devices|One saved instant produces consistent policy start and expiry boundaries|P1|V
+## SCH | Availability search and workload
+Thirteen busy and two free|Fixture F15 has 15 active technicians and 13 busy during the requested visit interval|Coordinator searches days 3 to 5|Only the two qualified available technicians are offered with actual times and reasons|P0|M
+No worker free within target window|All qualified workers are occupied on days 3 to 5|Coordinator searches|An unassigned escalation and earliest feasible alternative appear without a false promise|P0|M
+Free worker lacks required skill|One available worker lacks inverter skills|Coordinator searches for inverter repair|That worker is excluded or shown as ineligible with a reason|P0|M
+Leave overrides an empty calendar|A worker has approved leave but no job that day|Availability is searched|The worker is not offered during leave|P0|M
+Travel consumes the apparent gap|A worker has a one-hour calendar gap between distant sites|A one-hour visit is proposed|Travel buffers prevent an impossible booking|P0|M
+Two jobs have overlapping times|A technician has an existing installation|Another overlapping installation is assigned|The server refuses the overlap even if the UI submits it|P0|P
+Adjacent visits at the same site|One visit ends exactly when the next begins|Coordinator books the second|Half-open intervals allow adjacency only when travel and handover buffers permit|P1|L
+Customer available outside business hours|Customer asks for a late-night routine visit|Coordinator searches|Out-of-hours handling follows a documented policy and does not silently book normal staff|P1|M
+Routine window crosses a holiday|Day 3 is a configured nonworking day|Coordinator searches a routine visit|Working-day or calendar-day policy is explicit and eligible dates are shown|P1|M
+Two coordinators choose the same free slot|Two requests target one technician at the same time|Both coordinators confirm|One booking succeeds and the other refreshes availability after an atomic conflict|P0|L
+## DSP | Assignment changes and competing requests
+Twenty simultaneous customer calls|Twenty independent requests arrive for the same 15-person team|Support saves them and coordinator opens the queue|All requests are uniquely recorded and none disappear because capacity is full|P0|M
+One slot remains and two requests compete|Two equally eligible jobs need the same worker|Coordinator applies ranking|Priority, target date, travel and stable tie-break reasons are visible; no silent starvation occurs|P0|M
+Urgent repair interrupts routine planning|A hazardous fault arrives after routine appointments are confirmed|Coordinator reviews escalation|Urgent work is escalated and displaced customers require explicit rescheduling|P0|M
+Technician becomes sick after assignment|Tomorrow's worker becomes unavailable|Coordinator reassigns the visit|Replacement eligibility is checked and both assignment history and customer contact task are retained|P0|M
+Customer requests another date|A confirmed repair appointment exists|Support records a reschedule request|Old capacity is released only when the replacement arrangement is safely committed|P0|M
+Job overruns planned duration|A technician remains at the current site|Coordinator extends the visit|Affected later appointments are flagged instead of silently overlapping|P0|M
+Technician declines an unsuitable job|A worker has been assigned outside capability|Worker declines with reason|The task returns to the coordinator queue and is not marked completed|P1|M
+Technician cannot be contacted|A confirmed worker has not acknowledged the visit|The acknowledgement deadline passes|The coordinator receives an actionable exception without auto-closing the request|P1|M
+Assignment retry after network timeout|Booking committed but the response was lost|Coordinator repeats the command|One assignment exists and capacity is not held twice|P0|L
+Search result becomes stale|Availability was viewed before a new booking or leave record|Coordinator confirms the old suggestion|The server rechecks all constraints at confirmation time|P0|L
+## INS | Installation crews and field work
+Only assigned installer sees work|Two technicians own different installations|One opens the other's project or evidence URL|The server denies access and the user's own list stays usable|P0|P
+Start before delivery|An installation is scheduled but equipment is undelivered|Installer starts work|The server blocks starting and identifies the missing delivery|P0|P
+Two-person installation crew|A roof job requires a lead and an assistant|Coordinator assigns the crew|Both memberships and time reservations are stored and both see the assigned work|P0|M
+Lead and assistant have different powers|A two-person crew is assigned|Assistant tries final sign-off|Only a qualified lead or authorized supervisor can approve the handover|P1|M
+Safety checklist incomplete|One required commissioning check is false|Installer completes the job|Completion is blocked without falsely marking the project installed|P0|P
+Missing installation evidence|A started job has no saved photo or signature|Installer completes|Completion is blocked until required evidence has been saved|P0|P
+Actual hours differ from scheduled hours|A four-hour appointment takes six hours|Lead submits actual time|Actual labour cost uses saved rates and actual time; schedule and billable time are distinguished|P0|L
+Multiple crew members record time|Two workers spend different hours at the site|The crew submits work|Costs and payables are calculated per worker without double counting|P1|M
+Customer refuses installation sign-off|Checks pass but customer disputes the work|Lead records the disagreement|Work awaits review and a fabricated signature or automatic closure is forbidden|P0|M
+Installed system differs from accepted capacity|The measured or installed capacity differs materially|Installer submits handover|A discrepancy is flagged for authorized review before final acceptance|P1|V
+## SRV | Repair calls and service visits
+Complaint before faulty part is known|A customer reports low output but cannot name a component|Support creates a repair request|A customer-and-site ticket can be saved without guessing a warranty or faulty asset|P0|M
+Assigned repair worker gets full installed list|A coordinator assigns a repair visit|The technician opens it|Installed quantities, serials, locations, delivery dates, warranty terms and repair history load for that site|P0|M
+Technician changes between original install and repair|A different qualified worker receives the repair visit|They open the customer project|Repair assignment grants necessary site access without exposing every customer|P0|M
+Two open faults at one customer|An inverter warning and damaged cable are separately reported|Support reviews open requests|Distinct faults can coexist and duplicate detection suggests linking related work|P0|M
+Repeated call about same unresolved fault|An existing open complaint matches the site and symptom|Support records the call|It appends contact history or links the duplicate without losing either caller report|P1|M
+Remote fix avoids a visit|A permitted nonhazardous issue is resolved by guided support|Support documents resolution and customer confirmation|The case records remote resolution and no fake onsite photos or visit hours are created|P1|D
+Repair cancelled before attendance|Customer withdraws the request|Support cancels|The visit slot and reserved parts are released with a reason and history|P1|M
+First visit diagnoses but cannot fix|A specialist part is required|Technician completes diagnosis only|The case stays open with a separate return visit and parts task|P0|M
+Customer unavailable at repair visit|Technician arrives but cannot access the property|Technician records failed attendance|The ticket stays unresolved and rescheduling or a reviewed callout charge follows policy|P1|M
+Customer calls after alleged repair failed|A closed issue recurs|Support opens a linked follow-up|Original evidence and charges remain immutable and repeat-fault history is visible|P0|M
+## DIA | Diagnosis and component selection
+Select multiple faulty installed components|The asset list includes an inverter and a controller|Technician marks both faulty|Separate diagnosis lines retain component identity, quantity and coverage decision|P0|M
+Select another customer's serial|A serial belongs to another installation|Technician tries adding it to diagnosis|The server rejects the cross-customer component|P0|M
+Diagnose a quantity-tracked panel|Panels were tracked by quantity rather than unique serial|Technician selects one faulty panel|Affected quantity is bounded by installed quantity and references the original order line|P0|M
+Part not supplied by this company|A third-party component caused the symptom|Technician records the external part|It is clearly marked external and is not automatically covered by an unrelated company warranty|P1|M
+No fault found|Diagnostics pass and no component is marked faulty|Technician records observations|The visit can close under a reviewed no-fault policy without fabricating a replacement|P1|M
+Diagnosis changes before approval|A previously selected component is found healthy|Technician revises the draft diagnosis|Draft bill and parts reservation refresh while the revision history is retained|P0|M
+Diagnosis changes after billing|A service invoice is already issued|Staff tries editing the fault selection|Issued lines remain frozen; correction uses a reviewed revision or credit workflow|P0|M
+Customer disputes diagnosis|Customer declines the proposed replacement|Support records disagreement|No chargeable work starts without the required approval and the dispute remains visible|P0|M
+One of many panels is replaced repeatedly|A quantity-tracked line has several panels|Technician records successive replacements|Cumulative replacement quantities do not exceed identifiable entitlement without review|P1|M
+Retired serial selected again|An old device is marked replaced|Support opens a new fault against it|The app directs staff to the current replacement identity and retains old history|P0|P
+## WAR | Coverage decisions per component
+Covered component at ticket opening|A delivered device is within its warranty period|Support opens the corresponding ticket|Coverage decision and reason use saved delivery and expiry dates|P0|P
+Expired component at ticket opening|The device warranty expired before the complaint|Support opens the ticket|It is not treated as covered solely because other system parts remain covered|P0|P
+Different cover within the same system|Panel warranty is active but inverter warranty expired|Technician selects both faulty components|Each line gets an independent decision and the whole ticket is not globally free or charged|P0|M
+Exact expiry boundary|The complaint arrives exactly at expiry|Coverage is evaluated|The agreed exclusive expiry rule is consistently applied in the server and shown to staff|P0|V
+Warranty expires before the booked visit|Complaint was recorded while cover was active|Technician visits five days later|Coverage follows the documented complaint-date rule unless a reviewed exclusion applies|P0|L
+Excluded accidental damage|A device is within time cover but diagnosis shows an excluded cause|Authorized reviewer considers evidence|Coverage is not auto-approved by date alone; reason, reviewer and evidence are saved|P0|M
+Unknown or missing policy|Imported equipment has no reliable policy dates|Staff attempts automatic billing|The line is pending review rather than silently free or chargeable|P0|M
+Parts covered but labour excluded|The policy covers an inverter but not callout labour|The repair is priced|Part charge is zero while approved labour is billed separately|P0|M
+Manufacturer reimbursement differs from customer cover|Company promises cover while supplier claim is disputed|Accounts reviews the repair|Customer entitlement remains independent of the supplier recovery balance|P1|M
+Warranty override|An authorized manager grants goodwill or corrects a coverage decision|The override is saved|Original decision, new decision, reason and actor are retained; technician cannot self-approve|P0|M
+## RMA | Replacement returns and supplier handling
+Compatible replacement in stock|A diagnosed serial has a matching available replacement|Authorized staff confirms replacement|Old and new identities link, stock reduces once and inherited warranty remains traceable|P0|L
+Replacement uses an allocated serial|A candidate replacement is reserved for another order|Staff tries the substitution|The server refuses without stealing stock from the other customer|P0|P
+Replacement is a different product|A wrong inverter model is scanned|Replacement is submitted|The server rejects incompatible substitution without changing either device|P0|P
+Different compatible model approved|Original model is discontinued|Manager approves an engineering-compatible substitute|Compatibility, customer agreement and any price adjustment are explicit and auditable|P1|M
+Faulty part returned to warehouse|Technician removes a failed device onsite|Warehouse receives its return|Custody changes to quarantine, never saleable Available stock|P0|M
+Faulty part not yet returned|A new part was issued but old part is still onsite|Coordinator reviews pending returns|An outstanding-return task remains visible without falsifying receipt|P1|M
+No replacement stock available|Diagnosis needs an unavailable part|Staff schedules follow-up|The case shows waiting for parts and does not promise a completion date as confirmed|P0|M
+Replacement fails immediately|A newly fitted replacement does not work|Technician records another failure|Both serials and failure events remain visible without losing original warranty lineage|P1|M
+Supplier accepts or rejects claim|A quarantined device was sent to supplier|Warehouse records supplier decision|Supplier credit or returned stock follows its own record and does not rewrite the customer's invoice|P1|M
+Replacement retains original coverage|A covered device is replaced near expiry|Support checks the new serial|The documented inherited-date policy applies rather than silently granting a new full term|P0|P
+## BIL | Repair estimates and service invoices
+Covered replacement shown at zero|A covered inverter is replaced|A service document is issued|The replacement name, quantity and serials appear with INR 0 customer charge and a coverage reason|P0|M
+Mixed coverage service bill|One covered inverter and two chargeable connectors are replaced|The approved repair is invoiced|All lines are visible and only uncovered items plus approved labour and travel are payable|P0|M
+Separate service invoice from original sale|An installation invoice already exists|A later paid repair is resolved|A separately numbered linked service invoice is created; initial lines remain unchanged|P0|L
+All repair lines covered|Every part and labour line is covered|Service is completed|A zero-payable service statement records the work; no payment is demanded|P0|M
+Internal cost differs from selling price|A replacement cost the company INR 14000 but agreed retail is INR 18000|An uncovered repair is invoiced|Customer charge uses approved selling price; internal cost remains separately reportable|P0|M
+Customer rejects paid estimate|An uncovered repair estimate awaits consent|Customer declines|No chargeable replacement is executed or invoiced as accepted work|P0|M
+Resolution retried after timeout|Repair and invoice committed but response was lost|The request is retried|No second replacement, stock movement or service invoice is created|P0|L
+Invoice correction after issue|A service bill has an incorrect approved line|Accounts corrects it|An authorized credit or revised document links back without overwriting issued history|P1|M
+Financial totals for mixed repair|Worked fixture MIX1 totals INR 1700 customer payable|Accounts views invoice and report|Invoice lines total 1700; covered costs remain company costs and are not recorded as zero cost|P0|M
+Tax and warranty document treatment unconfigured|The app has no verified tax configuration|Staff prints a service bill|It is labelled as a demo service statement and does not claim legally compliant tax invoicing|P1|D
+## EVD | Repair photos completion and confirmation
+After-repair photo required|An onsite repair has no saved completion photo|Technician marks the visit complete|Completion is blocked until a valid visit-linked photo is saved|P0|M
+Diagnosis photo linked to faulty item|Several components were inspected|Technician attaches a fault photo|The photo links to the correct visit and component rather than a generic customer album|P0|M
+Wrong file masquerades as photo|An executable is renamed to JPG|Technician uploads evidence|Content validation rejects it and no downloadable unsafe file is stored|P0|L
+Upload loses connection midway|A repair photo upload is interrupted|Technician retries|No partial image is treated as evidence; retry creates one usable record|P1|M
+Device permission denied|Technician denies camera permission|They need to attach completion evidence|A clear explanation and permitted file-picker alternative are offered|P1|L
+Customer signs before final changes|A signed service report is later changed|Staff edits charge or replaced component|Signature is invalidated for the changed version and fresh confirmation is requested|P0|M
+Customer confirms by phone|Customer cannot sign onsite but accepts the result by phone|Support records confirmation|Method, actor, time and stated confirmer are saved without pretending a handwritten signature exists|P1|L
+Customer disputes closure|Technician marks work done but customer reports failure|Support records the dispute|Case remains awaiting review and is not silently counted as customer-confirmed|P0|M
+Technician attempts to erase evidence|A photo belongs to an issued report|Worker tries replacing or deleting it|Issued evidence history remains protected and any correction is versioned|P0|M
+Unauthenticated person opens a photo URL|A private image URL is copied outside the staff session|Visitor requests the image|The server denies private evidence access|P0|P
+## SEC | Roles staffing and access boundaries
+Support creates installation request|Support has a verified customer call|They open New enquiry and submit|Support can create intake without gaining price, stock or payout authority|P0|M
+Coordinator manages visits|A service coordinator has no finance role|They search and assign workers|Scheduling is allowed while invoice edits and staff payouts remain denied|P0|M
+Technician sees assigned repair only|Two workers have different repair visits|One requests the other visit ID|Server rejects unrelated details and photos even through direct URLs|P0|M
+Warehouse cannot approve customer discount|Warehouse has stock permissions|They call a quote or discount approval action|The server denies the action regardless of hidden UI controls|P0|L
+Accounts cannot fake technical completion|Accounts can invoice but is not the assigned worker|They call repair completion|Technical completion is denied while authorized payment work stays available|P0|M
+One employee covers two duties|A small company has a coordinator who also answers calls|Administrator grants defined capabilities|Permissions are explicit and audited without sharing another person's password|P1|M
+Employee leaves the company|A staff account has active sessions and future visits|Administrator deactivates the person|Sessions become unusable and affected appointments enter reassignment review|P0|L
+Two support agents work concurrently|Support team contains two named users|Both record different callers|Separate actor identities are retained; no shared login is required|P0|L
+Only administrator sees staff directory|A nonadmin staff member opens Team or its API|The request is made directly|The server refuses access to the administrative directory|P0|P
+Permission changed while screen is open|A user loses a permission after loading a form|They submit the old form|Current server permissions win and the operation is denied|P0|V
+## CON | Concurrency retry and integrity
+Same idempotency key same request|A command completed and its response was lost|Client repeats identical data and key|The saved result returns without repeating business effects|P0|P
+Same idempotency key changed request|A key was used for one command body|Client submits changed data with that key|The server rejects the conflicting retry|P0|P
+Two workers diagnose same service visit|Both opened the same draft revision|They submit different component findings|A version conflict is shown instead of losing either diagnosis silently|P0|M
+Two repair tickets replace the same original|Two open tickets reference one delivered serial|Both try a replacement concurrently|Only one replacement succeeds and the other detects the changed original state|P0|V
+Reservation races with service replacement|One unreserved serial is needed by both workflows|Both commands execute together|Stock, reservation and replacement ownership remain consistent|P0|V
+Failure after stock update before invoice|A database error occurs during repair resolution|The transaction aborts|Stock, old serial, warranty, ticket and invoice all roll back together|P0|V
+Two coordinators reschedule the same visit|Both opened the same appointment revision|They confirm different times|One coherent appointment remains and the stale change is rejected|P0|M
+Payment response lost after commit|The payment was saved but client times out|Staff uses retry with the original key|One receipt remains and the UI recovers the committed outcome|P0|P
+Double tap completion|A technician taps Complete twice rapidly|Both requests reach the server|One handover and one payable cost record exist|P0|V
+Database rejects a foreign identifier|An action references a deleted or nonexistent record|The request is submitted|A controlled error is returned and no orphan business records appear|P0|V
+## OPS | Reliability reporting and recovery
+Server restarts after saved action|A committed project and session exist|The API process restarts|Saved work remains and valid session behavior follows configured persistence|P0|P
+Database connection fails during save|The database becomes unreachable|Staff submits a command|No success is shown and retry cannot duplicate a partially committed action|P0|V
+Evidence disk is full|Metadata storage works but file storage cannot write|Technician uploads|The app reports failure and does not record nonexistent evidence as saved|P0|V
+Restore a backup|A backup includes database and private files|The application is restored to a separate environment|Records and evidence links reconcile and restored totals match the backup checkpoint|P0|V
+Dashboard distinguishes backlog from active work|Many requests are waiting for parts or appointments|Coordinator opens Home|Counts separate unassigned, scheduled, blocked, in-progress and overdue visits|P1|M
+Report distinguishes cash and profit|An invoice is unpaid or only partly paid|Accounts opens reports|Cash collected, outstanding and completed contribution are separate figures|P0|P
+Covered repair still costs money|Customer pays zero but the company uses parts and labour|Accounts views project contribution|Internal repair costs reduce contribution even with no customer charge|P0|P
+Search handles growing workload|Fixture LOAD1 has 1000 projects and 200 open service requests|Staff searches and pages through records|Pagination preserves all results and agreed response-time targets are measured, not assumed|P1|V
+Audit reconstructs a disputed repair|A customer questions who changed assignment or coverage|Manager reviews history|Actor, time, old and new states, reasons and related documents are available|P0|L
+Demo reset cannot erase operational data|A training fixture needs to be replayed|Tester resets the isolated fixture|Only the explicitly selected test dataset changes; live/demo customer work is preserved|P0|L
+## UXP | Mobile Windows navigation and device behavior
+Return to filtered project list|Staff opens a project from a searched stage-filtered list|They choose Back|Search, stage and page context are retained|P1|P
+Next task follows actual saved state|A project moves from survey to payment or packing|Staff reloads the project|The next-step message matches saved progress and the user's permitted action|P0|L
+Navigate away from unsaved form|Staff edits a long form without saving|They choose another screen or phone Back|A stay/discard choice prevents accidental data loss|P0|M
+Small phone with keyboard open|A 360px screen shows a long repair form|Technician focuses the last field|The field, error and submit action remain reachable without whole-page overflow|P1|V
+Screen reader and keyboard operation|A user cannot use a mouse or read color cues|They navigate menus and forms|Labels, focus order, status messages and keyboard actions remain understandable|P1|L
+Android native app against same backend|A signed Android build uses the shared API|Staff completes an assigned repair|Identity, photos, invoice rules and server permissions match the desktop workflow|P1|M
+Windows native app against same backend|A signed Windows build is installed|Staff schedules and invoices a repair|The installed client uses the same authoritative rules and handles printing and file permissions|P1|M
+Offline during field visit|A technician loses network after opening a visit|They attempt save or completion|Offline state is explicit and no unsynced work is shown as committed; draft policy is defined|P0|L
+Barcode camera on a physical phone|A real device grants camera access in a supported secure context|Technician scans a printed label|The actual serial is decoded and server eligibility checks still run|P1|V
+Client is older than backend|A native or cached web client uses an older request shape|It calls a changed endpoint|Version compatibility or a clear update message prevents silent corruption|P1|M

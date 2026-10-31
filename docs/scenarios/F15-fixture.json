@@ -1,0 +1,610 @@
+{
+  "name": "F15",
+  "status": "Specification only; not imported into the current application",
+  "timezone": "Asia/Kolkata",
+  "clock": "2026-11-02T09:00:00+05:30",
+  "people": [
+    {
+      "id": "OFF01",
+      "name": "Anil Menon",
+      "email": "off01@scenario.sunpower.local",
+      "role": "admin",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "OFF02",
+      "name": "Asha Nair",
+      "email": "off02@scenario.sunpower.local",
+      "role": "sales",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "OFF03",
+      "name": "Rohit Joseph",
+      "email": "off03@scenario.sunpower.local",
+      "role": "sales",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "OFF04",
+      "name": "Vikram Menon",
+      "email": "off04@scenario.sunpower.local",
+      "role": "surveyor",
+      "skills": ["survey"],
+      "active": true
+    },
+    {
+      "id": "OFF05",
+      "name": "Fathima Ali",
+      "email": "off05@scenario.sunpower.local",
+      "role": "surveyor",
+      "skills": ["survey"],
+      "active": true
+    },
+    {
+      "id": "OFF06",
+      "name": "Meera Shah",
+      "email": "off06@scenario.sunpower.local",
+      "role": "support",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "OFF07",
+      "name": "Anita Das",
+      "email": "off07@scenario.sunpower.local",
+      "role": "support",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "OFF08",
+      "name": "Isha Raman",
+      "email": "off08@scenario.sunpower.local",
+      "role": "coordinator",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "OFF09",
+      "name": "Vishal Nair",
+      "email": "off09@scenario.sunpower.local",
+      "role": "coordinator",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "OFF10",
+      "name": "Ravi Kumar",
+      "email": "off10@scenario.sunpower.local",
+      "role": "warehouse",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "OFF11",
+      "name": "George Paul",
+      "email": "off11@scenario.sunpower.local",
+      "role": "warehouse",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "OFF12",
+      "name": "Neha Rao",
+      "email": "off12@scenario.sunpower.local",
+      "role": "accounts",
+      "skills": [],
+      "active": true
+    },
+    {
+      "id": "T01",
+      "name": "Arjun Nair",
+      "email": "t01@scenario.sunpower.local",
+      "role": "technician",
+      "skills": [
+        "installation",
+        "inverter_repair",
+        "battery_repair",
+        "crew_lead"
+      ],
+      "active": true
+    },
+    {
+      "id": "T02",
+      "name": "Dev Patel",
+      "email": "t02@scenario.sunpower.local",
+      "role": "technician",
+      "skills": [
+        "installation",
+        "inverter_repair",
+        "battery_repair",
+        "crew_lead"
+      ],
+      "active": true
+    },
+    {
+      "id": "T03",
+      "name": "Kiran Das",
+      "email": "t03@scenario.sunpower.local",
+      "role": "technician",
+      "skills": [
+        "installation",
+        "inverter_repair",
+        "battery_repair",
+        "crew_lead"
+      ],
+      "active": true
+    },
+    {
+      "id": "T04",
+      "name": "Rahul Menon",
+      "email": "t04@scenario.sunpower.local",
+      "role": "technician",
+      "skills": [
+        "installation",
+        "inverter_repair",
+        "battery_repair",
+        "crew_lead"
+      ],
+      "active": true
+    },
+    {
+      "id": "T05",
+      "name": "Akash Jain",
+      "email": "t05@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["installation", "inverter_repair"],
+      "active": true
+    },
+    {
+      "id": "T06",
+      "name": "Ishaan Shah",
+      "email": "t06@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["installation", "inverter_repair"],
+      "active": true
+    },
+    {
+      "id": "T07",
+      "name": "Nikhil Rao",
+      "email": "t07@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["installation", "inverter_repair"],
+      "active": true
+    },
+    {
+      "id": "T08",
+      "name": "Om Sharma",
+      "email": "t08@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["installation", "inverter_repair"],
+      "active": true
+    },
+    {
+      "id": "T09",
+      "name": "Pranav Iyer",
+      "email": "t09@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["installation", "inverter_repair"],
+      "active": true
+    },
+    {
+      "id": "T10",
+      "name": "Sanjay Rao",
+      "email": "t10@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["installation", "inverter_repair"],
+      "active": true
+    },
+    {
+      "id": "T11",
+      "name": "Tariq Khan",
+      "email": "t11@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["installation", "inverter_repair"],
+      "active": true
+    },
+    {
+      "id": "T12",
+      "name": "Uday Menon",
+      "email": "t12@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["supervised_assistant"],
+      "active": true
+    },
+    {
+      "id": "T13",
+      "name": "Zubin Ali",
+      "email": "t13@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["supervised_assistant"],
+      "active": true
+    },
+    {
+      "id": "T14",
+      "name": "Varun Das",
+      "email": "t14@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["installation", "inverter_repair"],
+      "active": true
+    },
+    {
+      "id": "T15",
+      "name": "Yash Shah",
+      "email": "t15@scenario.sunpower.local",
+      "role": "technician",
+      "skills": ["installation", "inverter_repair"],
+      "active": true
+    }
+  ],
+  "calendar": {
+    "working_dates": ["2026-11-05", "2026-11-06", "2026-11-07"],
+    "working_hours": ["09:00", "17:00"],
+    "travel_buffer_minutes": 30,
+    "routine_window_days": [3, 5],
+    "window_basis": "calendar days; these three fixture dates are explicitly working days"
+  },
+  "busy_blocks": [
+    {
+      "id": "BUSY-2026-11-05-T01",
+      "technician_id": "T01",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-1"
+    },
+    {
+      "id": "BUSY-2026-11-05-T02",
+      "technician_id": "T02",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-2"
+    },
+    {
+      "id": "BUSY-2026-11-05-T03",
+      "technician_id": "T03",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-3"
+    },
+    {
+      "id": "BUSY-2026-11-05-T04",
+      "technician_id": "T04",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-4"
+    },
+    {
+      "id": "BUSY-2026-11-05-T05",
+      "technician_id": "T05",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-5"
+    },
+    {
+      "id": "BUSY-2026-11-05-T06",
+      "technician_id": "T06",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-6"
+    },
+    {
+      "id": "BUSY-2026-11-05-T07",
+      "technician_id": "T07",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-7"
+    },
+    {
+      "id": "BUSY-2026-11-05-T08",
+      "technician_id": "T08",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-8"
+    },
+    {
+      "id": "BUSY-2026-11-05-T09",
+      "technician_id": "T09",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-9"
+    },
+    {
+      "id": "BUSY-2026-11-05-T10",
+      "technician_id": "T10",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-10"
+    },
+    {
+      "id": "BUSY-2026-11-05-T11",
+      "technician_id": "T11",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-11"
+    },
+    {
+      "id": "BUSY-2026-11-05-T12",
+      "technician_id": "T12",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-12"
+    },
+    {
+      "id": "BUSY-2026-11-05-T13",
+      "technician_id": "T13",
+      "start": "2026-11-05T09:00:00+05:30",
+      "end": "2026-11-05T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-13"
+    },
+    {
+      "id": "BUSY-2026-11-06-T01",
+      "technician_id": "T01",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-1"
+    },
+    {
+      "id": "BUSY-2026-11-06-T02",
+      "technician_id": "T02",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-2"
+    },
+    {
+      "id": "BUSY-2026-11-06-T03",
+      "technician_id": "T03",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-3"
+    },
+    {
+      "id": "BUSY-2026-11-06-T04",
+      "technician_id": "T04",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-4"
+    },
+    {
+      "id": "BUSY-2026-11-06-T05",
+      "technician_id": "T05",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-5"
+    },
+    {
+      "id": "BUSY-2026-11-06-T06",
+      "technician_id": "T06",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-6"
+    },
+    {
+      "id": "BUSY-2026-11-06-T07",
+      "technician_id": "T07",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-7"
+    },
+    {
+      "id": "BUSY-2026-11-06-T08",
+      "technician_id": "T08",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-8"
+    },
+    {
+      "id": "BUSY-2026-11-06-T09",
+      "technician_id": "T09",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-9"
+    },
+    {
+      "id": "BUSY-2026-11-06-T10",
+      "technician_id": "T10",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-10"
+    },
+    {
+      "id": "BUSY-2026-11-06-T11",
+      "technician_id": "T11",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-11"
+    },
+    {
+      "id": "BUSY-2026-11-06-T12",
+      "technician_id": "T12",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-12"
+    },
+    {
+      "id": "BUSY-2026-11-06-T13",
+      "technician_id": "T13",
+      "start": "2026-11-06T09:00:00+05:30",
+      "end": "2026-11-06T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-13"
+    },
+    {
+      "id": "BUSY-2026-11-07-T01",
+      "technician_id": "T01",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-1"
+    },
+    {
+      "id": "BUSY-2026-11-07-T02",
+      "technician_id": "T02",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-2"
+    },
+    {
+      "id": "BUSY-2026-11-07-T03",
+      "technician_id": "T03",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-3"
+    },
+    {
+      "id": "BUSY-2026-11-07-T04",
+      "technician_id": "T04",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-4"
+    },
+    {
+      "id": "BUSY-2026-11-07-T05",
+      "technician_id": "T05",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-5"
+    },
+    {
+      "id": "BUSY-2026-11-07-T06",
+      "technician_id": "T06",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-6"
+    },
+    {
+      "id": "BUSY-2026-11-07-T07",
+      "technician_id": "T07",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-7"
+    },
+    {
+      "id": "BUSY-2026-11-07-T08",
+      "technician_id": "T08",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-8"
+    },
+    {
+      "id": "BUSY-2026-11-07-T09",
+      "technician_id": "T09",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-9"
+    },
+    {
+      "id": "BUSY-2026-11-07-T10",
+      "technician_id": "T10",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-10"
+    },
+    {
+      "id": "BUSY-2026-11-07-T11",
+      "technician_id": "T11",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-11"
+    },
+    {
+      "id": "BUSY-2026-11-07-T12",
+      "technician_id": "T12",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "installation",
+      "customer_reference": "SYNTHETIC-12"
+    },
+    {
+      "id": "BUSY-2026-11-07-T13",
+      "technician_id": "T13",
+      "start": "2026-11-07T09:00:00+05:30",
+      "end": "2026-11-07T17:00:00+05:30",
+      "kind": "repair",
+      "customer_reference": "SYNTHETIC-13"
+    }
+  ],
+  "request": {
+    "id": "CALL-F15",
+    "received_at": "2026-11-02T09:00:00+05:30",
+    "duration_minutes": 120,
+    "required_skill": "inverter_repair",
+    "preferred_start_time": "10:00",
+    "crew_size": 1
+  },
+  "expected": {
+    "eligible_technicians": ["T14", "T15"],
+    "race_same_slot_success_count": 1,
+    "two_person_crew_all_or_nothing": true
+  },
+  "variants": [
+    {
+      "name": "T14 on leave",
+      "leave": [
+        {
+          "technician_id": "T14",
+          "dates": ["2026-11-05", "2026-11-06", "2026-11-07"]
+        }
+      ],
+      "expected_eligible": ["T15"]
+    },
+    {
+      "name": "Both absent",
+      "leave": [
+        {
+          "technician_id": "T14",
+          "dates": ["2026-11-05", "2026-11-06", "2026-11-07"]
+        },
+        {
+          "technician_id": "T15",
+          "dates": ["2026-11-05", "2026-11-06", "2026-11-07"]
+        }
+      ],
+      "expected_eligible": []
+    },
+    {
+      "name": "Two-person crew",
+      "crew_size": 2,
+      "required_members": ["T14", "T15"],
+      "expected": "Reserve both atomically or neither"
+    }
+  ]
+}

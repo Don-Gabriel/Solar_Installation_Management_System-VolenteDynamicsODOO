@@ -1,0 +1,2933 @@
+{
+  "baseline_commit": "d0d1038",
+  "working_deadline": "2026-11-01T07:00:00+05:30",
+  "scenario_count": 200,
+  "groups": [
+    {
+      "code": "INT",
+      "name": "Calls and installation requests"
+    },
+    {
+      "code": "CRM",
+      "name": "Customers sites and contact history"
+    },
+    {
+      "code": "SUR",
+      "name": "Survey and suitability"
+    },
+    {
+      "code": "QUO",
+      "name": "Quotations acceptance and commercial changes"
+    },
+    {
+      "code": "PAY",
+      "name": "Initial invoices and payments"
+    },
+    {
+      "code": "STK",
+      "name": "Stock receipt and reservation"
+    },
+    {
+      "code": "DLV",
+      "name": "Packing delivery and warranty start"
+    },
+    {
+      "code": "SCH",
+      "name": "Availability search and workload"
+    },
+    {
+      "code": "DSP",
+      "name": "Assignment changes and competing requests"
+    },
+    {
+      "code": "INS",
+      "name": "Installation crews and field work"
+    },
+    {
+      "code": "SRV",
+      "name": "Repair calls and service visits"
+    },
+    {
+      "code": "DIA",
+      "name": "Diagnosis and component selection"
+    },
+    {
+      "code": "WAR",
+      "name": "Coverage decisions per component"
+    },
+    {
+      "code": "RMA",
+      "name": "Replacement returns and supplier handling"
+    },
+    {
+      "code": "BIL",
+      "name": "Repair estimates and service invoices"
+    },
+    {
+      "code": "EVD",
+      "name": "Repair photos completion and confirmation"
+    },
+    {
+      "code": "SEC",
+      "name": "Roles staffing and access boundaries"
+    },
+    {
+      "code": "CON",
+      "name": "Concurrency retry and integrity"
+    },
+    {
+      "code": "OPS",
+      "name": "Reliability reporting and recovery"
+    },
+    {
+      "code": "UXP",
+      "name": "Mobile Windows navigation and device behavior"
+    }
+  ],
+  "cases": [
+    {
+      "id": "INT-01",
+      "area": "Calls and installation requests",
+      "title": "Support records a new installation call",
+      "given": "A new caller has a site and preferred visit date",
+      "when": "Support records the enquiry",
+      "expected": "One numbered request records the caller, site, phone source and support actor",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "FAIL",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Support installation intake returned HTTP 403; required success with an audited support actor.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": "GAP-INT-01"
+      }
+    },
+    {
+      "id": "INT-02",
+      "area": "Calls and installation requests",
+      "title": "Caller does not know system size",
+      "given": "Caller wants advice but cannot choose capacity",
+      "when": "Support saves a request awaiting survey",
+      "expected": "Unknown capacity is explicit and no package is silently promised",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INT-03",
+      "area": "Calls and installation requests",
+      "title": "Repeated call for the same request",
+      "given": "An open installation request exists",
+      "when": "Support searches phone and updates the contact log",
+      "expected": "The existing request is offered and a second project is not silently created",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INT-04",
+      "area": "Calls and installation requests",
+      "title": "Two unrelated requests from one household",
+      "given": "A caller wants installation at two addresses",
+      "when": "Support creates two site requests",
+      "expected": "Separate sites and appointment histories stay linked to the right customer",
+      "priority": "P1",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INT-05",
+      "area": "Calls and installation requests",
+      "title": "Customer wants a specific appointment",
+      "given": "Customer can attend only Friday afternoon",
+      "when": "Support records the preference",
+      "expected": "Preference is stored separately from a confirmed appointment",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INT-06",
+      "area": "Calls and installation requests",
+      "title": "Caller reports an electrical hazard",
+      "given": "Caller reports smoke or exposed live wiring",
+      "when": "Support marks the request urgent and escalates",
+      "expected": "An urgent queue and human escalation appear without applying the routine 3 to 5 day promise",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INT-07",
+      "area": "Calls and installation requests",
+      "title": "Wrong phone number entered",
+      "given": "Support enters a malformed phone number",
+      "when": "Save is attempted",
+      "expected": "Validation explains the error and no incomplete customer is committed",
+      "priority": "P1",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INT-08",
+      "area": "Calls and installation requests",
+      "title": "Customer changes their mind before survey",
+      "given": "An enquiry has no accepted order",
+      "when": "Support cancels with a reason",
+      "expected": "Request history is retained and any future appointment is released",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INT-09",
+      "area": "Calls and installation requests",
+      "title": "Call interrupted during entry",
+      "given": "Support has entered customer details",
+      "when": "The app loses connection before save",
+      "expected": "Unsaved information remains recoverable and no success message is shown",
+      "priority": "P1",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INT-10",
+      "area": "Calls and installation requests",
+      "title": "Public intake disabled for staff operation",
+      "given": "The business chooses phone-led intake only",
+      "when": "An anonymous visitor opens the enquiry URL",
+      "expected": "Public creation is disabled by an explicit setting while staff intake remains available",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-01",
+      "area": "Customers sites and contact history",
+      "title": "Search a returning customer by phone",
+      "given": "A customer already has installed equipment",
+      "when": "Support searches the full phone number",
+      "expected": "Matching customers and sites are shown without exposing unrelated private evidence",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-02",
+      "area": "Customers sites and contact history",
+      "title": "Shared family phone number",
+      "given": "Two distinct customers use the same phone",
+      "when": "Support searches and chooses the correct person",
+      "expected": "Records remain distinguishable by name and site rather than forcibly merging",
+      "priority": "P1",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-03",
+      "area": "Customers sites and contact history",
+      "title": "Multiple systems at one address",
+      "given": "One site has an older and newer installation",
+      "when": "Support opens a repair request",
+      "expected": "The affected installation must be selected and both histories remain visible",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-04",
+      "area": "Customers sites and contact history",
+      "title": "Correct a customer spelling",
+      "given": "An installed project exists with a name typo",
+      "when": "Authorized staff corrects the name",
+      "expected": "Current contact data changes with an audit record while issued document snapshots stay unchanged",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-05",
+      "area": "Customers sites and contact history",
+      "title": "Change customer contact number",
+      "given": "A customer reports a replacement phone number",
+      "when": "Support verifies and updates the number",
+      "expected": "The old value remains in restricted history and future contact uses the new number",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-06",
+      "area": "Customers sites and contact history",
+      "title": "Record access instructions",
+      "given": "A roof is accessible only through a locked gate",
+      "when": "Support adds access notes",
+      "expected": "Assigned workers see the notes before departure",
+      "priority": "P1",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-07",
+      "area": "Customers sites and contact history",
+      "title": "Customer address differs from billing address",
+      "given": "A company pays for a remote installation",
+      "when": "Staff records the two addresses",
+      "expected": "Work goes to the service address and the invoice uses the agreed billing address",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-08",
+      "area": "Customers sites and contact history",
+      "title": "Duplicate records discovered",
+      "given": "Two records represent the same person and site",
+      "when": "An administrator reviews a merge",
+      "expected": "No invoices, warranties or evidence are lost and identifiers remain traceable",
+      "priority": "P2",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-09",
+      "area": "Customers sites and contact history",
+      "title": "Wrong customer selected for a complaint",
+      "given": "Support has selected a different household",
+      "when": "Support changes the selection before submission",
+      "expected": "Selected devices and proposed visit reset to the correct customer",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CRM-10",
+      "area": "Customers sites and contact history",
+      "title": "Customer calls while another employee edits",
+      "given": "Two support employees open the same contact record",
+      "when": "Both submit conflicting changes",
+      "expected": "The later save detects a conflict rather than silently losing the earlier change",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-01",
+      "area": "Survey and suitability",
+      "title": "Quote without a survey",
+      "given": "A new enquiry has no approved survey",
+      "when": "Sales issues a quote",
+      "expected": "The server refuses and explains that survey approval is required",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-02",
+      "area": "Survey and suitability",
+      "title": "Insufficient roof area",
+      "given": "A 3 kW request has less than the configured roof requirement",
+      "when": "Surveyor tries approval",
+      "expected": "Approval is refused with the actual measured requirement",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-03",
+      "area": "Survey and suitability",
+      "title": "Unsuitable on-grid connection",
+      "given": "The grid-suitability check is false",
+      "when": "Surveyor approves an on-grid request",
+      "expected": "Approval is refused and the survey remains reviewable",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-04",
+      "area": "Survey and suitability",
+      "title": "Approve a suitable site",
+      "given": "Measurements satisfy the configured package rules",
+      "when": "Surveyor records and approves the survey",
+      "expected": "Sales can quote the approved package with the survey reference",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-05",
+      "area": "Survey and suitability",
+      "title": "New measurements after quote issuance",
+      "given": "An unaccepted quote exists and roof measurements change",
+      "when": "Surveyor records a new survey",
+      "expected": "Old approval cannot authorize a quote based on the new unreviewed measurements",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-06",
+      "area": "Survey and suitability",
+      "title": "Negative or impossible readings",
+      "given": "A measurement is negative or outside configured bounds",
+      "when": "Surveyor saves",
+      "expected": "The server rejects invalid values without partially storing the survey",
+      "priority": "P1",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-07",
+      "area": "Survey and suitability",
+      "title": "Customer absent for survey",
+      "given": "A survey visit was confirmed",
+      "when": "Surveyor records no access",
+      "expected": "The visit is not marked completed and a reschedule task is created",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-08",
+      "area": "Survey and suitability",
+      "title": "Survey needs two workers",
+      "given": "Access requires an assistant under company policy",
+      "when": "Coordinator schedules the survey",
+      "expected": "Both people must be available and the visit records the crew",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-09",
+      "area": "Survey and suitability",
+      "title": "Rain prevents roof inspection",
+      "given": "A scheduled survey cannot safely proceed",
+      "when": "Coordinator postpones with a reason",
+      "expected": "The original slot, reason and revised appointment remain in history",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SUR-10",
+      "area": "Survey and suitability",
+      "title": "Accepted system requested to change",
+      "given": "An accepted order already exists",
+      "when": "Staff tries to replace its survey or capacity",
+      "expected": "The original commercial record is protected and a change-order path is required",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-01",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Generate a package quote",
+      "given": "An approved survey selects a configured capacity and type",
+      "when": "Sales issues a quote",
+      "expected": "Quantities, prices, warranty periods and total match the selected package version",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-02",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Price changes after acceptance",
+      "given": "A customer has accepted a quote",
+      "when": "The product list price changes",
+      "expected": "Accepted quote, order and invoice amounts remain unchanged",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-03",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Customer accepts twice",
+      "given": "One quote is accepted successfully",
+      "when": "The acceptance is retried",
+      "expected": "Only one order, installation invoice and job exist",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-04",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Two staff accept simultaneously",
+      "given": "Sales and administrator accept the same quote at once",
+      "when": "Both requests reach the server",
+      "expected": "One commercial acceptance is committed without duplicate orders",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-05",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Customer requests a discount",
+      "given": "An unaccepted quote exists",
+      "when": "Sales requests a discount beyond their limit",
+      "expected": "An authorized approver and reason are required; original prices remain traceable",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-06",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Customer accepts an older quote",
+      "given": "A newer quote version has been issued",
+      "when": "Acceptance references the older version",
+      "expected": "The selected version is explicit and stale acceptance is rejected or reviewed",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-07",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Quote expires before acceptance",
+      "given": "The quoted validity date has passed",
+      "when": "Sales records acceptance",
+      "expected": "The quote must be renewed or an authorized exception recorded",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-08",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Customer cancels after paying advance",
+      "given": "An order exists with money received",
+      "when": "Staff initiates cancellation",
+      "expected": "A cancellation and refund workflow preserves the original invoice and releases eligible reservations",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-09",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Customer adds a battery after order acceptance",
+      "given": "The original package is frozen",
+      "when": "Sales prepares a change order",
+      "expected": "Only the approved additional work is billed; the original invoice is not overwritten",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "QUO-10",
+      "area": "Quotations acceptance and commercial changes",
+      "title": "Package unavailable for requested system",
+      "given": "The chosen capacity and type have no active package",
+      "when": "Sales issues a quote",
+      "expected": "A clear configuration error appears and no empty quote or order is created",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-01",
+      "area": "Initial invoices and payments",
+      "title": "Initial installation invoice",
+      "given": "A customer accepts a component-and-installation quote",
+      "when": "The system creates the invoice",
+      "expected": "Components and installation appear as distinct lines on one initial invoice",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-02",
+      "area": "Initial invoices and payments",
+      "title": "Advance below threshold",
+      "given": "An invoice has less than the configured advance received",
+      "when": "Stock reservation is requested",
+      "expected": "Reservation is refused and the shortfall is clear",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-03",
+      "area": "Initial invoices and payments",
+      "title": "Advance exactly at threshold",
+      "given": "Payment reaches the exact required advance",
+      "when": "Stock reservation is requested",
+      "expected": "Reservation is allowed if stock is sufficient",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-04",
+      "area": "Initial invoices and payments",
+      "title": "Payment submitted twice",
+      "given": "A receipt has already been recorded",
+      "when": "The same payment is retried",
+      "expected": "No duplicate collection is created",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-05",
+      "area": "Initial invoices and payments",
+      "title": "Payment exceeds outstanding amount",
+      "given": "Only INR 1000 is due",
+      "when": "Staff tries to record INR 1001",
+      "expected": "The payment is rejected and the balance remains unchanged",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-06",
+      "area": "Initial invoices and payments",
+      "title": "Two payments race for final balance",
+      "given": "Two cashiers submit payments against the same balance",
+      "when": "Requests overlap",
+      "expected": "The committed sum never exceeds the permitted outstanding amount",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-07",
+      "area": "Initial invoices and payments",
+      "title": "UPI payment not actually settled",
+      "given": "A customer shows an unverified payment screenshot",
+      "when": "Staff records payment status",
+      "expected": "A pending payment does not count as cleared advance until verified",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-08",
+      "area": "Initial invoices and payments",
+      "title": "Part payment against service bill",
+      "given": "An issued service invoice has a balance",
+      "when": "Accounts records part payment",
+      "expected": "Only that invoice balance falls and installation payment history remains intact",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-09",
+      "area": "Initial invoices and payments",
+      "title": "Incorrect payment needs reversal",
+      "given": "A confirmed receipt was entered by mistake",
+      "when": "Accounts requests reversal",
+      "expected": "A traceable reversal is created without deleting historical receipts",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "PAY-10",
+      "area": "Initial invoices and payments",
+      "title": "Two customers use the same reference text",
+      "given": "Different invoices have independently valid receipts",
+      "when": "Accounts records both",
+      "expected": "Uniqueness follows the documented receipt scope and does not merge customers",
+      "priority": "P1",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-01",
+      "area": "Stock receipt and reservation",
+      "title": "Receive serialized equipment",
+      "given": "Warehouse receives three new inverters with distinct serials",
+      "when": "Staff saves the receipt",
+      "expected": "Three assets and the correct quantity and value are added atomically",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-02",
+      "area": "Stock receipt and reservation",
+      "title": "Duplicate serial in a receipt",
+      "given": "A batch contains a serial already in stock",
+      "when": "Staff saves the batch",
+      "expected": "The whole invalid receipt rolls back without inflating stock",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-03",
+      "area": "Stock receipt and reservation",
+      "title": "Insufficient stock for full package",
+      "given": "At least one required product is short",
+      "when": "Warehouse reserves the order",
+      "expected": "No partial hidden reservation is left and shortages identify product and quantity",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-04",
+      "area": "Stock receipt and reservation",
+      "title": "Two orders compete for the last device",
+      "given": "One unreserved compatible serial remains",
+      "when": "Both orders allocate it concurrently",
+      "expected": "At most one order owns the serial and the other receives a clear conflict",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-05",
+      "area": "Stock receipt and reservation",
+      "title": "Wrong product scanned",
+      "given": "An inverter is required but a battery serial is scanned",
+      "when": "Warehouse adds the serial",
+      "expected": "The scan is rejected without altering reservations or ownership",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-06",
+      "area": "Stock receipt and reservation",
+      "title": "Unknown barcode scanned",
+      "given": "The serial has never been received",
+      "when": "Warehouse scans it into packing",
+      "expected": "The app refuses the unknown identity rather than inventing stock",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-07",
+      "area": "Stock receipt and reservation",
+      "title": "Duplicate scan on one order",
+      "given": "The device is already allocated to that order",
+      "when": "It is scanned again",
+      "expected": "Required quantity and stock are not counted twice",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-08",
+      "area": "Stock receipt and reservation",
+      "title": "Stock found damaged before dispatch",
+      "given": "A reserved device fails inspection",
+      "when": "Warehouse marks it unusable",
+      "expected": "It is quarantined and a compatible substitute is allocated without double counting",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-09",
+      "area": "Stock receipt and reservation",
+      "title": "Serial pasted with spaces and case changes",
+      "given": "A saved serial is pasted with surrounding spaces or lower case",
+      "when": "Warehouse submits the scan",
+      "expected": "Documented normalization locates the same device without creating a second identity",
+      "priority": "P1",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "STK-10",
+      "area": "Stock receipt and reservation",
+      "title": "Stock correction after physical count",
+      "given": "A count differs from recorded quantity",
+      "when": "Warehouse proposes adjustment",
+      "expected": "An authorized adjustment records reason, quantity and value without editing history",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-01",
+      "area": "Packing delivery and warranty start",
+      "title": "Dispatch before every required scan",
+      "given": "A reserved order is missing one serialized device",
+      "when": "Warehouse dispatches",
+      "expected": "Dispatch is refused with the missing item count",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-02",
+      "area": "Packing delivery and warranty start",
+      "title": "Dispatch a complete packing list",
+      "given": "All required quantities and scans are present",
+      "when": "Warehouse confirms dispatch",
+      "expected": "Equipment ownership and dispatch status change once with an audit record",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-03",
+      "area": "Packing delivery and warranty start",
+      "title": "Dispatch does not start warranty",
+      "given": "An order has left the warehouse but is undelivered",
+      "when": "Support checks warranty dates",
+      "expected": "No delivery-based warranty has started yet",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-04",
+      "area": "Packing delivery and warranty start",
+      "title": "Delivery starts each line warranty",
+      "given": "The customer has received all equipment",
+      "when": "Warehouse confirms delivery",
+      "expected": "Each covered component receives its own policy period from delivery time",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-05",
+      "area": "Packing delivery and warranty start",
+      "title": "Delivery is retried",
+      "given": "Delivery was recorded successfully",
+      "when": "The same action is repeated",
+      "expected": "No extra warranty is created and original dates remain unchanged",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-06",
+      "area": "Packing delivery and warranty start",
+      "title": "Partial delivery",
+      "given": "Only inverter and some panels arrive",
+      "when": "Staff records quantities received",
+      "expected": "Undelivered lines remain pending and warranty start follows the agreed per-line rule",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-07",
+      "area": "Packing delivery and warranty start",
+      "title": "Wrong customer receives equipment",
+      "given": "Driver discovers the wrong destination",
+      "when": "Staff records a failed delivery",
+      "expected": "The intended customer is not marked delivered and custody is traceable",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-08",
+      "area": "Packing delivery and warranty start",
+      "title": "Transit damage",
+      "given": "A serial is damaged before customer acceptance",
+      "when": "Warehouse records the incident",
+      "expected": "The damaged device is not commissioned and replacement delivery is tracked",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-09",
+      "area": "Packing delivery and warranty start",
+      "title": "Customer refuses delivery",
+      "given": "The customer does not accept the shipment",
+      "when": "Warehouse records refusal",
+      "expected": "No false handover or warranty start occurs; a return task is opened",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DLV-10",
+      "area": "Packing delivery and warranty start",
+      "title": "Delivery time entered in another timezone",
+      "given": "The office and device show different timezones",
+      "when": "Delivery is viewed on both devices",
+      "expected": "One saved instant produces consistent policy start and expiry boundaries",
+      "priority": "P1",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SCH-01",
+      "area": "Availability search and workload",
+      "title": "Thirteen busy and two free",
+      "given": "Fixture F15 has 15 active technicians and 13 busy during the requested visit interval",
+      "when": "Coordinator searches days 3 to 5",
+      "expected": "Only the two qualified available technicians are offered with actual times and reasons",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SCH-02",
+      "area": "Availability search and workload",
+      "title": "No worker free within target window",
+      "given": "All qualified workers are occupied on days 3 to 5",
+      "when": "Coordinator searches",
+      "expected": "An unassigned escalation and earliest feasible alternative appear without a false promise",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SCH-03",
+      "area": "Availability search and workload",
+      "title": "Free worker lacks required skill",
+      "given": "One available worker lacks inverter skills",
+      "when": "Coordinator searches for inverter repair",
+      "expected": "That worker is excluded or shown as ineligible with a reason",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SCH-04",
+      "area": "Availability search and workload",
+      "title": "Leave overrides an empty calendar",
+      "given": "A worker has approved leave but no job that day",
+      "when": "Availability is searched",
+      "expected": "The worker is not offered during leave",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SCH-05",
+      "area": "Availability search and workload",
+      "title": "Travel consumes the apparent gap",
+      "given": "A worker has a one-hour calendar gap between distant sites",
+      "when": "A one-hour visit is proposed",
+      "expected": "Travel buffers prevent an impossible booking",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SCH-06",
+      "area": "Availability search and workload",
+      "title": "Two jobs have overlapping times",
+      "given": "A technician has an existing installation",
+      "when": "Another overlapping installation is assigned",
+      "expected": "The server refuses the overlap even if the UI submits it",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "PASS",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Overlapping installation assignment returned HTTP 409; does not test shared repair scheduling.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": ""
+      }
+    },
+    {
+      "id": "SCH-07",
+      "area": "Availability search and workload",
+      "title": "Adjacent visits at the same site",
+      "given": "One visit ends exactly when the next begins",
+      "when": "Coordinator books the second",
+      "expected": "Half-open intervals allow adjacency only when travel and handover buffers permit",
+      "priority": "P1",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SCH-08",
+      "area": "Availability search and workload",
+      "title": "Customer available outside business hours",
+      "given": "Customer asks for a late-night routine visit",
+      "when": "Coordinator searches",
+      "expected": "Out-of-hours handling follows a documented policy and does not silently book normal staff",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SCH-09",
+      "area": "Availability search and workload",
+      "title": "Routine window crosses a holiday",
+      "given": "Day 3 is a configured nonworking day",
+      "when": "Coordinator searches a routine visit",
+      "expected": "Working-day or calendar-day policy is explicit and eligible dates are shown",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SCH-10",
+      "area": "Availability search and workload",
+      "title": "Two coordinators choose the same free slot",
+      "given": "Two requests target one technician at the same time",
+      "when": "Both coordinators confirm",
+      "expected": "One booking succeeds and the other refreshes availability after an atomic conflict",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-01",
+      "area": "Assignment changes and competing requests",
+      "title": "Twenty simultaneous customer calls",
+      "given": "Twenty independent requests arrive for the same 15-person team",
+      "when": "Support saves them and coordinator opens the queue",
+      "expected": "All requests are uniquely recorded and none disappear because capacity is full",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-02",
+      "area": "Assignment changes and competing requests",
+      "title": "One slot remains and two requests compete",
+      "given": "Two equally eligible jobs need the same worker",
+      "when": "Coordinator applies ranking",
+      "expected": "Priority, target date, travel and stable tie-break reasons are visible; no silent starvation occurs",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-03",
+      "area": "Assignment changes and competing requests",
+      "title": "Urgent repair interrupts routine planning",
+      "given": "A hazardous fault arrives after routine appointments are confirmed",
+      "when": "Coordinator reviews escalation",
+      "expected": "Urgent work is escalated and displaced customers require explicit rescheduling",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-04",
+      "area": "Assignment changes and competing requests",
+      "title": "Technician becomes sick after assignment",
+      "given": "Tomorrow's worker becomes unavailable",
+      "when": "Coordinator reassigns the visit",
+      "expected": "Replacement eligibility is checked and both assignment history and customer contact task are retained",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-05",
+      "area": "Assignment changes and competing requests",
+      "title": "Customer requests another date",
+      "given": "A confirmed repair appointment exists",
+      "when": "Support records a reschedule request",
+      "expected": "Old capacity is released only when the replacement arrangement is safely committed",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-06",
+      "area": "Assignment changes and competing requests",
+      "title": "Job overruns planned duration",
+      "given": "A technician remains at the current site",
+      "when": "Coordinator extends the visit",
+      "expected": "Affected later appointments are flagged instead of silently overlapping",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-07",
+      "area": "Assignment changes and competing requests",
+      "title": "Technician declines an unsuitable job",
+      "given": "A worker has been assigned outside capability",
+      "when": "Worker declines with reason",
+      "expected": "The task returns to the coordinator queue and is not marked completed",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-08",
+      "area": "Assignment changes and competing requests",
+      "title": "Technician cannot be contacted",
+      "given": "A confirmed worker has not acknowledged the visit",
+      "when": "The acknowledgement deadline passes",
+      "expected": "The coordinator receives an actionable exception without auto-closing the request",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-09",
+      "area": "Assignment changes and competing requests",
+      "title": "Assignment retry after network timeout",
+      "given": "Booking committed but the response was lost",
+      "when": "Coordinator repeats the command",
+      "expected": "One assignment exists and capacity is not held twice",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DSP-10",
+      "area": "Assignment changes and competing requests",
+      "title": "Search result becomes stale",
+      "given": "Availability was viewed before a new booking or leave record",
+      "when": "Coordinator confirms the old suggestion",
+      "expected": "The server rechecks all constraints at confirmation time",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-01",
+      "area": "Installation crews and field work",
+      "title": "Only assigned installer sees work",
+      "given": "Two technicians own different installations",
+      "when": "One opens the other's project or evidence URL",
+      "expected": "The server denies access and the user's own list stays usable",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-02",
+      "area": "Installation crews and field work",
+      "title": "Start before delivery",
+      "given": "An installation is scheduled but equipment is undelivered",
+      "when": "Installer starts work",
+      "expected": "The server blocks starting and identifies the missing delivery",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-03",
+      "area": "Installation crews and field work",
+      "title": "Two-person installation crew",
+      "given": "A roof job requires a lead and an assistant",
+      "when": "Coordinator assigns the crew",
+      "expected": "Both memberships and time reservations are stored and both see the assigned work",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-04",
+      "area": "Installation crews and field work",
+      "title": "Lead and assistant have different powers",
+      "given": "A two-person crew is assigned",
+      "when": "Assistant tries final sign-off",
+      "expected": "Only a qualified lead or authorized supervisor can approve the handover",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-05",
+      "area": "Installation crews and field work",
+      "title": "Safety checklist incomplete",
+      "given": "One required commissioning check is false",
+      "when": "Installer completes the job",
+      "expected": "Completion is blocked without falsely marking the project installed",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-06",
+      "area": "Installation crews and field work",
+      "title": "Missing installation evidence",
+      "given": "A started job has no saved photo or signature",
+      "when": "Installer completes",
+      "expected": "Completion is blocked until required evidence has been saved",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-07",
+      "area": "Installation crews and field work",
+      "title": "Actual hours differ from scheduled hours",
+      "given": "A four-hour appointment takes six hours",
+      "when": "Lead submits actual time",
+      "expected": "Actual labour cost uses saved rates and actual time; schedule and billable time are distinguished",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-08",
+      "area": "Installation crews and field work",
+      "title": "Multiple crew members record time",
+      "given": "Two workers spend different hours at the site",
+      "when": "The crew submits work",
+      "expected": "Costs and payables are calculated per worker without double counting",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-09",
+      "area": "Installation crews and field work",
+      "title": "Customer refuses installation sign-off",
+      "given": "Checks pass but customer disputes the work",
+      "when": "Lead records the disagreement",
+      "expected": "Work awaits review and a fabricated signature or automatic closure is forbidden",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "INS-10",
+      "area": "Installation crews and field work",
+      "title": "Installed system differs from accepted capacity",
+      "given": "The measured or installed capacity differs materially",
+      "when": "Installer submits handover",
+      "expected": "A discrepancy is flagged for authorized review before final acceptance",
+      "priority": "P1",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SRV-01",
+      "area": "Repair calls and service visits",
+      "title": "Complaint before faulty part is known",
+      "given": "A customer reports low output but cannot name a component",
+      "when": "Support creates a repair request",
+      "expected": "A customer-and-site ticket can be saved without guessing a warranty or faulty asset",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "FAIL",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Complaint without a preselected warranty returned HTTP 400; current contract requires warranty_id before diagnosis.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": "GAP-SRV-01"
+      }
+    },
+    {
+      "id": "SRV-02",
+      "area": "Repair calls and service visits",
+      "title": "Assigned repair worker gets full installed list",
+      "given": "A coordinator assigns a repair visit",
+      "when": "The technician opens it",
+      "expected": "Installed quantities, serials, locations, delivery dates, warranty terms and repair history load for that site",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SRV-03",
+      "area": "Repair calls and service visits",
+      "title": "Technician changes between original install and repair",
+      "given": "A different qualified worker receives the repair visit",
+      "when": "They open the customer project",
+      "expected": "Repair assignment grants necessary site access without exposing every customer",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "FAIL",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "A different technician assigned to this repair received HTTP 403 when opening the site project.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": "GAP-SRV-03"
+      }
+    },
+    {
+      "id": "SRV-04",
+      "area": "Repair calls and service visits",
+      "title": "Two open faults at one customer",
+      "given": "An inverter warning and damaged cable are separately reported",
+      "when": "Support reviews open requests",
+      "expected": "Distinct faults can coexist and duplicate detection suggests linking related work",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SRV-05",
+      "area": "Repair calls and service visits",
+      "title": "Repeated call about same unresolved fault",
+      "given": "An existing open complaint matches the site and symptom",
+      "when": "Support records the call",
+      "expected": "It appends contact history or links the duplicate without losing either caller report",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SRV-06",
+      "area": "Repair calls and service visits",
+      "title": "Remote fix avoids a visit",
+      "given": "A permitted nonhazardous issue is resolved by guided support",
+      "when": "Support documents resolution and customer confirmation",
+      "expected": "The case records remote resolution and no fake onsite photos or visit hours are created",
+      "priority": "P1",
+      "build_assessment": "Policy decision",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SRV-07",
+      "area": "Repair calls and service visits",
+      "title": "Repair cancelled before attendance",
+      "given": "Customer withdraws the request",
+      "when": "Support cancels",
+      "expected": "The visit slot and reserved parts are released with a reason and history",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SRV-08",
+      "area": "Repair calls and service visits",
+      "title": "First visit diagnoses but cannot fix",
+      "given": "A specialist part is required",
+      "when": "Technician completes diagnosis only",
+      "expected": "The case stays open with a separate return visit and parts task",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SRV-09",
+      "area": "Repair calls and service visits",
+      "title": "Customer unavailable at repair visit",
+      "given": "Technician arrives but cannot access the property",
+      "when": "Technician records failed attendance",
+      "expected": "The ticket stays unresolved and rescheduling or a reviewed callout charge follows policy",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SRV-10",
+      "area": "Repair calls and service visits",
+      "title": "Customer calls after alleged repair failed",
+      "given": "A closed issue recurs",
+      "when": "Support opens a linked follow-up",
+      "expected": "Original evidence and charges remain immutable and repeat-fault history is visible",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-01",
+      "area": "Diagnosis and component selection",
+      "title": "Select multiple faulty installed components",
+      "given": "The asset list includes an inverter and a controller",
+      "when": "Technician marks both faulty",
+      "expected": "Separate diagnosis lines retain component identity, quantity and coverage decision",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-02",
+      "area": "Diagnosis and component selection",
+      "title": "Select another customer's serial",
+      "given": "A serial belongs to another installation",
+      "when": "Technician tries adding it to diagnosis",
+      "expected": "The server rejects the cross-customer component",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-03",
+      "area": "Diagnosis and component selection",
+      "title": "Diagnose a quantity-tracked panel",
+      "given": "Panels were tracked by quantity rather than unique serial",
+      "when": "Technician selects one faulty panel",
+      "expected": "Affected quantity is bounded by installed quantity and references the original order line",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-04",
+      "area": "Diagnosis and component selection",
+      "title": "Part not supplied by this company",
+      "given": "A third-party component caused the symptom",
+      "when": "Technician records the external part",
+      "expected": "It is clearly marked external and is not automatically covered by an unrelated company warranty",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-05",
+      "area": "Diagnosis and component selection",
+      "title": "No fault found",
+      "given": "Diagnostics pass and no component is marked faulty",
+      "when": "Technician records observations",
+      "expected": "The visit can close under a reviewed no-fault policy without fabricating a replacement",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-06",
+      "area": "Diagnosis and component selection",
+      "title": "Diagnosis changes before approval",
+      "given": "A previously selected component is found healthy",
+      "when": "Technician revises the draft diagnosis",
+      "expected": "Draft bill and parts reservation refresh while the revision history is retained",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-07",
+      "area": "Diagnosis and component selection",
+      "title": "Diagnosis changes after billing",
+      "given": "A service invoice is already issued",
+      "when": "Staff tries editing the fault selection",
+      "expected": "Issued lines remain frozen; correction uses a reviewed revision or credit workflow",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-08",
+      "area": "Diagnosis and component selection",
+      "title": "Customer disputes diagnosis",
+      "given": "Customer declines the proposed replacement",
+      "when": "Support records disagreement",
+      "expected": "No chargeable work starts without the required approval and the dispute remains visible",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-09",
+      "area": "Diagnosis and component selection",
+      "title": "One of many panels is replaced repeatedly",
+      "given": "A quantity-tracked line has several panels",
+      "when": "Technician records successive replacements",
+      "expected": "Cumulative replacement quantities do not exceed identifiable entitlement without review",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "DIA-10",
+      "area": "Diagnosis and component selection",
+      "title": "Retired serial selected again",
+      "given": "An old device is marked replaced",
+      "when": "Support opens a new fault against it",
+      "expected": "The app directs staff to the current replacement identity and retains old history",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "WAR-01",
+      "area": "Coverage decisions per component",
+      "title": "Covered component at ticket opening",
+      "given": "A delivered device is within its warranty period",
+      "when": "Support opens the corresponding ticket",
+      "expected": "Coverage decision and reason use saved delivery and expiry dates",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "PASS",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Active device ticket saved covered=true with delivery-based reason.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": ""
+      }
+    },
+    {
+      "id": "WAR-02",
+      "area": "Coverage decisions per component",
+      "title": "Expired component at ticket opening",
+      "given": "The device warranty expired before the complaint",
+      "when": "Support opens the ticket",
+      "expected": "It is not treated as covered solely because other system parts remain covered",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "PASS",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Expired device ticket saved covered=false.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": ""
+      }
+    },
+    {
+      "id": "WAR-03",
+      "area": "Coverage decisions per component",
+      "title": "Different cover within the same system",
+      "given": "Panel warranty is active but inverter warranty expired",
+      "when": "Technician selects both faulty components",
+      "expected": "Each line gets an independent decision and the whole ticket is not globally free or charged",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "WAR-04",
+      "area": "Coverage decisions per component",
+      "title": "Exact expiry boundary",
+      "given": "The complaint arrives exactly at expiry",
+      "when": "Coverage is evaluated",
+      "expected": "The agreed exclusive expiry rule is consistently applied in the server and shown to staff",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "WAR-05",
+      "area": "Coverage decisions per component",
+      "title": "Warranty expires before the booked visit",
+      "given": "Complaint was recorded while cover was active",
+      "when": "Technician visits five days later",
+      "expected": "Coverage follows the documented complaint-date rule unless a reviewed exclusion applies",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "WAR-06",
+      "area": "Coverage decisions per component",
+      "title": "Excluded accidental damage",
+      "given": "A device is within time cover but diagnosis shows an excluded cause",
+      "when": "Authorized reviewer considers evidence",
+      "expected": "Coverage is not auto-approved by date alone; reason, reviewer and evidence are saved",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "WAR-07",
+      "area": "Coverage decisions per component",
+      "title": "Unknown or missing policy",
+      "given": "Imported equipment has no reliable policy dates",
+      "when": "Staff attempts automatic billing",
+      "expected": "The line is pending review rather than silently free or chargeable",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "WAR-08",
+      "area": "Coverage decisions per component",
+      "title": "Parts covered but labour excluded",
+      "given": "The policy covers an inverter but not callout labour",
+      "when": "The repair is priced",
+      "expected": "Part charge is zero while approved labour is billed separately",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "WAR-09",
+      "area": "Coverage decisions per component",
+      "title": "Manufacturer reimbursement differs from customer cover",
+      "given": "Company promises cover while supplier claim is disputed",
+      "when": "Accounts reviews the repair",
+      "expected": "Customer entitlement remains independent of the supplier recovery balance",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "WAR-10",
+      "area": "Coverage decisions per component",
+      "title": "Warranty override",
+      "given": "An authorized manager grants goodwill or corrects a coverage decision",
+      "when": "The override is saved",
+      "expected": "Original decision, new decision, reason and actor are retained; technician cannot self-approve",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-01",
+      "area": "Replacement returns and supplier handling",
+      "title": "Compatible replacement in stock",
+      "given": "A diagnosed serial has a matching available replacement",
+      "when": "Authorized staff confirms replacement",
+      "expected": "Old and new identities link, stock reduces once and inherited warranty remains traceable",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-02",
+      "area": "Replacement returns and supplier handling",
+      "title": "Replacement uses an allocated serial",
+      "given": "A candidate replacement is reserved for another order",
+      "when": "Staff tries the substitution",
+      "expected": "The server refuses without stealing stock from the other customer",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-03",
+      "area": "Replacement returns and supplier handling",
+      "title": "Replacement is a different product",
+      "given": "A wrong inverter model is scanned",
+      "when": "Replacement is submitted",
+      "expected": "The server rejects incompatible substitution without changing either device",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-04",
+      "area": "Replacement returns and supplier handling",
+      "title": "Different compatible model approved",
+      "given": "Original model is discontinued",
+      "when": "Manager approves an engineering-compatible substitute",
+      "expected": "Compatibility, customer agreement and any price adjustment are explicit and auditable",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-05",
+      "area": "Replacement returns and supplier handling",
+      "title": "Faulty part returned to warehouse",
+      "given": "Technician removes a failed device onsite",
+      "when": "Warehouse receives its return",
+      "expected": "Custody changes to quarantine, never saleable Available stock",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-06",
+      "area": "Replacement returns and supplier handling",
+      "title": "Faulty part not yet returned",
+      "given": "A new part was issued but old part is still onsite",
+      "when": "Coordinator reviews pending returns",
+      "expected": "An outstanding-return task remains visible without falsifying receipt",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-07",
+      "area": "Replacement returns and supplier handling",
+      "title": "No replacement stock available",
+      "given": "Diagnosis needs an unavailable part",
+      "when": "Staff schedules follow-up",
+      "expected": "The case shows waiting for parts and does not promise a completion date as confirmed",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-08",
+      "area": "Replacement returns and supplier handling",
+      "title": "Replacement fails immediately",
+      "given": "A newly fitted replacement does not work",
+      "when": "Technician records another failure",
+      "expected": "Both serials and failure events remain visible without losing original warranty lineage",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-09",
+      "area": "Replacement returns and supplier handling",
+      "title": "Supplier accepts or rejects claim",
+      "given": "A quarantined device was sent to supplier",
+      "when": "Warehouse records supplier decision",
+      "expected": "Supplier credit or returned stock follows its own record and does not rewrite the customer's invoice",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "RMA-10",
+      "area": "Replacement returns and supplier handling",
+      "title": "Replacement retains original coverage",
+      "given": "A covered device is replaced near expiry",
+      "when": "Support checks the new serial",
+      "expected": "The documented inherited-date policy applies rather than silently granting a new full term",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "PASS",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Replacement warranty dates compared directly with the original saved dates.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": ""
+      }
+    },
+    {
+      "id": "BIL-01",
+      "area": "Repair estimates and service invoices",
+      "title": "Covered replacement shown at zero",
+      "given": "A covered inverter is replaced",
+      "when": "A service document is issued",
+      "expected": "The replacement name, quantity and serials appear with INR 0 customer charge and a coverage reason",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "FAIL",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Covered replacement created 0 service documents; required a visible zero-payable replacement line.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": "GAP-BIL-01"
+      }
+    },
+    {
+      "id": "BIL-02",
+      "area": "Repair estimates and service invoices",
+      "title": "Mixed coverage service bill",
+      "given": "One covered inverter and two chargeable connectors are replaced",
+      "when": "The approved repair is invoiced",
+      "expected": "All lines are visible and only uncovered items plus approved labour and travel are payable",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "BIL-03",
+      "area": "Repair estimates and service invoices",
+      "title": "Separate service invoice from original sale",
+      "given": "An installation invoice already exists",
+      "when": "A later paid repair is resolved",
+      "expected": "A separately numbered linked service invoice is created; initial lines remain unchanged",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "PASS",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Compared complete original invoice and lines before/after repair; checked a separate linked service invoice exists.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": ""
+      }
+    },
+    {
+      "id": "BIL-04",
+      "area": "Repair estimates and service invoices",
+      "title": "All repair lines covered",
+      "given": "Every part and labour line is covered",
+      "when": "Service is completed",
+      "expected": "A zero-payable service statement records the work; no payment is demanded",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "BIL-05",
+      "area": "Repair estimates and service invoices",
+      "title": "Internal cost differs from selling price",
+      "given": "A replacement cost the company INR 14000 but agreed retail is INR 18000",
+      "when": "An uncovered repair is invoiced",
+      "expected": "Customer charge uses approved selling price; internal cost remains separately reportable",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "FAIL",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Replacement customer charge was INR 14000; approved-price fixture is INR 18000 and acquisition cost INR 14000.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": "GAP-BIL-05"
+      }
+    },
+    {
+      "id": "BIL-06",
+      "area": "Repair estimates and service invoices",
+      "title": "Customer rejects paid estimate",
+      "given": "An uncovered repair estimate awaits consent",
+      "when": "Customer declines",
+      "expected": "No chargeable replacement is executed or invoiced as accepted work",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "BIL-07",
+      "area": "Repair estimates and service invoices",
+      "title": "Resolution retried after timeout",
+      "given": "Repair and invoice committed but response was lost",
+      "when": "The request is retried",
+      "expected": "No second replacement, stock movement or service invoice is created",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "BIL-08",
+      "area": "Repair estimates and service invoices",
+      "title": "Invoice correction after issue",
+      "given": "A service bill has an incorrect approved line",
+      "when": "Accounts corrects it",
+      "expected": "An authorized credit or revised document links back without overwriting issued history",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "BIL-09",
+      "area": "Repair estimates and service invoices",
+      "title": "Financial totals for mixed repair",
+      "given": "Worked fixture MIX1 totals INR 1700 customer payable",
+      "when": "Accounts views invoice and report",
+      "expected": "Invoice lines total 1700; covered costs remain company costs and are not recorded as zero cost",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "BIL-10",
+      "area": "Repair estimates and service invoices",
+      "title": "Tax and warranty document treatment unconfigured",
+      "given": "The app has no verified tax configuration",
+      "when": "Staff prints a service bill",
+      "expected": "It is labelled as a demo service statement and does not claim legally compliant tax invoicing",
+      "priority": "P1",
+      "build_assessment": "Policy decision",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "EVD-01",
+      "area": "Repair photos completion and confirmation",
+      "title": "After-repair photo required",
+      "given": "An onsite repair has no saved completion photo",
+      "when": "Technician marks the visit complete",
+      "expected": "Completion is blocked until a valid visit-linked photo is saved",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "FAIL",
+        "evidence": "scripts/probe-review-scenarios.ts; output/scenarios/runtime-probes.json",
+        "observed": "Repair resolution without any repair photo returned HTTP 200; required completion rejection.",
+        "commit": "d0d1038dbbcf9e4c519f7f721870e87cc0ac159c",
+        "environment": "Isolated PostgreSQL schema; Fastify injection; Windows; 31 October 2026",
+        "defect": "GAP-EVD-01"
+      }
+    },
+    {
+      "id": "EVD-02",
+      "area": "Repair photos completion and confirmation",
+      "title": "Diagnosis photo linked to faulty item",
+      "given": "Several components were inspected",
+      "when": "Technician attaches a fault photo",
+      "expected": "The photo links to the correct visit and component rather than a generic customer album",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "EVD-03",
+      "area": "Repair photos completion and confirmation",
+      "title": "Wrong file masquerades as photo",
+      "given": "An executable is renamed to JPG",
+      "when": "Technician uploads evidence",
+      "expected": "Content validation rejects it and no downloadable unsafe file is stored",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "EVD-04",
+      "area": "Repair photos completion and confirmation",
+      "title": "Upload loses connection midway",
+      "given": "A repair photo upload is interrupted",
+      "when": "Technician retries",
+      "expected": "No partial image is treated as evidence; retry creates one usable record",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "EVD-05",
+      "area": "Repair photos completion and confirmation",
+      "title": "Device permission denied",
+      "given": "Technician denies camera permission",
+      "when": "They need to attach completion evidence",
+      "expected": "A clear explanation and permitted file-picker alternative are offered",
+      "priority": "P1",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "EVD-06",
+      "area": "Repair photos completion and confirmation",
+      "title": "Customer signs before final changes",
+      "given": "A signed service report is later changed",
+      "when": "Staff edits charge or replaced component",
+      "expected": "Signature is invalidated for the changed version and fresh confirmation is requested",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "EVD-07",
+      "area": "Repair photos completion and confirmation",
+      "title": "Customer confirms by phone",
+      "given": "Customer cannot sign onsite but accepts the result by phone",
+      "when": "Support records confirmation",
+      "expected": "Method, actor, time and stated confirmer are saved without pretending a handwritten signature exists",
+      "priority": "P1",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "EVD-08",
+      "area": "Repair photos completion and confirmation",
+      "title": "Customer disputes closure",
+      "given": "Technician marks work done but customer reports failure",
+      "when": "Support records the dispute",
+      "expected": "Case remains awaiting review and is not silently counted as customer-confirmed",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "EVD-09",
+      "area": "Repair photos completion and confirmation",
+      "title": "Technician attempts to erase evidence",
+      "given": "A photo belongs to an issued report",
+      "when": "Worker tries replacing or deleting it",
+      "expected": "Issued evidence history remains protected and any correction is versioned",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "EVD-10",
+      "area": "Repair photos completion and confirmation",
+      "title": "Unauthenticated person opens a photo URL",
+      "given": "A private image URL is copied outside the staff session",
+      "when": "Visitor requests the image",
+      "expected": "The server denies private evidence access",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-01",
+      "area": "Roles staffing and access boundaries",
+      "title": "Support creates installation request",
+      "given": "Support has a verified customer call",
+      "when": "They open New enquiry and submit",
+      "expected": "Support can create intake without gaining price, stock or payout authority",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-02",
+      "area": "Roles staffing and access boundaries",
+      "title": "Coordinator manages visits",
+      "given": "A service coordinator has no finance role",
+      "when": "They search and assign workers",
+      "expected": "Scheduling is allowed while invoice edits and staff payouts remain denied",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-03",
+      "area": "Roles staffing and access boundaries",
+      "title": "Technician sees assigned repair only",
+      "given": "Two workers have different repair visits",
+      "when": "One requests the other visit ID",
+      "expected": "Server rejects unrelated details and photos even through direct URLs",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-04",
+      "area": "Roles staffing and access boundaries",
+      "title": "Warehouse cannot approve customer discount",
+      "given": "Warehouse has stock permissions",
+      "when": "They call a quote or discount approval action",
+      "expected": "The server denies the action regardless of hidden UI controls",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-05",
+      "area": "Roles staffing and access boundaries",
+      "title": "Accounts cannot fake technical completion",
+      "given": "Accounts can invoice but is not the assigned worker",
+      "when": "They call repair completion",
+      "expected": "Technical completion is denied while authorized payment work stays available",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-06",
+      "area": "Roles staffing and access boundaries",
+      "title": "One employee covers two duties",
+      "given": "A small company has a coordinator who also answers calls",
+      "when": "Administrator grants defined capabilities",
+      "expected": "Permissions are explicit and audited without sharing another person's password",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-07",
+      "area": "Roles staffing and access boundaries",
+      "title": "Employee leaves the company",
+      "given": "A staff account has active sessions and future visits",
+      "when": "Administrator deactivates the person",
+      "expected": "Sessions become unusable and affected appointments enter reassignment review",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-08",
+      "area": "Roles staffing and access boundaries",
+      "title": "Two support agents work concurrently",
+      "given": "Support team contains two named users",
+      "when": "Both record different callers",
+      "expected": "Separate actor identities are retained; no shared login is required",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-09",
+      "area": "Roles staffing and access boundaries",
+      "title": "Only administrator sees staff directory",
+      "given": "A nonadmin staff member opens Team or its API",
+      "when": "The request is made directly",
+      "expected": "The server refuses access to the administrative directory",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "SEC-10",
+      "area": "Roles staffing and access boundaries",
+      "title": "Permission changed while screen is open",
+      "given": "A user loses a permission after loading a form",
+      "when": "They submit the old form",
+      "expected": "Current server permissions win and the operation is denied",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-01",
+      "area": "Concurrency retry and integrity",
+      "title": "Same idempotency key same request",
+      "given": "A command completed and its response was lost",
+      "when": "Client repeats identical data and key",
+      "expected": "The saved result returns without repeating business effects",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-02",
+      "area": "Concurrency retry and integrity",
+      "title": "Same idempotency key changed request",
+      "given": "A key was used for one command body",
+      "when": "Client submits changed data with that key",
+      "expected": "The server rejects the conflicting retry",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-03",
+      "area": "Concurrency retry and integrity",
+      "title": "Two workers diagnose same service visit",
+      "given": "Both opened the same draft revision",
+      "when": "They submit different component findings",
+      "expected": "A version conflict is shown instead of losing either diagnosis silently",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-04",
+      "area": "Concurrency retry and integrity",
+      "title": "Two repair tickets replace the same original",
+      "given": "Two open tickets reference one delivered serial",
+      "when": "Both try a replacement concurrently",
+      "expected": "Only one replacement succeeds and the other detects the changed original state",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-05",
+      "area": "Concurrency retry and integrity",
+      "title": "Reservation races with service replacement",
+      "given": "One unreserved serial is needed by both workflows",
+      "when": "Both commands execute together",
+      "expected": "Stock, reservation and replacement ownership remain consistent",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-06",
+      "area": "Concurrency retry and integrity",
+      "title": "Failure after stock update before invoice",
+      "given": "A database error occurs during repair resolution",
+      "when": "The transaction aborts",
+      "expected": "Stock, old serial, warranty, ticket and invoice all roll back together",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-07",
+      "area": "Concurrency retry and integrity",
+      "title": "Two coordinators reschedule the same visit",
+      "given": "Both opened the same appointment revision",
+      "when": "They confirm different times",
+      "expected": "One coherent appointment remains and the stale change is rejected",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-08",
+      "area": "Concurrency retry and integrity",
+      "title": "Payment response lost after commit",
+      "given": "The payment was saved but client times out",
+      "when": "Staff uses retry with the original key",
+      "expected": "One receipt remains and the UI recovers the committed outcome",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-09",
+      "area": "Concurrency retry and integrity",
+      "title": "Double tap completion",
+      "given": "A technician taps Complete twice rapidly",
+      "when": "Both requests reach the server",
+      "expected": "One handover and one payable cost record exist",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "CON-10",
+      "area": "Concurrency retry and integrity",
+      "title": "Database rejects a foreign identifier",
+      "given": "An action references a deleted or nonexistent record",
+      "when": "The request is submitted",
+      "expected": "A controlled error is returned and no orphan business records appear",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-01",
+      "area": "Reliability reporting and recovery",
+      "title": "Server restarts after saved action",
+      "given": "A committed project and session exist",
+      "when": "The API process restarts",
+      "expected": "Saved work remains and valid session behavior follows configured persistence",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-02",
+      "area": "Reliability reporting and recovery",
+      "title": "Database connection fails during save",
+      "given": "The database becomes unreachable",
+      "when": "Staff submits a command",
+      "expected": "No success is shown and retry cannot duplicate a partially committed action",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-03",
+      "area": "Reliability reporting and recovery",
+      "title": "Evidence disk is full",
+      "given": "Metadata storage works but file storage cannot write",
+      "when": "Technician uploads",
+      "expected": "The app reports failure and does not record nonexistent evidence as saved",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-04",
+      "area": "Reliability reporting and recovery",
+      "title": "Restore a backup",
+      "given": "A backup includes database and private files",
+      "when": "The application is restored to a separate environment",
+      "expected": "Records and evidence links reconcile and restored totals match the backup checkpoint",
+      "priority": "P0",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-05",
+      "area": "Reliability reporting and recovery",
+      "title": "Dashboard distinguishes backlog from active work",
+      "given": "Many requests are waiting for parts or appointments",
+      "when": "Coordinator opens Home",
+      "expected": "Counts separate unassigned, scheduled, blocked, in-progress and overdue visits",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-06",
+      "area": "Reliability reporting and recovery",
+      "title": "Report distinguishes cash and profit",
+      "given": "An invoice is unpaid or only partly paid",
+      "when": "Accounts opens reports",
+      "expected": "Cash collected, outstanding and completed contribution are separate figures",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-07",
+      "area": "Reliability reporting and recovery",
+      "title": "Covered repair still costs money",
+      "given": "Customer pays zero but the company uses parts and labour",
+      "when": "Accounts views project contribution",
+      "expected": "Internal repair costs reduce contribution even with no customer charge",
+      "priority": "P0",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-08",
+      "area": "Reliability reporting and recovery",
+      "title": "Search handles growing workload",
+      "given": "Fixture LOAD1 has 1000 projects and 200 open service requests",
+      "when": "Staff searches and pages through records",
+      "expected": "Pagination preserves all results and agreed response-time targets are measured, not assumed",
+      "priority": "P1",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-09",
+      "area": "Reliability reporting and recovery",
+      "title": "Audit reconstructs a disputed repair",
+      "given": "A customer questions who changed assignment or coverage",
+      "when": "Manager reviews history",
+      "expected": "Actor, time, old and new states, reasons and related documents are available",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "OPS-10",
+      "area": "Reliability reporting and recovery",
+      "title": "Demo reset cannot erase operational data",
+      "given": "A training fixture needs to be replayed",
+      "when": "Tester resets the isolated fixture",
+      "expected": "Only the explicitly selected test dataset changes; live/demo customer work is preserved",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-01",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Return to filtered project list",
+      "given": "Staff opens a project from a searched stage-filtered list",
+      "when": "They choose Back",
+      "expected": "Search, stage and page context are retained",
+      "priority": "P1",
+      "build_assessment": "Present in source",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-02",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Next task follows actual saved state",
+      "given": "A project moves from survey to payment or packing",
+      "when": "Staff reloads the project",
+      "expected": "The next-step message matches saved progress and the user's permitted action",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-03",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Navigate away from unsaved form",
+      "given": "Staff edits a long form without saving",
+      "when": "They choose another screen or phone Back",
+      "expected": "A stay/discard choice prevents accidental data loss",
+      "priority": "P0",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-04",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Small phone with keyboard open",
+      "given": "A 360px screen shows a long repair form",
+      "when": "Technician focuses the last field",
+      "expected": "The field, error and submit action remain reachable without whole-page overflow",
+      "priority": "P1",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-05",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Screen reader and keyboard operation",
+      "given": "A user cannot use a mouse or read color cues",
+      "when": "They navigate menus and forms",
+      "expected": "Labels, focus order, status messages and keyboard actions remain understandable",
+      "priority": "P1",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-06",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Android native app against same backend",
+      "given": "A signed Android build uses the shared API",
+      "when": "Staff completes an assigned repair",
+      "expected": "Identity, photos, invoice rules and server permissions match the desktop workflow",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-07",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Windows native app against same backend",
+      "given": "A signed Windows build is installed",
+      "when": "Staff schedules and invoices a repair",
+      "expected": "The installed client uses the same authoritative rules and handles printing and file permissions",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-08",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Offline during field visit",
+      "given": "A technician loses network after opening a visit",
+      "when": "They attempt save or completion",
+      "expected": "Offline state is explicit and no unsynced work is shown as committed; draft policy is defined",
+      "priority": "P0",
+      "build_assessment": "Partial",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-09",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Barcode camera on a physical phone",
+      "given": "A real device grants camera access in a supported secure context",
+      "when": "Technician scans a printed label",
+      "expected": "The actual serial is decoded and server eligibility checks still run",
+      "priority": "P1",
+      "build_assessment": "Needs verification",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    },
+    {
+      "id": "UXP-10",
+      "area": "Mobile Windows navigation and device behavior",
+      "title": "Client is older than backend",
+      "given": "A native or cached web client uses an older request shape",
+      "when": "It calls a changed endpoint",
+      "expected": "Version compatibility or a clear update message prevents silent corruption",
+      "priority": "P1",
+      "build_assessment": "Missing workflow",
+      "execution": {
+        "status": "NOT RUN",
+        "evidence": "No scenario-specific execution recorded."
+      }
+    }
+  ]
+}

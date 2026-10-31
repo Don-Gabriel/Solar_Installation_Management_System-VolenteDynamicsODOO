@@ -1,8 +1,12 @@
 # Build plan
 
-Revision 4 · 31 October 2026 · Solo developer · Deadline 1 November 2026, 09:00 IST.
+Revision 5 · 31 October 2026 · Solo developer · User's working deadline 1 November 2026, 07:00 IST; official event deadline unconfirmed.
 
 ## Current implementation status
+
+The initial review introduced a larger operational scope: support-led phone intake, shared survey/installation/repair scheduling, crews, skill and leave constraints, technician-led repair diagnosis, repair evidence and itemized mixed-warranty billing. The new [200-case acceptance catalogue](SCENARIO_CATALOG.md) records current support and gaps. Its target staffing fixture has eight roles and 27 employees including 15 field technicians; the coordinator role and fixture are specifications, not yet integrated application features. A React Native mobile/Windows client is a proposed separate delivery track sharing the existing backend. It has not replaced the implemented React web client.
+
+Prioritize shared business rules before native packaging. Target 05:00 IST scope freeze and 05:00 to 07:00 regression and rehearsal. The older milestone times below are historical planning, superseded by this working deadline. Do not claim all 200 cases pass based on the earlier regression suite.
 
 The first working build implements the enquiry-to-installation lifecycle, serialized inventory, warranty service, role-based access, evidence storage and financial reports. The native local PostgreSQL setup is running. See [VERIFICATION.md](VERIFICATION.md) for passed checks and gaps, and [DEMO.md](DEMO.md) for rehearsal.
 
