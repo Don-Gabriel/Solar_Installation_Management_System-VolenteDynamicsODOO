@@ -139,7 +139,8 @@ export function Schedule() {
                     )
                     .map((t: any) => (
                       <option key={t.id} value={t.id}>
-                        SR-{t.number} · {t.customer_name} · {t.priority}
+                        SR-{t.number} · {t.customer_name} · {t.priority} ·{" "}
+                        {t.dispatch_reason}
                       </option>
                     ))}
                 </select>
@@ -281,6 +282,7 @@ export function Schedule() {
                     />
                     {t.name}
                     {t.can_lead ? " · Lead qualified" : ""}
+                    <small>{t.reason}</small>
                   </label>
                 ))}
               </div>

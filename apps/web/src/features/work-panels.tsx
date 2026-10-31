@@ -1,3 +1,4 @@
+import { DeliveryExceptions } from "./delivery-exceptions";
 import { InstallationDispute } from "./service-review";
 import { useState } from "react";
 import { Link } from "react-router";
@@ -41,6 +42,7 @@ export function DeliveryPanel({ data }: { data: any }) {
   return (
     <div className="detail-columns">
       <div className="detail-stack">
+        <DeliveryExceptions data={data} />
         <Panel
           title="Packing checklist"
           description="Reserve stock, scan every serialized device, then release the shipment."

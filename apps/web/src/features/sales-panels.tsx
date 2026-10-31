@@ -1,3 +1,8 @@
+import {
+  OrderCancellation,
+  QuoteDiscount,
+  ChangeOrders,
+} from "./order-cancellation";
 import { InvoiceLedger } from "./invoice-ledger";
 import { useState } from "react";
 import { Printer, CheckCircle2, FileText } from "lucide-react";
@@ -286,6 +291,9 @@ export function QuotePanel({ data }: { data: any }) {
     s = data.surveys[0];
   return (
     <div className="detail-stack">
+      <OrderCancellation data={data} />
+      <QuoteDiscount data={data} />
+      <ChangeOrders data={data} />
       <Panel
         title="Itemized quotation"
         description={

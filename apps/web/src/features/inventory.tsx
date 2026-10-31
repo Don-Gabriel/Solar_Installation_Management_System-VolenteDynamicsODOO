@@ -1,3 +1,5 @@
+import { StockReview } from "./stock-review";
+import { SupplierClaims } from "./supplier-claims";
 import { useState } from "react";
 import {
   PackagePlus,
@@ -276,6 +278,8 @@ export function Inventory() {
           </Panel>
         </TabsContent>
       </Tabs>
+      <SupplierClaims />
+      <StockReview data={data} />
       <Modal
         open={receive}
         onClose={() => setReceive(false)}

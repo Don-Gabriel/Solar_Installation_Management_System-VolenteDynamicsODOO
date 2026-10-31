@@ -1,3 +1,9 @@
+import {
+  ExternalEquipment,
+  SupplierShipment,
+  PartsReadiness,
+  EngineeringSubstitute,
+} from "./supplier-claims";
 import { ServiceReview } from "./service-review";
 import { useFormSafety, readDraft, draftPrefix } from "@/app/form-safety";
 import { InvoiceLedger } from "./invoice-ledger";
@@ -410,6 +416,11 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
       </Panel>
       {d.project.access_notes && <p>Site access: {d.project.access_notes}</p>}
       <ServiceReview data={d} />
+      <ExternalEquipment data={d} />
+      <PartsReadiness data={d} />
+      <Can roles={["admin", "coordinator"]}>
+        <EngineeringSubstitute data={d} />
+      </Can>
       <Panel title="Visit and crew">
         {d.visits.length ? (
           d.visits.map((v: any) => (
@@ -592,7 +603,15 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
                       >
                         <option value="">Choose available serial</option>
                         {d.spares
-                          .filter((s: any) => s.product_id === l.product_id)
+                          .filter(
+                            (s: any) =>
+                              s.product_id === l.product_id ||
+                              d.engineering_substitutes?.some(
+                                (e: any) =>
+                                  e.asset_id === l.asset_id &&
+                                  e.replacement_product_id === s.product_id,
+                              ),
+                          )
                           .map((s: any) => (
                             <option key={s.serial} value={s.serial}>
                               {s.serial}
@@ -960,6 +979,7 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
           </Can>
         </Panel>
       ))}
+      <SupplierShipment returns={d.returns} />
       {d.returns.length > 0 && (
         <Panel title="Faulty equipment return">
           {d.returns.map((r: any) => (
