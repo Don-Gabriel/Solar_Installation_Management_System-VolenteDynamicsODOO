@@ -98,6 +98,9 @@ export async function completeJob(db: Db, user: User, id: string, b: any) {
     403,
   );
   if (job.status === "completed") return job;
+  const accepted=await one(db,'SELECT capacity_kw FROM projects WHERE id=$1',[job.project_id]);
+  ensure(Math.abs(b.capacity_kw-accepted.capacity_kw)<=accepted.capacity_kw*0.1,
+    'Installed capacity differs materially from the accepted system. Review the discrepancy before handover.');
   ensure(
     job.status === "in_progress",
     "Start the job before recording completion.",

@@ -289,6 +289,8 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
       "SELECT * FROM warranties WHERE order_line_id=$1 AND (asset_id=$2 OR (asset_id IS NULL AND $2::uuid IS NULL))",
       [l.id, a?.id || null],
     );
+    ensure(w || l.warranty_months===0 || (line.coverage && line.coverage!=='auto'),
+      'Warranty dates are missing. An authorized reviewer must record a coverage decision before this work can be billed.');
     let covered =
         !!w &&
         new Date(w.starts_at) <= new Date(t.opened_at) &&

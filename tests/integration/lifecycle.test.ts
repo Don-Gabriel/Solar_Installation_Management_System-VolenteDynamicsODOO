@@ -2647,3 +2647,16 @@ describe("Customer follow-up and workflow compatibility", () => {
     }
   });
 });
+
+
+describe('Final billing and intake guards',()=>{
+ it('[INT-10] explicit phone-only setting blocks anonymous creation while staff intake stays usable',async()=>{
+  const previous=process.env.PUBLIC_INTAKE_ENABLED;process.env.PUBLIC_INTAKE_ENABLED='false';const body={name:'Phone-only caller',phone:'9888888888',address:'Synthetic site',capacity_kw:1,system_type:'on_grid',source:'Phone',subsidy_interest:false};try{expect((await app.inject({method:'POST',url:'/api/enquiries/public',payload:body})).statusCode).toBe(403);await post('/projects',body,'support');}finally{if(previous===undefined)delete process.env.PUBLIC_INTAKE_ENABLED;else process.env.PUBLIC_INTAKE_ENABLED=previous;}
+ });
+ it('[WAR-07] missing promised policy requires a reviewed decision, never silent billing',async()=>{
+  const f=await operationFixture();await post(`/visits/${f.visit.id}/action`,{action:'start',version:1});let d=await get(`/tickets/${f.ticket.id}`);const c=d.components.find((c:any)=>c.asset_status==='delivered');await db.query('DELETE FROM warranties WHERE id=$1',[c.warranty_id]);const line={order_line_id:c.order_line_id,asset_id:c.asset_id,quantity:1,finding:'Imported policy dates missing',action:'repair',labour_minutes:60,labour_price_minor:50000};const r=await req('POST',`/tickets/${f.ticket.id}/diagnosis`,{version:d.ticket.version,lines:[line]},'technician');expect(r.statusCode).toBe(409);expect(r.body).toContain('reviewer');expect((await get(`/tickets/${f.ticket.id}`)).invoices).toHaveLength(0);await post(`/tickets/${f.ticket.id}/diagnosis`,{version:d.ticket.version,lines:[{...line,coverage:'covered',coverage_reason:'Company accepted goodwill pending policy recovery'}]},'coordinator');expect((await get(`/tickets/${f.ticket.id}`)).lines[0].covered).toBe(true);
+ });
+ it('[INS-10] material capacity discrepancy blocks handover for review',async()=>{
+  const d=await delivered();const when=new Date(Date.now()+(repairDay+=7)*86400000);while(when.getUTCDay()===0)when.setUTCDate(when.getUTCDate()+1);await post(`/jobs/${d.job.id}/assignment`,{technician_id:accounts.technician.id,scheduled_at:when.toISOString().slice(0,10)+'T09:00:00+05:30',duration_hours:2});await post(`/jobs/${d.job.id}/start`);const r=await req('POST',`/jobs/${d.job.id}/completion`,{capacity_kw:0.5,generation_kw:0.3,labour_minutes:60,signer_name:'Synthetic signer',checklist:{mounting:true,earthing:true,wiring:true,inverter:true,handover:true}},'technician');expect(r.statusCode).toBe(409);expect(r.body).toContain('capacity differs');expect((await get(`/projects/${d.project.id}`)).job.status).toBe('in_progress');
+ });
+});

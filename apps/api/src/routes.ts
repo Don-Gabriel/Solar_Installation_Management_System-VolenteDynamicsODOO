@@ -336,14 +336,16 @@ export async function routes(app: FastifyInstance) {
       schema: { body: C.Enquiry },
       config: { rateLimit: { max: 5, timeWindow: "1 minute" } },
     },
-    (req) =>
-      transaction((db) =>
+    (req) => {
+      ensure(process.env.PUBLIC_INTAKE_ENABLED!=='false','Public enquiries are disabled. Please call the company.',403);
+      return transaction((db) =>
         sales.createEnquiry(db, null, {
           ...(req.body as C.EnquiryInput),
           source: "website",
           owner_id: undefined,
         }),
-      ),
+      );
+    },
   );
   command(
     "/projects",
