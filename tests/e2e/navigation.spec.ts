@@ -9,6 +9,109 @@ async function login(page: any, email = "admin@sunpower.local") {
     page.getByRole("heading", { name: /Good morning|Good afternoon/ }),
   ).toBeVisible();
 }
+test("[INT-09 UXP-03] interrupted enquiry recovers its draft and in-app/back navigation offers stay or discard", async ({
+  page,
+  context,
+}) => {
+  await login(page);
+  await page.goto("/projects");
+  await page.getByRole("link", { name: "New enquiry", exact: true }).click();
+  await page.getByLabel("Customer name").fill("Recoverable unsent caller");
+  await page.getByLabel("Phone number").fill("9876543201");
+  await page
+    .getByLabel("Installation address")
+    .fill("Synthetic interrupted call site");
+  await page
+    .getByRole("combobox", { name: "System capacity" })
+    .selectOption("unknown");
+  await context.setOffline(true);
+  await page
+    .getByRole("button", { name: "Create project", exact: true })
+    .click();
+  await expect(
+    page.getByText(/You are offline. This change was not submitted/),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "New enquiry", exact: true }),
+  ).toBeVisible();
+  await context.setOffline(false);
+  await page.reload();
+  await expect(page.getByLabel("Customer name")).toHaveValue(
+    "Recoverable unsent caller",
+  );
+  await expect(page.getByText(/Recovered unsent draft/)).toBeVisible();
+  await page.locator(".back-link").click();
+  await expect(
+    page.getByRole("dialog", { name: "Leave unsaved changes?" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Stay on this screen" }).click();
+  await expect(page.getByLabel("Customer name")).toHaveValue(
+    "Recoverable unsent caller",
+  );
+  await page.goBack();
+  await expect(
+    page.getByRole("dialog", { name: "Leave unsaved changes?" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Discard changes and leave" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Projects", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "New enquiry", exact: true }).click();
+  await expect(page.getByLabel("Customer name")).toHaveValue("");
+});
+test("[INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions", async ({
+  page,
+}) => {
+  await login(page, "support@sunpower.local");
+  await page.goto("/projects/new");
+  await page
+    .getByLabel("Search existing customer by phone or name")
+    .fill("Lakshmi");
+  await page
+    .getByRole("combobox", { name: "Customer record", exact: true })
+    .selectOption({ index: 1 });
+  await page
+    .getByRole("combobox", { name: "Existing installation site", exact: true })
+    .selectOption({ index: 1 });
+  await expect(
+    page.getByRole("link", { name: /Open SP-/ }).first(),
+  ).toBeVisible();
+  await page
+    .getByRole("combobox", { name: "System capacity" })
+    .selectOption("unknown");
+  await page
+    .getByRole("button", { name: "Create project", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Lakshmi Iyer", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByText("Customer, sites & call history", { exact: true })
+    .click();
+  await expect(
+    page.getByText("Same site", { exact: false }).first(),
+  ).toBeVisible();
+  await page
+    .getByLabel("Customer call / follow-up note")
+    .fill("Repeated call: survey date requested");
+  await page.getByRole("button", { name: "Save call note" }).click();
+  await expect(
+    page.getByText(/Repeated call: survey date requested/).last(),
+  ).toBeVisible();
+  await page.getByText("Edit site access", { exact: true }).click();
+  await page
+    .getByLabel("Gate, roof and site access instructions")
+    .fill("Ask reception for the roof key");
+  await page
+    .getByLabel("Site instruction change reason")
+    .fill("Confirmed on customer call");
+  await page.getByRole("button", { name: "Save site instructions" }).click();
+  await expect(
+    page.getByText("Site access: Ask reception for the roof key", {
+      exact: true,
+    }),
+  ).toBeVisible();
+});
 test("[UXP-01] project next step and back navigation preserve search and stage", async ({
   page,
 }) => {

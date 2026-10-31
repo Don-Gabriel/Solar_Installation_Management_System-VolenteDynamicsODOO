@@ -147,6 +147,77 @@ test("[CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and se
   });
   expect(errors).toEqual([]);
 });
+test("[BIL-08] invoice correction needs a second reviewer and displays the retained original and credit", async ({
+  page,
+}) => {
+  await login(page);
+  const projects = await page.request
+    .get("/api/projects?status=completed&limit=20")
+    .then((r) => r.json());
+  const project = projects.items[0];
+  await page.goto(`/projects/${project.id}`);
+  await page.getByRole("tab", { name: "Quotation & payment" }).click();
+  const record = page.locator(".invoice-record").first();
+  await record
+    .getByText("Receipts, credits & corrections", { exact: true })
+    .click();
+  await record.getByText("Request invoice correction", { exact: true }).click();
+  const reason = `Browser credit review ${Date.now()}`;
+  await record.getByLabel("Credit amount (₹)").fill("10");
+  await record.getByLabel("Correction reason").fill(reason);
+  await record
+    .getByRole("button", { name: "Submit correction for review" })
+    .click();
+  await expect(
+    record
+      .getByText(
+        "Awaiting review by another accounts officer or administrator.",
+      )
+      .first(),
+  ).toBeVisible();
+  if (
+    !(await page
+      .getByRole("button", { name: "Sign out", exact: true })
+      .isVisible())
+  )
+    await page
+      .getByRole("button", { name: "Open navigation", exact: true })
+      .click();
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await login(page, "accounts@sunpower.local");
+  await page.goto(`/projects/${project.id}`);
+  await page.getByRole("tab", { name: "Quotation & payment" }).click();
+  const reviewed = page.locator(".invoice-record").first();
+  await reviewed
+    .getByText("Receipts, credits & corrections", { exact: true })
+    .click();
+  const request = reviewed.locator(".ticket-card").filter({ hasText: reason });
+  await request
+    .getByRole("checkbox", {
+      name: "Approve credit and any replacement invoice",
+    })
+    .check();
+  await request
+    .getByLabel("Correction review reason")
+    .fill("Checked invoice against customer agreement");
+  await request
+    .getByRole("button", { name: "Review correction", exact: true })
+    .click();
+  await expect(request.getByText("Approved", { exact: true })).toBeVisible();
+  await expect(
+    reviewed.getByText(/Credit note CN-/).filter({ hasText: reason }),
+  ).toBeVisible();
+  await page.reload();
+  await page.getByRole("tab", { name: "Quotation & payment" }).click();
+  await page
+    .locator(".invoice-record")
+    .first()
+    .getByText("Receipts, credits & corrections", { exact: true })
+    .click();
+  await expect(
+    page.getByText(/Credit note CN-/).filter({ hasText: reason }),
+  ).toBeVisible();
+});
 test("coordinator can schedule but cannot open finance or team administration", async ({
   page,
 }) => {
@@ -204,4 +275,46 @@ test("[SUR-08] coordinator books a two-person survey crew against the selected s
   expect(added[0].kind).toBe("survey");
   expect(added[0].crew).toHaveLength(2);
   expect(added[0].crew.filter((c: any) => c.is_lead)).toHaveLength(1);
+});
+
+test("[SCH-02 SCH-09] a holiday search shows alternatives and a tracked follow-up that can be completed", async ({
+  page,
+}) => {
+  await login(page, "coordinator@sunpower.local");
+  await page.goto("/schedule");
+  await page.getByText("Company holidays", { exact: true }).click();
+  await page.getByLabel("Nonworking date").fill("2027-12-25");
+  await page
+    .getByLabel("Holiday reason")
+    .fill("Synthetic holiday for exception workflow");
+  await page.getByRole("button", { name: "Save holiday", exact: true }).click();
+  await expect(
+    page.getByText("2027-12-25 · Synthetic holiday for exception workflow", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page
+    .getByRole("combobox", { name: "Repair request", exact: true })
+    .selectOption({ index: 1 });
+  await page.getByLabel("From", { exact: true }).fill("2027-12-25");
+  await page.getByLabel("To", { exact: true }).fill("2027-12-25");
+  await page
+    .getByRole("button", { name: "Find available times", exact: true })
+    .click();
+  await expect(
+    page.getByText("No crew in the requested window.", { exact: false }),
+  ).toBeVisible();
+  const task = page
+    .locator(".ticket-card")
+    .filter({ hasText: "No qualified crew from 2027-12-25 through 2027-12-25" })
+    .first();
+  await expect(task).toBeVisible();
+  await task.getByText("Record outcome", { exact: true }).click();
+  await task
+    .getByLabel("What was done and agreed")
+    .fill("Customer agreed to review the offered next working-day appointment");
+  await task
+    .getByRole("button", { name: "Finish follow-up", exact: true })
+    .click();
+  await expect(task).toBeHidden();
 });

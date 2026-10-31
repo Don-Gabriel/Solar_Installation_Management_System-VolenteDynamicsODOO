@@ -6,6 +6,37 @@ const backend = read("output/scenarios/backend-results.json");
 const browser = read("output/scenarios/browser-results.json");
 const backup = read("output/backup-check/result.json");
 const overrides = read("docs/scenarios/review-overrides.json");
+const changedSource = execFileSync(
+  "git",
+  [
+    "diff",
+    "--name-only",
+    "HEAD",
+    "--",
+    "apps",
+    "packages",
+    "db",
+    "tests",
+    "package.json",
+    "package-lock.json",
+  ],
+  { encoding: "utf8" },
+).trim();
+if (changedSource)
+  throw Error(
+    "Commit the tested application source before recording its revision: " +
+      changedSource,
+  );
+if (
+  !backend.success ||
+  backend.numFailedTests ||
+  browser.stats.unexpected ||
+  browser.stats.flaky ||
+  browser.stats.skipped
+)
+  throw Error(
+    "Resolve failing, flaky or skipped checks before publishing this acceptance snapshot.",
+  );
 const evidence = new Map();
 function add(title, passed, source) {
   for (const id of new Set(title.match(/\b[A-Z]{3}-\d{2}\b/g) || [])) {
