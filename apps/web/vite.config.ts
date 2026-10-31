@@ -9,6 +9,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "prompt",
+      injectRegister: null,
       manifest: {
         name: "SunPower Operations",
         short_name: "SunPower",

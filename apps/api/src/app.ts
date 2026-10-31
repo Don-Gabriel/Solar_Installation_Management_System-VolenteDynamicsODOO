@@ -55,6 +55,21 @@ export async function buildApp(
     },
   });
   await auth(app);
+  // /api/ is excluded from old offline navigation fallbacks, so stale clients can reach this repair page.
+  app.get("/api/refresh-app", (_req, reply) =>
+    reply
+      .type("text/html")
+      .send(
+        `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Update SunPower</title><style>body{font:18px system-ui,sans-serif;background:#f5f6f8;color:#132e3b;margin:0;padding:40px 20px}main{max-width:560px;margin:40px auto}button{font:inherit;background:#132e3b;color:white;padding:14px 22px;border:0;border-radius:8px;cursor:pointer}button:focus-visible{outline:3px solid #237b98;outline-offset:4px}</style><script src="/api/refresh-app.js" defer></script></head><body><main><h1>Load the latest SunPower app</h1><p>Save any unfinished forms in your other app tabs before continuing.</p><p>This replaces the outdated offline app connection. Your saved customers, stock, photos, payments and sign-in stay unchanged.</p><button id="refresh-app" type="button">Load latest app</button><p id="result" role="status"></p></main></body></html>`,
+      ),
+  );
+  app.get("/api/refresh-app.js", (_req, reply) =>
+    reply
+      .type("application/javascript")
+      .send(
+        `document.getElementById('refresh-app').addEventListener('click',async()=>{const button=document.getElementById('refresh-app');const status=document.getElementById('result');button.disabled=true;status.textContent='Loading the latest app…';try{if('serviceWorker' in navigator){const registration=await navigator.serviceWorker.getRegistration('/');if(registration&&registration.scope===location.origin+'/')await registration.unregister();}location.replace('/?app-updated='+Date.now());}catch(error){status.textContent='The update could not finish. Close other SunPower tabs and try again.';button.disabled=false;}});`,
+      ),
+  );
   await app.register(swaggerUi, { routePrefix: "/api/docs" });
   app.get("/api/health", async () => {
     await pool.query("SELECT 1");

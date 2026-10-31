@@ -183,6 +183,7 @@ add('db/seeds/customer-portal.ts','Creates two synthetic customer logins linked 
 add('scripts/seed-customer-portal.ts','Adds the customer portal demo accounts to an existing demonstration database.','Requires demo mode and hashes the configured password before creating accounts.')
 add('tests/e2e/customer-portal.spec.ts','Tests customer login, private views, inbox interaction and account switching in browsers.','Checks accessibility and horizontal layout on the configured desktop and phone viewports.')
 add('docs/MANUAL_CHECKS.md','Gives step-by-step instructions for the six remaining acceptance gates and customer notification demo.','Separates physical-device checks from native installers that have not been built.')
+add('apps/web/src/app/app-update.tsx','Detects newer offline app versions and shows a visible reload notice.','Lets the user save unfinished work before loading the updated interface.')
 missing=sorted(files-purpose.keys());assert not missing,missing
 for f in files:
  assert len(purpose[f])==2 and all(s.endswith('.') for s in purpose[f]),f

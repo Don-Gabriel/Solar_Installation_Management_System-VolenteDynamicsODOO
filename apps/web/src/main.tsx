@@ -1,4 +1,5 @@
 import { FormSafety } from "./app/form-safety";
+import { AppUpdate } from "./app/app-update";
 import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import {
@@ -216,6 +217,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
+      <AppUpdate />
       <RouterProvider router={router} />
     </QueryClientProvider>
   </React.StrictMode>,

@@ -15,12 +15,14 @@ GitHub Actions: [successful verification run](https://github.com/Don-Gabriel/Sol
 - Local load scenario checked 1,000 searchable projects and 200 requests. This is local synthetic-load evidence, not a production capacity guarantee.
 - All **199 individual barcode images** and all **199 labels in the printable PDF** decoded successfully in software. Physical camera scanning remains unverified.
 - The local application at `http://127.0.0.1:3001` reports a connected database. Migrations 001–024 are applied, preserving the demo workspace.
-- File inventory: **384 files**, exactly two purpose sentences each, no introduction. All filenames were checked against the extracted PDF and page text stayed inside the margins.
+- File inventory: **385 files**, exactly two purpose sentences each, no introduction. All filenames were checked against the extracted PDF and page text stayed inside the margins.
 - Screen guide: **34 pages**. Barcode PDF: **18 pages**. Scenario document: **68 pages**, with every scenario identifier present and text bounds checked. PDF page renders were inspected for layout.
 
 Customer portal tests cover customer isolation, forbidden staff APIs, CSRF, inbox read state, transaction rollback and idempotent notifications. All ten listed staff/customer demo logins were verified against the running app. The scanner was also checked using a synthetic video stream at 390px: the guide crop decoded the expected serial, stopped its tracks, and did not allocate stock. This is not physical-camera evidence.
 
 ## Remaining acceptance limitations
+
+Follow-up cache correction: a normal reload was observed serving the old interface in the user browser. The public `/api/refresh-app` page bypasses the old offline navigation fallback and unregisters only the root offline app connection on an explicit button click. The same authenticated browser then loaded the current interface and displayed the scanner frame without clearing saved records. Future updates have a visible reload notice. Typecheck/build, all 117 backend tests and four focused Chromium/WebKit workflow checks passed after this correction. The 30-test local and 45-test hosted results above describe the earlier full revision, rather than a new full-suite run for this correction.
 
 - **EVD-05**: A file picker is available; camera-denial recovery still needs a physical-device test.
 - **UXP-04**: Responsive browser widths pass, but a physical phone with the software keyboard open was not tested.

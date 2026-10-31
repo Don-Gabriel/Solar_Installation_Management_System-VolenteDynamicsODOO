@@ -2,6 +2,8 @@
 
 Open http://127.0.0.1:3001 on the computer. Use the configured DEMO_PASSWORD. The customer portal is a separate ninth role; there are eight staff roles. Existing synthetic staff accounts are preserved. Customer demo accounts are lakshmi.customer@sunpower.local and sneha.customer@sunpower.local.
 
+If the scanner has no white guide box, or the app still shows the old menu, save unfinished forms and open http://127.0.0.1:3001/api/refresh-app in that same browser. Select Load latest app, reopen the packing project and select Use camera. This replaces the stale offline app connection without clearing sign-in, business data or browser drafts. Future versions show a visible reload notice.
+
 ## Demonstrate the right customer receiving an update
 
 1. Open the normal browser as support@sunpower.local. In a private browser window, sign in as lakshmi.customer@sunpower.local. Use separate windows so the accounts do not share a login cookie.

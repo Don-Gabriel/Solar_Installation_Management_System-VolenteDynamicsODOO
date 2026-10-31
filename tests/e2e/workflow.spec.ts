@@ -18,6 +18,10 @@ test("[UXP-02] responsive navigation, saved next steps and accessible core scree
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await signIn(page);
+  await page.goto("/api/refresh-app");
+  await expect(page.getByRole("heading", { name: "Load the latest SunPower app" })).toBeVisible();
+  await page.getByRole("button", { name: "Load latest app", exact: true }).click();
+  await expect(page.getByRole("heading", { name: /Good morning|Good afternoon/ })).toBeVisible();
   await page.screenshot({
     path: `output/qa/${testInfo.project.name}-overview.png`,
     fullPage: true,

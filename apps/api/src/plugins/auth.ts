@@ -45,9 +45,13 @@ export async function auth(app: FastifyInstance) {
       );
     }
     if (
-      ["/api/login", "/api/health", "/api/enquiries/public"].includes(
-        req.url.split("?")[0],
-      )
+      [
+        "/api/login",
+        "/api/health",
+        "/api/enquiries/public",
+        "/api/refresh-app",
+        "/api/refresh-app.js",
+      ].includes(req.url.split("?")[0])
     )
       return;
     const token = req.cookies.solar_session;
