@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import SignaturePad from "signature_pad";
 import { Camera, Upload, RotateCcw, ScanLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,54 +14,189 @@ export function SerialScanner({ orderId }: { orderId: string }) {
   );
   const [serial, setSerial] = useState(""),
     [camera, setCamera] = useState(false),
-    [error, setError] = useState<Error | null>(null);
+    [error, setError] = useState<Error | null>(null),
+    [readingPhoto, setReadingPhoto] = useState(false),
+    [scanMessage, setScanMessage] = useState("");
+  const fieldId = useId();
   const video = useRef<HTMLVideoElement>(null);
-  const controls = useRef<{ stop: () => void } | null>(null);
-  const scan = useCommand(`/orders/${orderId}/scans`, () => setSerial(""));
+  const frame = useRef<HTMLDivElement>(null);
+  const serialInput = useRef<HTMLInputElement>(null);
+  const photoInput = useRef<HTMLInputElement>(null);
+  const photoAttempt = useRef(0);
+  const scan = useCommand(`/orders/${orderId}/scans`, () => {
+    setSerial("");
+    setScanMessage("");
+  });
+  useEffect(
+    () => () => {
+      photoAttempt.current++;
+    },
+    [],
+  );
+  function acceptRead(value: string) {
+    setSerial(value.trim());
+    setScanMessage(
+      `Barcode read: ${value.trim()}. Select Add serial to check and save it.`,
+    );
+    setCamera(false);
+    serialInput.current?.focus();
+  }
+  async function readPhoto(file?: File) {
+    if (!file) return;
+    setCamera(false);
+    setError(null);
+    setScanMessage("");
+    if (
+      !/^image\/(png|jpeg|webp)$/.test(file.type) ||
+      file.size > 8 * 1024 * 1024
+    ) {
+      setError(
+        Error("Choose a JPG, PNG or WebP barcode photo smaller than 8 MB."),
+      );
+      return;
+    }
+    const attempt = ++photoAttempt.current;
+    setReadingPhoto(true);
+    const url = URL.createObjectURL(file);
+    try {
+      const { BrowserMultiFormatReader } = await import("@zxing/browser");
+      const result = await new BrowserMultiFormatReader().decodeFromImageUrl(
+        url,
+      );
+      if (photoAttempt.current === attempt) acceptRead(result.getText());
+    } catch {
+      if (photoAttempt.current === attempt)
+        setError(
+          Error(
+            "No readable barcode found. Use a sharp photo with the entire barcode and white space on both sides, or type the serial below the bars.",
+          ),
+        );
+    } finally {
+      URL.revokeObjectURL(url);
+      if (photoAttempt.current === attempt) setReadingPhoto(false);
+    }
+  }
   useEffect(() => {
     let cancelled = false;
+    let stream: MediaStream | undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const preview = video.current;
     if (camera) {
       (async () => {
         try {
-          if (!window.isSecureContext)
+          if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia)
             throw Error(
-              "Live camera needs HTTPS. Use manual entry or a USB scanner on this connection.",
+              "Live camera needs HTTPS or localhost. Use Read barcode photo, type the serial, or connect a USB scanner on this connection.",
             );
           const { BrowserMultiFormatReader } = await import("@zxing/browser");
+          if (cancelled) return;
           const reader = new BrowserMultiFormatReader();
-          const c = await reader.decodeFromVideoDevice(
-            undefined,
-            video.current!,
-            (result) => {
-              if (result && !cancelled) {
-                setSerial(result.getText());
-                setCamera(false);
-              }
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: {
+              facingMode: { ideal: "environment" },
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
             },
+          });
+          if (cancelled || !preview) {
+            stream.getTracks().forEach((track) => track.stop());
+            return;
+          }
+          preview.srcObject = stream;
+          await preview.play();
+          if (cancelled) return;
+          setScanMessage(
+            "Camera ready. Fit the entire barcode inside the box and hold still.",
           );
-          if (cancelled) c.stop();
-          else controls.current = c;
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d", { willReadFrequently: true });
+          const readFrame = () => {
+            if (cancelled) return;
+            if (
+              preview.readyState >= 2 &&
+              preview.videoWidth &&
+              frame.current &&
+              context
+            ) {
+              // Match the visible box to the camera pixels, including object-fit: cover cropping.
+              const bounds = preview.getBoundingClientRect();
+              const target = frame.current.getBoundingClientRect();
+              const scale = Math.max(
+                bounds.width / preview.videoWidth,
+                bounds.height / preview.videoHeight,
+              );
+              if (scale > 0) {
+                const x =
+                  (target.left -
+                    bounds.left +
+                    (preview.videoWidth * scale - bounds.width) / 2) /
+                  scale;
+                const y =
+                  (target.top -
+                    bounds.top +
+                    (preview.videoHeight * scale - bounds.height) / 2) /
+                  scale;
+                canvas.width = Math.round(target.width / scale);
+                canvas.height = Math.round(target.height / scale);
+                context.drawImage(
+                  preview,
+                  x,
+                  y,
+                  canvas.width,
+                  canvas.height,
+                  0,
+                  0,
+                  canvas.width,
+                  canvas.height,
+                );
+                try {
+                  acceptRead(reader.decodeFromCanvas(canvas).getText());
+                  stream?.getTracks().forEach((track) => track.stop());
+                  return;
+                } catch {
+                  /* Keep trying while the barcode comes into focus. */
+                }
+              }
+            }
+            timer = setTimeout(readFrame, 200);
+          };
+          readFrame();
         } catch (e) {
-          setError(e as Error);
+          if (cancelled) return;
+          const failure = e as Error;
+          setError(
+            Error(
+              failure.name === "NotAllowedError"
+                ? "Camera permission was denied. Allow camera access in your browser settings and try again, or select Read barcode photo."
+                : failure.name === "NotFoundError"
+                  ? "No camera was found. Select Read barcode photo, use a USB scanner, or type the serial."
+                  : failure.name === "NotReadableError"
+                    ? "The camera is busy. Close other apps using it and try again, or select Read barcode photo."
+                    : failure.message,
+            ),
+          );
+          setScanMessage("");
           setCamera(false);
         }
       })();
     }
     return () => {
       cancelled = true;
-      controls.current?.stop();
-      controls.current = null;
+      clearTimeout(timer);
+      stream?.getTracks().forEach((track) => track.stop());
+      if (preview) preview.srcObject = null;
     };
   }, [camera]);
   return (
     <div className="scanner">
       {demo?.enabled && (
         <div className="sample-fill">
-          <label htmlFor="demo-serial">
+          <label htmlFor={`${fieldId}-demo`}>
             Testing: choose an available device
           </label>
           <select
-            id="demo-serial"
+            id={`${fieldId}-demo`}
             value=""
             onChange={(e) => setSerial(e.target.value)}
           >
@@ -85,9 +220,12 @@ export function SerialScanner({ orderId }: { orderId: string }) {
         }}
       >
         <Field>
-          <FieldLabel htmlFor="serial-scan">Device serial number</FieldLabel>
+          <FieldLabel htmlFor={`${fieldId}-serial`}>
+            Device serial number
+          </FieldLabel>
           <Input
-            id="serial-scan"
+            id={`${fieldId}-serial`}
+            ref={serialInput}
             placeholder="Scan barcode or type serial"
             autoComplete="off"
             value={serial}
@@ -102,25 +240,64 @@ export function SerialScanner({ orderId }: { orderId: string }) {
           <Button
             type="button"
             variant="outline"
+            disabled={readingPhoto}
             onClick={() => {
               setError(null);
+              setScanMessage(camera ? "Camera stopped." : "Opening camera…");
               setCamera(!camera);
             }}
           >
             <Camera data-icon="inline-start" />
             {camera ? "Stop camera" : "Use camera"}
           </Button>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={readingPhoto}
+            onClick={() => photoInput.current?.click()}
+          >
+            <Upload data-icon="inline-start" />
+            {readingPhoto ? "Reading photo…" : "Read barcode photo"}
+          </Button>
+          <input
+            ref={photoInput}
+            type="file"
+            hidden
+            accept="image/png,image/jpeg,image/webp"
+            aria-label="Barcode photo"
+            onChange={(e) => {
+              void readPhoto(e.target.files?.[0]);
+              e.target.value = "";
+            }}
+          />
         </div>
       </form>
       {camera && (
-        <video
-          ref={video}
-          className="scanner-video"
-          autoPlay
-          muted
-          playsInline
-          aria-label="Barcode scanner camera"
-        />
+        <div className="scanner-preview">
+          <video
+            ref={video}
+            className="scanner-video"
+            autoPlay
+            muted
+            playsInline
+            aria-label="Barcode scanner camera"
+          />
+          <div ref={frame} className="scanner-frame" aria-hidden="true" />
+          <p className="scanner-guide">
+            Keep the whole barcode inside this box
+          </p>
+        </div>
+      )}
+      {camera && (
+        <p className="field-hint">
+          Keep the bars upright, leave white space at both ends, and move back
+          until the whole label fits. Avoid glare and hold still.
+        </p>
+      )}
+      {scanMessage && (
+        <p role="status" className="scanner-status">
+          {scanMessage}
+        </p>
       )}
       <ErrorNotice error={scan.error || error} />
       {scan.isSuccess && (
@@ -129,8 +306,9 @@ export function SerialScanner({ orderId }: { orderId: string }) {
         </p>
       )}
       <p className="field-hint">
-        USB scanners work in the serial field. Live camera requires a secure
-        HTTPS connection.
+        Reading a barcode fills the serial field. Select Add serial to save it.
+        USB scanners also work in this field. Barcode photos are read on this
+        device and are not uploaded.
       </p>
     </div>
   );

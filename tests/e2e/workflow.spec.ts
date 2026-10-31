@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { randomUUID } from "node:crypto";
 import sharp from "sharp";
+import JsBarcode from "jsbarcode";
 async function signIn(page: any) {
   const response = await page.goto("/");
   expect(response?.status()).toBe(200);
@@ -125,6 +126,89 @@ test("[UXP-02] responsive navigation, saved next steps and accessible core scree
       data.assets.find((a: any) => a.sku === sku && a.status === "available")
         .serial,
   );
+  // A permission prompt can finish after Stop camera; its late stream must be released.
+  await page.evaluate(() => {
+    if (!navigator.mediaDevices)
+      Object.defineProperty(navigator, "mediaDevices", {
+        configurable: true,
+        value: {},
+      });
+    Object.defineProperty(navigator.mediaDevices, "getUserMedia", {
+      configurable: true,
+      value: () =>
+        new Promise((resolve) => {
+          (window as any).finishCameraPermission = () =>
+            resolve({
+              getTracks: () => [
+                {
+                  stop: () => {
+                    (window as any).cameraTrackStopped = true;
+                  },
+                },
+              ],
+            });
+        }),
+    });
+  });
+  await page.getByRole("button", { name: "Use camera", exact: true }).click();
+  await expect(page.locator(".scanner-frame")).toBeVisible();
+  await expect(
+    page.getByText("Keep the whole barcode inside this box"),
+  ).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() => typeof (window as any).finishCameraPermission),
+    )
+    .toBe("function");
+  await page.locator(".scanner-preview").screenshot({
+    path: `output/qa/${testInfo.project.name}-scanner-frame.png`,
+  });
+  await page.getByRole("button", { name: "Stop camera" }).click();
+  await page.evaluate(() => (window as any).finishCameraPermission());
+  await expect
+    .poll(() => page.evaluate(() => (window as any).cameraTrackStopped))
+    .toBe(true);
+  await page.evaluate(() =>
+    Object.defineProperty(navigator.mediaDevices, "getUserMedia", {
+      configurable: true,
+      value: () =>
+        Promise.reject(new DOMException("Denied", "NotAllowedError")),
+    }),
+  );
+  await page.getByRole("button", { name: "Use camera", exact: true }).click();
+  await expect(page.getByText(/Camera permission was denied/)).toBeVisible();
+  await expect(page.locator(".scanner-preview")).toBeHidden();
+  const blank = await sharp({
+    create: { width: 600, height: 200, channels: 3, background: "white" },
+  })
+    .png()
+    .toBuffer();
+  await page
+    .getByLabel("Barcode photo", { exact: true })
+    .setInputFiles({ name: "blank.png", mimeType: "image/png", buffer: blank });
+  await expect(page.getByText(/No readable barcode found/)).toBeVisible();
+  const encoded: any = {};
+  JsBarcode(encoded, serials[0], { format: "CODE128" });
+  const bars = encoded.encodings.map((e: any) => e.data).join("");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${bars.length * 3 + 60}" height="180"><rect width="100%" height="100%" fill="white"/>${[...bars].map((bit, i) => (bit === "1" ? `<rect x="${30 + i * 3}" y="20" width="3" height="140"/>` : "")).join("")}</svg>`;
+  const label = await sharp(Buffer.from(svg)).png().toBuffer();
+  await page.getByLabel("Barcode photo", { exact: true }).setInputFiles({
+    name: "barcode.png",
+    mimeType: "image/png",
+    buffer: label,
+  });
+  await expect(page.getByLabel("Device serial number")).toHaveValue(serials[0]);
+  await expect(
+    page.getByText(
+      `Barcode read: ${serials[0]}. Select Add serial to check and save it.`,
+    ),
+  ).toBeVisible();
+  const stillAvailable = await page.request
+    .get("/api/inventory")
+    .then((r) => r.json());
+  expect(
+    stillAvailable.assets.find((a: any) => a.serial === serials[0]).status,
+  ).toBe("available");
   for (const serial of serials) {
     await page.getByLabel("Device serial number").fill(serial);
     await page.getByRole("button", { name: "Add serial", exact: true }).click();
