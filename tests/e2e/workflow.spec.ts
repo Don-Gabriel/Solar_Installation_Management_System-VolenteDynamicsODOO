@@ -138,11 +138,11 @@ test("[UXP-02] responsive navigation, saved next steps and accessible core scree
   );
   // A permission prompt can finish after Stop camera; its late stream must be released.
   await page.evaluate(() => {
-    if (!navigator.mediaDevices)
-      Object.defineProperty(navigator, "mediaDevices", {
-        configurable: true,
-        value: {},
-      });
+    // Replace the device object itself: WebKit can expose a fresh native wrapper on access.
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: {},
+    });
     Object.defineProperty(navigator.mediaDevices, "getUserMedia", {
       configurable: true,
       value: () =>

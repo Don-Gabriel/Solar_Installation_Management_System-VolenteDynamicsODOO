@@ -42,7 +42,15 @@ test("customer login shows only own service, inbox and bills at phone and deskto
   const axe = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
     .analyze();
-  expect(axe.violations.map((v) => v.id)).toEqual([]);
+  expect(
+    axe.violations.map((v) => ({
+      id: v.id,
+      nodes: v.nodes.map((n) => ({
+        target: n.target,
+        explanation: n.failureSummary,
+      })),
+    })),
+  ).toEqual([]);
   await page.screenshot({
     path: `output/qa/${info.project.name}-customer-portal.png`,
     fullPage: true,

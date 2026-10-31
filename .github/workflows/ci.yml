@@ -2,7 +2,12 @@ name: Verify SunPower
 on: [push, pull_request]
 jobs:
   verify:
+    name: verify (${{ matrix.browser }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     services:
       postgres:
         image: postgres:18
@@ -26,10 +31,11 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
-      - run: npx playwright install --with-deps chromium firefox webkit
-      - run: npm run test:e2e
+        if: matrix.browser == 'chromium'
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npm run test:e2e -- --project=${{ matrix.browser }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: browser-test-results
+          name: browser-test-results-${{ matrix.browser }}
           path: output/
