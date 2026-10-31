@@ -1,3 +1,4 @@
+import { InvoiceLedger } from "./invoice-ledger";
 import { useState } from "react";
 import { Printer, CheckCircle2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -134,7 +135,8 @@ export function SurveyPanel({ data }: { data: any }) {
                   {
                     label: "Fill sample survey",
                     values: {
-                      roof_area: p.capacity_kw * 12,
+                      capacity_kw: p.capacity_kw || 3,
+                      roof_area: (p.capacity_kw || 3) * 12,
                       bill_minor: 3500,
                       grid_suitable: true,
                       direction: "South",
@@ -147,6 +149,7 @@ export function SurveyPanel({ data }: { data: any }) {
               : undefined
           }
           defaults={{
+            capacity_kw: p.capacity_kw || "",
             roof_area: "",
             bill_minor: "",
             grid_suitable: false,
@@ -156,6 +159,13 @@ export function SurveyPanel({ data }: { data: any }) {
             notes: "",
           }}
           fields={[
+            {
+              name: "capacity_kw",
+              label: "Surveyed capacity (kW)",
+              type: "number",
+              min: 1,
+              max: 5,
+            },
             {
               name: "roof_area",
               group: "Roof measurements",
@@ -305,6 +315,10 @@ export function QuotePanel({ data }: { data: any }) {
       >
         {q ? (
           <>
+            <p>
+              Issued to {q.customer_name_snapshot} ·{" "}
+              {q.billing_address_snapshot}
+            </p>
             <LineItems lines={q.lines} />
             <div className="quote-total">
               <span>
@@ -325,6 +339,7 @@ export function QuotePanel({ data }: { data: any }) {
                   <Action
                     path={`/projects/${p.id}/acceptance`}
                     label="Record customer acceptance"
+                    body={{ quote_id: q.id }}
                   />
                 </div>
               </Can>
@@ -363,10 +378,15 @@ export function QuotePanel({ data }: { data: any }) {
                 </div>
                 <Status
                   value={
-                    i.paid_minor >= i.total_minor ? "completed" : "pending"
+                    i.paid_minor >= i.net_total_minor ? "completed" : "pending"
                   }
                 />
               </div>
+              <p>
+                Issued to {i.customer_name_snapshot} · Billing:{" "}
+                {i.billing_address_snapshot} · Service site:{" "}
+                {i.service_address_snapshot}
+              </p>
               <dl className="invoice-numbers">
                 <div>
                   <dt>Invoice value</dt>
@@ -378,10 +398,11 @@ export function QuotePanel({ data }: { data: any }) {
                 </div>
                 <div>
                   <dt>Outstanding</dt>
-                  <dd>{money(i.total_minor - i.paid_minor)}</dd>
+                  <dd>{money(i.net_total_minor - i.paid_minor)}</dd>
                 </div>
               </dl>
-              {i.kind === "service" && <LineItems lines={i.lines} />}
+              {i.kind !== "installation" && <LineItems lines={i.lines} />}
+              <InvoiceLedger id={i.id} />
               <div className="payment-history">
                 {i.payments.map((pay: any) => (
                   <p key={pay.id}>
@@ -393,7 +414,7 @@ export function QuotePanel({ data }: { data: any }) {
                   </p>
                 ))}
               </div>
-              {i.paid_minor < i.total_minor && (
+              {i.paid_minor < i.net_total_minor && (
                 <Can roles={["admin", "sales", "accounts"]}>
                   <Button variant="outline" onClick={() => setInvoice(i)}>
                     Record payment
@@ -416,8 +437,10 @@ export function QuotePanel({ data }: { data: any }) {
             onDone={() => setInvoice(null)}
             submit="Save payment"
             defaults={{
-              amount_minor: (invoice.total_minor - invoice.paid_minor) / 100,
+              amount_minor:
+                (invoice.net_total_minor - invoice.paid_minor) / 100,
               method: "bank",
+              status: "verified",
             }}
             fields={[
               {
@@ -426,7 +449,7 @@ export function QuotePanel({ data }: { data: any }) {
                 type: "number",
                 money: true,
                 min: 0.01,
-                max: (invoice.total_minor - invoice.paid_minor) / 100,
+                max: (invoice.net_total_minor - invoice.paid_minor) / 100,
               },
               {
                 name: "method",
@@ -436,6 +459,18 @@ export function QuotePanel({ data }: { data: any }) {
                   value: v,
                   label: v.toUpperCase(),
                 })),
+              },
+              {
+                name: "status",
+                label: "Payment status",
+                type: "select",
+                options: [
+                  {
+                    value: "verified",
+                    label: "Verified against bank / cash records",
+                  },
+                  { value: "pending", label: "Pending verification" },
+                ],
               },
               {
                 name: "reference",

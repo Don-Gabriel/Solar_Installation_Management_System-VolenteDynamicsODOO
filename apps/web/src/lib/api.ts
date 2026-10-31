@@ -1,9 +1,10 @@
+import { useSession } from "@/app/session";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: { staleTime: 15000, retry: 1, refetchOnWindowFocus: true },
-    mutations: { retry: false },
+    mutations: { retry: false, networkMode: "always" },
   },
 });
 let csrfToken = "";
@@ -23,6 +24,10 @@ export async function api<T = any>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  if (options.method && options.method !== "GET" && !navigator.onLine)
+    throw new Error(
+      "You are offline. This change was not submitted. Keep the draft and retry when connected.",
+    );
   const isForm = options.body instanceof FormData;
   const response = await fetch(`/api${path}`, {
     credentials: "same-origin",
@@ -62,12 +67,29 @@ export function useData<T = any>(path: string, enabled = true) {
   });
 }
 export function useCommand(path: string, onSuccess?: (data: any) => void) {
+  const { user } = useSession();
+  const attemptKey = "sunpower-attempt:" + (user?.id || "public") + ":" + path;
   const attempt = useRef<{ key: string; body: string } | null>(null);
   return useMutation({
     mutationFn: (body: any = {}) => {
       const payload = JSON.stringify(body);
+      if (!attempt.current) {
+        try {
+          const saved = JSON.parse(
+            sessionStorage.getItem(attemptKey) || "null",
+          );
+          if (saved && Date.now() - saved.saved_at < 86400000)
+            attempt.current = saved;
+        } catch {}
+      }
       if (!attempt.current || attempt.current.body !== payload)
         attempt.current = { key: crypto.randomUUID(), body: payload };
+      try {
+        sessionStorage.setItem(
+          attemptKey,
+          JSON.stringify({ ...attempt.current, saved_at: Date.now() }),
+        );
+      } catch {}
       return api(path, {
         method: "POST",
         body: payload,
@@ -76,6 +98,10 @@ export function useCommand(path: string, onSuccess?: (data: any) => void) {
     },
     onSuccess: async (data) => {
       attempt.current = null;
+      sessionStorage.removeItem(attemptKey);
+      window.dispatchEvent(
+        new CustomEvent("solar:saved", { detail: { path } }),
+      );
       await queryClient.invalidateQueries({
         predicate: (q) => q.queryKey[0] !== "session",
       });
@@ -92,7 +118,7 @@ export const money = (minor: number | string = 0) =>
 export const date = (value: string | undefined | null, time = false) =>
   value
     ? new Intl.DateTimeFormat("en-IN", {
-        timeZone:"Asia/Kolkata",
+        timeZone: "Asia/Kolkata",
         day: "numeric",
         month: "short",
         year: "numeric",

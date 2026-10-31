@@ -1,3 +1,4 @@
+import { InstallationDispute } from "./service-review";
 import { useState } from "react";
 import { Link } from "react-router";
 import {
@@ -194,6 +195,7 @@ export function InstallationPanel({ data }: { data: any }) {
     );
   return (
     <div className="detail-stack">
+      <InstallationDispute job={j} />
       <Panel
         title="Field installation"
         description="Schedule the crew, verify the system and capture customer handover."

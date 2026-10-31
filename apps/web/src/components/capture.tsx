@@ -139,13 +139,16 @@ export function EvidenceCapture({
   jobId,
   evidence,
   ticketId,
+  components = [],
 }: {
   jobId: string;
   evidence: any[];
   ticketId?: string;
+  components?: any[];
 }) {
   const canvas = useRef<HTMLCanvasElement>(null),
     pad = useRef<SignaturePad | null>(null);
+  const [component, setComponent] = useState("");
   const [busy, setBusy] = useState(""),
     [error, setError] = useState<Error | null>(null),
     [saved, setSaved] = useState("");
@@ -180,6 +183,16 @@ export function EvidenceCapture({
     try {
       const body = new FormData();
       body.append("kind", kind);
+      if (component && kind === "photo") {
+        const c = components.find(
+          (c: any) =>
+            (c.order_line_id || c.id) + ":" + (c.asset_id || "") === component,
+        );
+        if (c) {
+          body.append("order_line_id", c.order_line_id || c.id);
+          if (c.asset_id) body.append("asset_id", c.asset_id);
+        }
+      }
       body.append(
         "file",
         file,
@@ -216,6 +229,26 @@ export function EvidenceCapture({
     <div className="evidence-capture">
       <div>
         <h3>Test photo</h3>
+        {components.length > 0 && (
+          <label>
+            Photo relates to
+            <select
+              value={component}
+              onChange={(e) => setComponent(e.target.value)}
+            >
+              <option value="">Whole system / general evidence</option>
+              {components.map((c: any) => (
+                <option
+                  key={(c.order_line_id || c.id) + ":" + (c.asset_id || "")}
+                  value={(c.order_line_id || c.id) + ":" + (c.asset_id || "")}
+                >
+                  {c.description}
+                  {c.serial ? " · " + c.serial : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <p>Upload a clear photo of the completed system or generation test.</p>
         <Field>
           <FieldLabel htmlFor="test-photo">
@@ -318,6 +351,11 @@ export function EvidenceList({ evidence }: { evidence: any[] }) {
           />
           <span>
             {e.kind === "signature" ? "Signature" : "Test photo"} · saved
+            {e.component_description && (
+              <small>
+                {e.component_description} {e.serial}
+              </small>
+            )}
           </span>
         </a>
       ))}

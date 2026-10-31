@@ -1,3 +1,6 @@
+import { ServiceReview } from "./service-review";
+import { useFormSafety, readDraft, draftPrefix } from "@/app/form-safety";
+import { InvoiceLedger } from "./invoice-ledger";
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router";
 import {
@@ -15,6 +18,7 @@ import { useData, useCommand, date, money } from "@/lib/api";
 import { Can, useSession } from "@/app/session";
 import { Button } from "@/components/ui/button";
 import { EvidenceCapture, EvidenceList } from "@/components/capture";
+import { VisitExceptions } from "./operational-tasks";
 
 export function Service() {
   const [params, setParams] = useSearchParams(),
@@ -166,6 +170,36 @@ export function Service() {
               ))}
           </select>
         </label>
+        {project &&
+          tickets.filter(
+            (t: any) =>
+              t.project_id === project &&
+              !["closed", "cancelled"].includes(t.status),
+          ).length > 0 && (
+            <div role="status">
+              <p>
+                Possible repeated call: this installation already has open
+                requests. Open one to add a note, or continue for a different
+                fault.
+              </p>
+              {tickets
+                .filter(
+                  (t: any) =>
+                    t.project_id === project &&
+                    !["closed", "cancelled"].includes(t.status),
+                )
+                .map((t: any) => (
+                  <p key={t.id}>
+                    <Link
+                      to={`/service?ticket=${t.id}`}
+                      onClick={() => setCreating(false)}
+                    >
+                      SR-{t.number} · {t.complaint}
+                    </Link>
+                  </p>
+                ))}
+            </div>
+          )}
         {project && (
           <CommandForm
             path="/tickets"
@@ -185,6 +219,9 @@ export function Service() {
                   "Battery issue",
                   "Wiring or connection",
                   "Physical damage",
+                  "Monitoring app",
+                  "Display reading",
+                  "Account connection",
                   "Other",
                 ].map((v) => ({ label: v, value: v })),
               },
@@ -214,9 +251,60 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
   const { user } = useSession(),
     { data: d, error, isPending } = useData("/tickets/" + id),
     [draft, setDraft] = useState<any[]>([]);
-  const diagnosis = useCommand(`/tickets/${id}/diagnosis`);
+  const safety = useFormSafety(),
+    draftStorage = draftPrefix + user.id + ":diagnosis:" + id;
+  const [draftDirty, setDraftDirty] = useState(false),
+    [draftVersion, setDraftVersion] = useState<number | null>(null);
+  const diagnosis = useCommand(`/tickets/${id}/diagnosis`, () => {
+    setDraftDirty(false);
+    safety.set("diagnosis:" + id, null);
+    sessionStorage.removeItem(draftStorage);
+  });
   useEffect(() => {
-    if (d)
+    const saved = (event: Event) => {
+      if ((event as CustomEvent).detail?.path === `/tickets/${id}/diagnosis`) {
+        sessionStorage.removeItem(draftStorage);
+        setDraftDirty(false);
+        safety.set("diagnosis:" + id, null);
+      }
+    };
+    window.addEventListener("solar:saved", saved);
+    return () => window.removeEventListener("solar:saved", saved);
+  }, [id, draftStorage, safety.set]);
+  useEffect(() => {
+    safety.set(
+      "diagnosis:" + id,
+      draftDirty
+        ? {
+            discard: () => {
+              setDraftDirty(false);
+              sessionStorage.removeItem(draftStorage);
+            },
+          }
+        : null,
+    );
+    return () => safety.set("diagnosis:" + id, null);
+  }, [draftDirty, id, safety.set, draftStorage]);
+  useEffect(() => {
+    if (draftDirty)
+      sessionStorage.setItem(
+        draftStorage,
+        JSON.stringify({
+          saved_at: Date.now(),
+          values: { lines: draft, version: draftVersion },
+        }),
+      );
+  }, [draftDirty, draft, draftVersion, draftStorage]);
+  useEffect(() => {
+    if (d) {
+      const saved = readDraft(draftStorage);
+      if (saved && !diagnosis.isSuccess) {
+        setDraft(saved.lines);
+        setDraftVersion(saved.version);
+        setDraftDirty(true);
+        return;
+      }
+      setDraftVersion(d.ticket.version);
       setDraft(
         d.lines.map((l: any) => ({
           ...l,
@@ -227,6 +315,7 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
           selling_price: l.unit_price_minor / 100,
         })),
       );
+    }
   }, [d?.ticket.id, d?.ticket.version]);
   if (isPending) return <Loading />;
   if (error) return <ErrorNotice error={error} />;
@@ -239,9 +328,12 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
       !["closed", "cancelled", "awaiting_confirmation"].includes(t.status),
     reviewer = ["admin", "coordinator"].includes(user.role);
   const key = (c: any) => c.order_line_id + ":" + (c.asset_id || "");
-  const update = (i: number, k: string, v: any) =>
+  const update = (i: number, k: string, v: any) => {
+    setDraftDirty(true);
     setDraft(draft.map((l, j) => (i === j ? { ...l, [k]: v } : l)));
+  };
   function toggle(c: any) {
+    setDraftDirty(true);
     const found = draft.find((l) => key(l) === key(c));
     setDraft(
       found
@@ -282,6 +374,13 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
       >
         <Status value={t.status} />
       </PageHead>
+      {draftDirty && (
+        <p role="status">
+          Unsent diagnosis draft is kept in this browser tab until sign out or
+          24 hours. Nothing is submitted automatically; review and save when
+          connected.
+        </p>
+      )}
       <Panel title="Customer request" description={t.complaint}>
         <p>
           {d.project.phone} · {t.fault_code} · {t.priority} priority
@@ -309,6 +408,8 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
           )}
         </Can>
       </Panel>
+      {d.project.access_notes && <p>Site access: {d.project.access_notes}</p>}
+      <ServiceReview data={d} />
       <Panel title="Visit and crew">
         {d.visits.length ? (
           d.visits.map((v: any) => (
@@ -320,6 +421,7 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
                   .join(", ")}{" "}
                 · {v.status}
               </p>
+              <VisitExceptions visit={v} />
               <Can roles={["admin", "coordinator", "technician"]}>
                 {v.status === "scheduled" && (
                   <Action
@@ -414,7 +516,7 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
             onSubmit={(e) => {
               e.preventDefault();
               diagnosis.mutate({
-                version: t.version,
+                version: draftVersion ?? t.version,
                 lines: draft.map((l) => ({
                   order_line_id: l.order_line_id,
                   ...(l.asset_id ? { asset_id: l.asset_id } : {}),
@@ -432,6 +534,7 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
                         coverage: l.coverage,
                         labour_coverage: l.labour_coverage || "auto",
                         coverage_reason: l.coverage_reason || "",
+                        entitlement_review: l.entitlement_review || "",
                         unit_price_minor:
                           l.action === "replace"
                             ? Math.round(Number(l.selling_price) * 100)
@@ -601,6 +704,17 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
                           />
                         </label>
                       )}
+                      {!l.asset_id && l.action === "replace" && (
+                        <label>
+                          Repeated replacement review (if requested)
+                          <input
+                            value={l.entitlement_review || ""}
+                            onChange={(e) =>
+                              update(i, "entitlement_review", e.target.value)
+                            }
+                          />
+                        </label>
+                      )}
                     </>
                   )}
                 </div>
@@ -694,7 +808,12 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
               title="After-repair photo and signature"
               description="Save a photo from this visit before completion. An old visit's photo cannot complete a new visit."
             >
-              <EvidenceCapture jobId="" ticketId={id} evidence={d.evidence} />
+              <EvidenceCapture
+                jobId=""
+                ticketId={id}
+                evidence={d.evidence}
+                components={d.components}
+              />
             </Panel>
             <Panel title="Complete physical repair">
               <CommandForm
@@ -741,7 +860,9 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
           }
         >
           <p>
-            {d.project.customer_name} · Issued {date(invoice.issued_at)}
+            {invoice.customer_name_snapshot} · Billing:{" "}
+            {invoice.billing_address_snapshot} · Issued{" "}
+            {date(invoice.issued_at)}
           </p>
           <div
             className="table-scroll"
@@ -787,16 +908,21 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
           <p>
             <strong>Total {money(invoice.total_minor)}</strong> · Paid{" "}
             {money(invoice.paid_minor)} · Balance{" "}
-            {money(invoice.total_minor - invoice.paid_minor)}
+            {money(invoice.net_total_minor - invoice.paid_minor)}
           </p>
           <Can roles={["admin", "accounts"]}>
-            {invoice.total_minor > invoice.paid_minor && (
+            <InvoiceLedger id={invoice.id} />
+          </Can>
+          <Can roles={["admin", "accounts"]}>
+            {invoice.net_total_minor > invoice.paid_minor && (
               <CommandForm
                 path={`/invoices/${invoice.id}/payments`}
                 submit="Record service payment"
                 defaults={{
-                  amount_minor: invoice.total_minor - invoice.paid_minor,
+                  amount_minor:
+                    (invoice.net_total_minor - invoice.paid_minor) / 100,
                   method: "bank",
+                  status: "verified",
                 }}
                 fields={[
                   {
@@ -814,6 +940,18 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
                       label: v,
                       value: v,
                     })),
+                  },
+                  {
+                    name: "status",
+                    label: "Receipt status",
+                    type: "select",
+                    options: [
+                      {
+                        value: "verified",
+                        label: "Verified against bank / cash records",
+                      },
+                      { value: "pending", label: "Pending verification" },
+                    ],
                   },
                   { name: "reference", label: "Receipt reference" },
                 ]}

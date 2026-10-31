@@ -1,4 +1,6 @@
-import { useId, useEffect, type ReactNode } from "react";
+import { useFormSafety, readDraft, draftPrefix } from "@/app/form-safety";
+import { useSession } from "@/app/session";
+import { useId, useEffect, useRef, useState, type ReactNode } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Link, useLocation } from "react-router";
 import {
@@ -198,7 +200,11 @@ export function SmartForm({
   error = null,
   children,
   presets,
+  draftKey,
+  commandPath,
 }: {
+  draftKey?: string;
+  commandPath?: string;
   fields: FormField[];
   defaults?: any;
   submit?: string;
@@ -209,13 +215,60 @@ export function SmartForm({
   presets?: { label: string; values: Record<string, unknown> }[];
 }) {
   const prefix = useId();
+  const { user } = useSession();
+  const storageKey = draftKey
+    ? draftPrefix + (user?.id || "public") + ":" + draftKey
+    : "";
+  const initialDraft = useRef(storageKey ? readDraft(storageKey) : null);
+  const [restored, setRestored] = useState(!!initialDraft.current);
+  const safety = useFormSafety();
   const {
     register,
     handleSubmit,
     control,
     reset,
+    watch,
+    getValues,
     formState: { errors, isDirty },
-  } = useForm({ defaultValues: defaults });
+  } = useForm({ defaultValues: initialDraft.current || defaults });
+  useEffect(() => {
+    safety.set(
+      prefix,
+      isDirty || restored
+        ? {
+            discard: () => {
+              reset(defaults);
+              setRestored(false);
+              if (storageKey) sessionStorage.removeItem(storageKey);
+            },
+          }
+        : null,
+    );
+    return () => safety.set(prefix, null);
+  }, [isDirty, restored, safety.set, prefix, reset, storageKey]);
+  useEffect(() => {
+    if (!storageKey) return;
+    const subscription = watch((values) => {
+      try {
+        sessionStorage.setItem(
+          storageKey,
+          JSON.stringify({ saved_at: Date.now(), values }),
+        );
+      } catch {}
+    });
+    return () => subscription.unsubscribe();
+  }, [storageKey, watch]);
+  useEffect(() => {
+    const saved = (event: Event) => {
+      if ((event as CustomEvent).detail?.path !== commandPath) return;
+      reset(getValues());
+      setRestored(false);
+      safety.set(prefix, null);
+      if (storageKey) sessionStorage.removeItem(storageKey);
+    };
+    window.addEventListener("solar:saved", saved);
+    return () => window.removeEventListener("solar:saved", saved);
+  }, [commandPath, reset, storageKey, safety.set, prefix]);
   useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => {
       if (isDirty && !pending) event.preventDefault();
@@ -235,6 +288,13 @@ export function SmartForm({
       })}
       className="smart-form"
     >
+      {storageKey && (isDirty || restored) && (
+        <p role="status">
+          {restored ? "Recovered unsent draft. " : "Unsent draft saved. "}Kept
+          only in this browser tab for up to 24 hours; cleared on sign out.
+          Review and submit when connected.
+        </p>
+      )}
       {presets?.length ? (
         <div className="sample-fill">
           <span>Test helper — review before saving</span>
@@ -425,6 +485,7 @@ export function CommandForm({
   return (
     <SmartForm
       {...props}
+      commandPath={path}
       onSubmit={(d) => mutation.mutate(transform ? transform(d) : d)}
       pending={mutation.isPending}
       error={mutation.error}

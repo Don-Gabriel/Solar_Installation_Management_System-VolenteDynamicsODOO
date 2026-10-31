@@ -13,6 +13,7 @@ import {
 import { useData, useCommand, date } from "@/lib/api";
 import { useSession, Can } from "@/app/session";
 import { Button } from "@/components/ui/button";
+import { OperationalTasks, VisitExceptions } from "./operational-tasks";
 
 const day = (offset: number) =>
   new Date(Date.now() + offset * 86400000).toLocaleDateString("en-CA", {
@@ -47,11 +48,10 @@ export function Schedule() {
     setSlot(null);
     setQuery("");
   }, [params]);
-  const {
-    data: available,
-    error: searchError,
-    isFetching,
-  } = useData(query, !!query);
+  const searchCommand = useCommand("/schedule/search");
+  const available = query ? searchCommand.data : null,
+    searchError = searchCommand.error,
+    isFetching = searchCommand.isPending;
   const booking = useCommand("/visits", () => {
     setSlot(null);
     setCrew([]);
@@ -78,6 +78,17 @@ export function Schedule() {
             onSubmit={(e) => {
               e.preventDefault();
               setSlot(null);
+              searchCommand.mutate({
+                from,
+                to,
+                skill,
+                duration_hours: duration,
+                crew_size: size,
+                ...(purpose === "repair"
+                  ? { ticket_id: ticketId }
+                  : { project_id: projectId }),
+                ...(previous ? { visit_id: previous.id } : {}),
+              });
               setQuery(
                 "/schedule/availability?" +
                   new URLSearchParams({
@@ -365,7 +376,9 @@ export function Schedule() {
                         </Link>
                       )}
                     </Can>
-                    <Can roles={["admin", "coordinator", "technician"]}>
+                    <Can
+                      roles={["admin", "coordinator", "technician", "surveyor"]}
+                    >
                       {["scheduled", "in_progress"].includes(v.status) && (
                         <details>
                           <summary>Record survey visit outcome</summary>
@@ -417,6 +430,7 @@ export function Schedule() {
                     />
                   </Can>
                 )}
+                <VisitExceptions visit={v} />
               </article>
             ))
           ) : (
@@ -424,6 +438,7 @@ export function Schedule() {
           )}
         </div>
       </Panel>
+      <OperationalTasks />
       <Panel title="Installation appointments">
         <div className="ticket-list">
           {data.installations?.length ? (

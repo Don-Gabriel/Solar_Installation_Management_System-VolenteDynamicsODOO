@@ -1,3 +1,4 @@
+import { CustomerContact } from "./customer-contact";
 import { useState } from "react";
 import {
   Link,
@@ -69,10 +70,13 @@ export const enquiryFields: FormField[] = [
     name: "capacity_kw",
     label: "System capacity",
     type: "select",
-    options: [1, 2, 3, 4, 5].map((n) => ({
-      value: String(n),
-      label: `${n} kW`,
-    })),
+    options: [
+      { value: "unknown", label: "Not sure — surveyor will size it" },
+      ...[1, 2, 3, 4, 5].map((n) => ({
+        value: String(n),
+        label: `${n} kW`,
+      })),
+    ],
   },
   {
     name: "system_type",
@@ -91,6 +95,40 @@ export const enquiryFields: FormField[] = [
     options: ["Website", "Referral", "Phone", "WhatsApp", "Walk-in"].map(
       (s) => ({ value: s, label: s }),
     ),
+  },
+  {
+    name: "billing_address",
+    label: "Billing address (if different)",
+    type: "textarea",
+    required: false,
+  },
+  {
+    name: "access_notes",
+    label: "Gate / roof access instructions",
+    type: "textarea",
+    required: false,
+  },
+  {
+    name: "preferred_date",
+    label: "Preferred visit date",
+    type: "date",
+    required: false,
+  },
+  {
+    name: "preferred_window",
+    label: "Preferred time (not a booking)",
+    type: "select",
+    options: [
+      { value: "any", label: "Any working time" },
+      { value: "morning", label: "Morning" },
+      { value: "afternoon", label: "Afternoon" },
+    ],
+  },
+  {
+    name: "hazard_notes",
+    label: "Reported electrical or roof hazard",
+    type: "textarea",
+    required: false,
   },
   { name: "follow_up", label: "Follow-up date", type: "date", required: false },
   {
@@ -218,6 +256,17 @@ export function Projects() {
 export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
   const navigate = useNavigate();
   const [done, setDone] = useState(false);
+  const [customerSearch, setCustomerSearch] = useState(""),
+    [customerId, setCustomerId] = useState(""),
+    [siteId, setSiteId] = useState("");
+  const { data: matches } = useData(
+    `/customers?search=${encodeURIComponent(customerSearch)}`,
+    !publicForm,
+  );
+  const selectedCustomer = matches?.items.find((c: any) => c.id === customerId);
+  const selectedSite = selectedCustomer?.sites.find(
+    (s: any) => s.id === siteId,
+  );
   const { data: users } = useData("/users", !publicForm);
   const { data: demo } = useData("/demo-tools", !publicForm);
   const command = useCommand("/projects", (data) =>
@@ -226,7 +275,14 @@ export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
   const publicCommand = useMutation({
     mutationFn: (body: any) =>
       api("/enquiries/public", { method: "POST", body: JSON.stringify(body) }),
-    onSuccess: () => setDone(true),
+    onSuccess: () => {
+      window.dispatchEvent(
+        new CustomEvent("solar:saved", {
+          detail: { path: "/enquiries/public" },
+        }),
+      );
+      setDone(true);
+    },
   });
   const mutation = publicForm ? publicCommand : command;
   const fields = publicForm
@@ -253,6 +309,72 @@ export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
             : "Capture the customer’s needs. A site survey comes next."
         }
       />
+      {!publicForm && (
+        <Panel title="Returning caller or repeated request">
+          <label>
+            Search existing customer by phone or name
+            <input
+              value={customerSearch}
+              onChange={(e) => {
+                setCustomerSearch(e.target.value);
+                setCustomerId("");
+                setSiteId("");
+              }}
+            />
+          </label>
+          <label>
+            Customer record
+            <select
+              value={customerId}
+              onChange={(e) => {
+                setCustomerId(e.target.value);
+                setSiteId("");
+              }}
+            >
+              <option value="">Create a new customer</option>
+              {matches?.items.map((c: any) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} · {c.phone}
+                </option>
+              ))}
+            </select>
+          </label>
+          {selectedCustomer && (
+            <>
+              <label>
+                Existing installation site
+                <select
+                  value={siteId}
+                  onChange={(e) => setSiteId(e.target.value)}
+                >
+                  <option value="">Add another site</option>
+                  {selectedCustomer.sites.map((s: any) => (
+                    <option key={s.id} value={s.id}>
+                      {s.address}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <p>
+                For a repeated call, open the existing request and save a call
+                note. Create a new project only for another installation.
+              </p>
+              {selectedCustomer.sites.map((s: any) => (
+                <div key={s.id}>
+                  {s.projects.map((p: any) => (
+                    <p key={p.id}>
+                      <Link to={`/projects/${p.id}`}>
+                        Open SP-{p.number} · {s.address} ·{" "}
+                        {p.cancelled_at ? "cancelled" : p.stage}
+                      </Link>
+                    </p>
+                  ))}
+                </div>
+              ))}
+            </>
+          )}
+        </Panel>
+      )}
       {done ? (
         <Panel title="Enquiry received">
           <p>
@@ -266,19 +388,33 @@ export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
           description="Fields marked * are required."
         >
           <SmartForm
-            fields={fields.map((f) => ({
-              ...f,
-              group: ["name", "phone", "address"].includes(f.name)
-                ? "Customer and site"
-                : [
-                      "capacity_kw",
-                      "system_type",
-                      "subsidy_interest",
-                      "notes",
-                    ].includes(f.name)
-                  ? "Solar system"
-                  : "Follow-up",
-            }))}
+            key={customerId + siteId}
+            draftKey={"enquiry:" + customerId + siteId}
+            commandPath={publicForm ? "/enquiries/public" : "/projects"}
+            fields={fields
+              .filter(
+                (f) =>
+                  !(
+                    selectedCustomer &&
+                    ["name", "phone", "billing_address"].includes(f.name)
+                  ) &&
+                  !(
+                    selectedSite && ["address", "access_notes"].includes(f.name)
+                  ),
+              )
+              .map((f) => ({
+                ...f,
+                group: ["name", "phone", "address"].includes(f.name)
+                  ? "Customer and site"
+                  : [
+                        "capacity_kw",
+                        "system_type",
+                        "subsidy_interest",
+                        "notes",
+                      ].includes(f.name)
+                    ? "Solar system"
+                    : "Follow-up",
+              }))}
             presets={
               demo?.enabled
                 ? [
@@ -297,6 +433,10 @@ export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
                 : undefined
             }
             defaults={{
+              name: selectedCustomer?.name,
+              phone: selectedCustomer?.phone,
+              address: selectedSite?.address,
+              preferred_window: "any",
               capacity_kw: "3",
               system_type: "on_grid",
               source: "Website",
@@ -305,7 +445,13 @@ export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
             }}
             submit={publicForm ? "Send enquiry" : "Create project"}
             onSubmit={(body) => {
-              body.capacity_kw = Number(body.capacity_kw);
+              body.capacity_kw =
+                body.capacity_kw === "unknown"
+                  ? null
+                  : Number(body.capacity_kw);
+              if (!body.preferred_date) delete body.preferred_date;
+              if (customerId) body.customer_id = customerId;
+              if (siteId) body.site_id = siteId;
               if (!body.follow_up) delete body.follow_up;
               if (!body.owner_id) delete body.owner_id;
               mutation.mutate(body);
@@ -434,9 +580,9 @@ export function ProjectDetail() {
       </Link>
       <PageHead
         title={p.customer_name}
-        description={`${projectNumber(p.number)} · ${p.capacity_kw} kW ${human(p.system_type)}`}
+        description={`${projectNumber(p.number)} · ${p.capacity_kw ? p.capacity_kw + " kW" : "Size pending survey"} ${human(p.system_type)}`}
       >
-        <Status value={p.stage} />
+        <Status value={p.cancelled_at ? "cancelled" : p.stage} />
       </PageHead>
       <div className="project-meta">
         <span>
@@ -449,6 +595,7 @@ export function ProjectDetail() {
         </a>
         <span>Owner: {p.owner_name || "Unassigned"}</span>
       </div>
+      <CustomerContact data={data} />
       <section className="next-step" aria-label="Next project step">
         <div>
           <span className="next-label">

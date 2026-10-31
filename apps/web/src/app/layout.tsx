@@ -1,3 +1,4 @@
+import { clearDrafts } from "./form-safety";
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, Link, useLocation } from "react-router";
 import {
@@ -116,6 +117,7 @@ export function Layout() {
   async function logout() {
     try {
       await api("/logout", { method: "POST" });
+      clearDrafts();
       setCsrf("");
       queryClient.clear();
       queryClient.setQueryData(["session"], null);

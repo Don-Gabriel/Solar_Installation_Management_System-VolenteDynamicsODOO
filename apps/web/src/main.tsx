@@ -1,6 +1,13 @@
+import { FormSafety } from "./app/form-safety";
 import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { queryClient, api, setCsrf, ApiError } from "@/lib/api";
 import { SessionContext, useSession } from "@/app/session";
@@ -178,17 +185,25 @@ function Workspace() {
     </SessionContext>
   );
 }
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+const router = createBrowserRouter([
+  {
+    path: "*",
+    element: (
+      <FormSafety>
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/enquire" element={<NewProject publicForm />} />
             <Route path="*" element={<Workspace />} />
           </Routes>
         </Suspense>
-      </BrowserRouter>
+      </FormSafety>
+    ),
+  },
+]);
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
     </QueryClientProvider>
   </React.StrictMode>,
 );

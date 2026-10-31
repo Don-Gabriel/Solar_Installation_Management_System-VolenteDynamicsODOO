@@ -30,6 +30,13 @@ export function nextProjectStep(d: any): Step {
     survey = d.surveys[0],
     order = d.order,
     job = d.job;
+  if (p.cancelled_at)
+    return {
+      title: "Enquiry cancelled",
+      detail: p.cancellation_reason,
+      tab: "activity",
+      roles: [],
+    };
   if (!survey || survey.status === "rejected")
     return {
       title: "Record a site survey",
