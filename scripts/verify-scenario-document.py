@@ -24,7 +24,7 @@ text='\n'.join(p.get_text() for p in doc)
 assert '\ufffd' not in text
 for c in catalog['cases']:
     assert re.search(r'\b'+c['id']+r'\b',text),c['id']
-assert all(s in text for s in ['INR 1700','27 distinct','14:45 IST','PASS','BLOCKED'])
+assert all(s in text for s in ['INR 1700','27 distinct','extended the deadline','PASS','BLOCKED'])
 review=root/'output/scenario-review';review.mkdir(exist_ok=True)
 tiles=[];overflow=[]
 for i,page in enumerate(doc):

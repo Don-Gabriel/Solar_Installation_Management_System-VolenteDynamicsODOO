@@ -32,7 +32,7 @@ execution_path=BASE/'execution.json'
 execution=json.loads(execution_path.read_text(encoding='utf-8')) if execution_path.exists() else {}
 for c in cases:
     c['execution']=execution.get(c['id'],{'status':'NOT RUN','evidence':'No scenario-specific execution recorded.'})
-catalog={'baseline_commit':'d0d1038','working_deadline':'2026-10-31T14:45:00+05:30','scenario_count':len(cases),'groups':[{'code':g['code'],'name':g['name']} for g in groups],'cases':cases}
+catalog={'baseline_commit':'d0d1038','working_deadline':'Extended by user; finish as soon as possible','scenario_count':len(cases),'groups':[{'code':g['code'],'name':g['name']} for g in groups],'cases':cases}
 (BASE/'catalog.json').write_text(json.dumps(catalog,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
 csvpath=ROOT/'output/SunPower_Scenario_Test_Register.csv'
 with csvpath.open('w',newline='',encoding='utf-8-sig') as f:
@@ -75,7 +75,7 @@ class SpecDoc(SimpleDocTemplate):
     def afterFlowable(self,f):
         if isinstance(f,Paragraph) and f.style.name=='HeadingScenario':
             text=f.getPlainText();key='sec-'+re.sub('[^a-z0-9]+','-',text.lower());self.canv.bookmarkPage(key);self.canv.addOutlineEntry(text,key,0,False);self.notify('TOCEntry',(0,text,self.page,key))
-story=[Spacer(1,60),para('SunPower real world scenarios','TitleScenario'),para('Acceptance specification and staffing plan','HeadingScenario'),para('200 distinct scenarios across 20 operational areas'),Spacer(1,20),para('Prepared for the revised working deadline of 31 October 2026 at 14:45 IST.'),para('Covers phone-led intake, competing requests, 15-technician scheduling, crews, installed-component diagnosis, mixed warranties, replacement invoices and mobile or Windows delivery.'),Spacer(1,20),para('This is a specification with an honest execution register. Source support and a test pass are different facts. No claim is made that all 200 scenarios already work.'),PageBreak(),para('Contents','HeadingScenario')]
+story=[Spacer(1,60),para('SunPower real world scenarios','TitleScenario'),para('Acceptance specification and staffing plan','HeadingScenario'),para('200 distinct scenarios across 20 operational areas'),Spacer(1,20),para('Updated on 31 October 2026; the user extended the deadline to finish as soon as possible.'),para('Covers phone-led intake, competing requests, 15-technician scheduling, crews, installed-component diagnosis, mixed warranties, replacement invoices and mobile or Windows delivery.'),Spacer(1,20),para('This is a specification with an honest execution register. Source support and a test pass are different facts. No claim is made that all 200 scenarios already work.'),PageBreak(),para('Contents','HeadingScenario')]
 toc=TableOfContents();toc.levelStyles=[ParagraphStyle(name='ScenarioTOC',fontName='Scenario',fontSize=9.5,leading=11.5,spaceBefore=0,spaceAfter=0,textColor=colors.black)];story += [toc,PageBreak()]
 lines=plan.splitlines();i=0
 while i<len(lines):

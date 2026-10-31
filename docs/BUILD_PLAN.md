@@ -1,6 +1,6 @@
 # Build plan
 
-Revision 6 · 31 October 2026 · Solo developer · Latest user deadline: **today at 14:45 IST**.
+Revision 7 · 31 October 2026 · Solo developer · User extended the deadline; finish as soon as possible.
 
 ## Current implementation status
 
@@ -12,7 +12,7 @@ Preserved demo data contains 40 customer projects, 34 staff accounts across eigh
 
 Release gates: focused retest of all six initial failures; backend and browser regressions; scenario-specific execution register for all 200 entries; backup/restore and measured load checks; usable local app and updated instructions. PASS, FAIL and BLOCKED remain distinct. A blocked scenario is not a pass or a completed feature. See [scenarios/EXECUTION.md](scenarios/EXECUTION.md) for the current exact result.
 
-The original milestone schedule below is historical. The latest 14:45 deadline supersedes it. Refunds/credit notes, change orders, supplier claims, physical-device checks and native installers must not be claimed from a web/API test pass.
+The original milestone schedule below is historical. The user explicitly extended the later 14:45 target. Refunds/credit notes, change orders, supplier claims, physical-device checks and native installers must not be claimed from a web/API test pass.
 
 Canonical repository: [Solar_Installation_Management_System-VolenteDynamicsODOO](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO).
 

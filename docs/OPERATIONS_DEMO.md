@@ -55,3 +55,15 @@ The two saved demo evidence images explicitly say **SYNTHETIC REPAIR REHEARSAL**
 `node --env-file=.env --import tsx scripts/seed-service-rehearsal.ts` adds these examples through the real API only when `DEMO_TOOLS=true`. Its marker prevents duplicates; rerunning it preserves existing records. It does not reset used equipment or invoices. Runtime IDs and links are saved locally in `output/scenarios/demo-rehearsal.json`.
 
 The app is a responsive browser application for Windows and phone-sized screens. Native Android/Windows installers, physical camera checks, refunds, credit notes, supplier claims and other blocked catalogue workflows are not complete. Consult `docs/scenarios/EXECUTION.md` for every case; do not describe the full 200-case catalogue as passed.
+
+
+## Additional reviewed workflows
+
+- Quotation & payment: request a discount as sales, review as administrator, and accept the new quotation version. Additional work creates a linked project and bills only its requested items after survey approval and acceptance.
+- Quotation & payment: request cancellation before dispatch, approve as a different finance user, then record the actual refund in the invoice ledger. Stock and installation time are released on approved cancellation.
+- Stock & deliveries: quarantine an allocated damaged serial and scan a suitable spare. Quantity counts need a separate accounts reviewer and cannot invalidate reservations.
+- Packing & delivery: receive complete lines separately, record failed delivery or refusal with custody, and return transit-damaged serials before replacement and coordinator-approved retry.
+- Repairs: record third-party equipment separately, request parts, approve compatible-model substitutions and use reviewed remote/no-fault outcomes. Supplier claims and actual recoveries stay independent from the customer's warranty bill.
+- Schedule: review the aged/urgent queue, crew workload and fixed travel buffer. Capacity, hazard, overrun, leave and customer-contact tasks require recorded follow-through.
+
+For an isolated replay, run `node scripts/training-workspace.mjs rehearsal`; reset only that named dataset with `node scripts/training-workspace.mjs rehearsal --reset`. The command writes an ignored local configuration and prints the separate-server start command; the normal application stays on port 3001.

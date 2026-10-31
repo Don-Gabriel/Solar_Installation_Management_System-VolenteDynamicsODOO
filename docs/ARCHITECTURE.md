@@ -18,8 +18,20 @@ erDiagram
   ORDER_LINES ||--o{ ASSETS : allocates
   ORDER_LINES ||--o{ WARRANTIES : activates
   ORDERS ||--|| JOBS : installs
-  JOBS ||--o{ EVIDENCE : proves
-  WARRANTIES ||--o{ TICKETS : services
+  JOBS |o--o{ EVIDENCE : proves
+  JOBS ||--|{ JOB_CREW : assigns
+  USERS ||--o{ JOB_CREW : works
+  JOBS ||--o{ CREW_PAYMENTS : pays
+  PROJECTS ||--o{ TICKETS : reports
+  WARRANTIES |o--o{ TICKETS : optionally_identifies
+  PROJECTS ||--o{ VISITS : schedules
+  TICKETS |o--o{ VISITS : requires
+  VISITS ||--|{ VISIT_CREW : assigns
+  USERS ||--o{ VISIT_CREW : attends
+  USERS ||--o{ STAFF_LEAVE : unavailable
+  TICKETS ||--o{ DIAGNOSIS_LINES : diagnoses
+  TICKETS |o--o{ EVIDENCE : proves
+  TICKETS ||--o{ SERVICE_RETURNS : tracks
   ORDERS ||--o{ INVOICES : charges
   INVOICES ||--|{ INVOICE_LINES : itemizes
   INVOICES ||--o{ PAYMENTS : collects
@@ -32,8 +44,10 @@ erDiagram
 - `packages/contracts`: TypeBox JSON schemas shared with TypeScript. Fastify rejects invalid API requests independently of the UI.
 - `apps/api/src/modules/sales.ts`: enquiry, survey, quotation snapshots, acceptance and payments.
 - `inventory.ts`: receipts, reservation, serialized allocation, dispatch and delivery.
-- `field.ts`: assignment conflicts, assigned-technician access, evidence-based completion and subsidy tracking.
-- `service.ts`: coverage decision at ticket opening, repair costs, replacement chain and customer confirmation.
+- `field.ts`: installation crews, evidence-based completion, per-worker time and payouts, and subsidy tracking.
+- `scheduling.ts`: shared skills/leave/buffer checks, atomic crew booking, rescheduling and visit outcomes.
+- `service-operations.ts` (exported through `service.ts`): assigned repair access, diagnosis revisions, approved per-component coverage, labour/callout billing, replacement lineage and confirmation.
+- `staff.ts`: audited role, qualification and working-day changes with session revocation.
 - `queries.ts`: read models and SQL-derived financial reports.
 - `plugins/auth.ts`: Argon2id, opaque hashed sessions, CSRF and role authorization.
 - `plugins/files.ts`: image decoding, size/pixel limits, metadata removal, private storage and authorized reads.
@@ -56,10 +70,23 @@ Routes authorize the caller and open a transaction; domain modules own business 
 
 Demo policy is deliberately explicit: 30% minimum advance, 8 m² usable roof per kW, no unconfigured tax, 24-month inverter/battery/controller coverage, 240-month panel coverage, replacement coverage inherits the original end date. Panel coverage is quantity-tracked per order line; inverter/battery/controller coverage is serial-specific. Prices and warranty duration live in products, recipes in versioned package tables, advance policy in settings. These are business configuration data, not claims about government eligibility or electrical engineering design.
 
-Each installation and service visit has one qualified lead and may include additional named workers. Shared availability checks lock workers before confirmation. Installation time, saved rates, cost and payouts are tracked per worker. Repair diagnosis revisions bind approval and current-visit evidence; issued service documents retain gross prices, warranty credits and separate callout lines. Statutory payroll, refunds/credit notes, order cancellation, supplier claims, accounting integrations and complete offline mutation synchronization remain incomplete. Historical seed installations are explicitly synthetic imports; they do not pretend to include real photos or signatures. New live completions require saved evidence.
+Each installation and service visit has one qualified lead and may include additional named workers. Shared availability checks lock workers before confirmation. Installation time, saved rates, cost and payouts are tracked per worker. Repair diagnosis revisions bind approval and current-visit evidence; issued service documents retain gross prices, warranty credits and separate callout lines. Statutory payroll, external accounting integrations and automatic offline mutation synchronization remain outside this build. Reviewed credits/refunds, pre-dispatch cancellation and supplier claims are now implemented. Historical seed installations are explicitly synthetic imports; they do not pretend to include real photos or signatures. New live completions require saved evidence.
 
-The PWA precaches the public static shell only. API responses and evidence are never added to runtime caches. Browser data stays in memory; signing out clears the query cache. Uploads are decoded before persistence and are not publicly served from the static directory.
+The PWA precaches the public static shell only. API responses and evidence are never added to runtime caches. Read-query data stays in memory; unsent enquiry and diagnosis drafts and retry keys use user-scoped session storage for up to 24 hours. Signing out clears the query cache and saved drafts. Uploads are decoded before persistence and are not publicly served from the static directory.
 
 ## Service operations additions
 
 Migrations 003–009 add visits, visit crews, staff leave, installation crews and individual payouts, diagnosis lines, repair evidence revisions, returns quarantine and linked follow-up tickets. User capabilities remain one role per named account. The coordinator role explicitly combines phone intake with dispatch and review; it does not inherit finance or staff administration. Backend transactions and record-level access remain authoritative.
+
+
+## Review completion additions
+
+Migrations 010–023 add operational tasks and holidays, financial corrections and refunds, shared customer/site records and history, component evidence, reviewed service outcomes, external equipment, supplier claims and recoveries, parts readiness, line delivery receipts and custody incidents, stock count review and quarantine, paid-order cancellation, quote discounts, engineering substitutions, linked change orders and transit replacement records. The database now has 58 public tables including migration tracking.
+
+Discounts are limited to 1–20% under the demo policy and require another administrator; the result is a new quote version. Extra work is a linked project with its own survey approval, quote, customer acceptance and invoice. Pre-dispatch cancellation requires separate finance review and releases reservations; actual money returned is recorded separately as a bounded refund.
+
+Availability ranks qualified free workers by booked hours, then name and staff ID. Travel uses the stated fixed 30-minute buffer rather than a live routing provider. Requests waiting over seven days are promoted for human review to avoid starvation; urgent hazards remain explicit coordinator tasks. No appointment is silently displaced.
+
+Repair drafts require manual resubmission after reconnecting. Parts readiness is checked against current unreserved stock at booking and final consumption, not a guaranteed supplier delivery date. Different replacement models require explicit engineering notes, customer agreement and price approval; the software does not certify electrical compatibility.
+
+The named training-workspace command creates or resets only a marked solar_training_ namespace. It uses a separate configuration and upload path, leaving operational records outside that namespace unchanged.
