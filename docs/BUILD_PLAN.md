@@ -1,14 +1,14 @@
 # Build plan
 
-Revision 8 · 31 October 2026 · Solo developer · User extended the deadline; finish as soon as possible.
+Revision 9 · 31 October 2026 · Solo developer · User extended the deadline; finish as soon as possible.
 
 ## Current implementation status
 
 The operational revision adds the service coordinator role, 15-person dispatch roster, installation and visit crews, working-day/skill/leave checks, a shared calendar, conflict-safe booking and rescheduling, component diagnosis, separate parts/labour coverage, approval, repair photos, returns quarantine and itemized service documents. Staff access can be edited with audit history; individual installation crew time and payouts are recorded separately. Follow-up faults link back to the original request.
 
-The existing responsive React/TypeScript/Vite, Fastify and local PostgreSQL stack remains in use. A separate customer role now provides a private inbox, own-system status, visits, repairs and itemized bills. It uses persisted in-app notifications; SMS, email and push delivery are not configured. Support can record calls and new installation enquiries. The optional anonymous enquiry form remains. React Native Android and Windows builds are still a separate, unimplemented delivery track.
+The existing responsive React/TypeScript/Vite, Fastify and local PostgreSQL stack remains in use. A separate customer role now provides a private inbox, own-system status, visits, repairs and itemized bills. It uses persisted in-app notifications; SMS, email and push delivery are not configured. Support can record calls and new installation enquiries. The optional anonymous enquiry form remains. The user subsequently requested native clients: a portable Electron Windows application and a Java Android WebView application now share this interface and server. See NATIVE_APPS.md for installation and signing limitations.
 
-Preserved demo data contains 40 customer projects, 34 staff accounts across eight roles plus two customer accounts and 199 serialized devices (including the additional test battery). Fifteen technicians are eligible for new dispatch; four historical technician identities retain their existing work. This is distinct from the standalone 27-person F15 planning fixture.
+Preserved demo data contains 40 customer projects, 34 staff accounts across eight roles plus two customer accounts and 198 serialized devices restored from the original synthetic seed. Fifteen technicians are eligible for new dispatch; four historical technician identities retain their existing work. This is distinct from the standalone 27-person F15 planning fixture.
 
 Release gates: focused retest of all six initial failures; backend and browser regressions; scenario-specific execution register for all 200 entries; backup/restore and measured load checks; usable local app and updated instructions. PASS, FAIL and BLOCKED remain distinct. A blocked scenario is not a pass or a completed feature. See [scenarios/EXECUTION.md](scenarios/EXECUTION.md) for the current exact result.
 
@@ -27,7 +27,7 @@ The supplied problem statement covers about 40 projects per month, a crew of 15 
 - Use the owner's GitHub repository; it was empty at inspection.
 - Select React/Vite + Fastify + PostgreSQL, as specified in [TECH_STACK.md](TECH_STACK.md).
 - Make desktop and mobile acceptance criteria part of every milestone, starting with enquiry and technician forms.
-- Target a lightweight PWA shell; full native apps, offline transaction synchronization and push notifications are out of scope.
+- Target a lightweight PWA shell; native clients were added at the user's subsequent request; offline transaction synchronization and push notifications remain out of scope.
 - Use installed, pinned skills for schema/API/auth/UI/test work, with one documented workflow shared by Codex and Claude.
 - Preserve the final three hours before the deadline for regression, rehearsal and submission.
 

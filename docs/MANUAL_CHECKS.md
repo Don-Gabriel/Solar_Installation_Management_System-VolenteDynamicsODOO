@@ -51,15 +51,16 @@ Source: [Chrome's USB port forwarding instructions](https://developer.chrome.com
 
 ## UXP-06 — signed Android application
 
-1. Check for a signed Android APK/AAB deliverable. None has been built in this project.
-2. Keep this scenario BLOCKED. A working mobile browser or Add to Home Screen demonstration does not pass native installation/signing.
-3. Once a native artifact is built, install it on an actual Android device, verify signing/upgrade behaviour, sign in, complete a repair/evidence workflow, deny and restore camera permission, restart and verify saved state. These steps cannot be completed against the current web-only artifact.
+1. Install SunPower-Android-demo.apk from Downloads. It is signed with a local development key; APK signature verification passed.
+2. Connect the phone by USB and forward port 3001 as described in NATIVE_APPS.md, or configure a trusted HTTPS server through the app's Server button.
+3. Login, customer isolation, account switching and restart persistence passed on an Android 15 emulator. On the actual phone, complete a repair with photos, deny then allow camera permission, check the keyboard, restart and confirm saved state.
+4. Keep the original release acceptance gate BLOCKED until physical-device checks and production signing/distribution are completed. A debug-signed APK is an installable demo, not a Play Store release.
 
 ## UXP-07 — signed Windows application
 
-1. Check for a signed Windows installer. None has been built in this project.
-2. Keep this scenario BLOCKED. Desktop Chrome/Edge and a PWA shortcut do not establish native packaging/signing.
-3. Once an installer exists, verify its publisher/signature, install and launch it, sign in, complete an installation/repair workflow, restart it, and test update/uninstall. Do not mark this passed using the browser alone.
+1. Open SunPower-Windows-0.1.0.exe from Downloads with the server running on port 3001. This is a portable application; it does not need an installer.
+2. Packaged-client login, customer isolation and switching back to the administrator passed locally. Repeat a complete installation/repair workflow with a physical camera, then close and reopen the application.
+3. The executable is unsigned because no production publisher certificate is configured. Keep the original signed-release/update/uninstall acceptance gate BLOCKED; successful native launch does not establish publisher signing.
 
 ## UXP-09 — physical barcode scan
 
@@ -71,3 +72,11 @@ Source: [Chrome's USB port forwarding instructions](https://developer.chrome.com
 6. Stop the camera or navigate away while it is open. Confirm the phone's camera indicator turns off. Test Read barcode photo as the fallback.
 
 For each manual test record PASS/FAIL/BLOCKED, phone/computer model, OS/browser, time, project/repair number, expected result, observed result and a screenshot where helpful. Do not convert any of the six to PASS without meeting its full gate.
+
+## Latest demo controls and storage
+
+Click Administrator to filter users by role or search by name/email. Only an administrator-originated demo session can switch; the target account retains its normal restrictions. Back follows actual browser history, including project tab visits. Refresh keeps unsaved entries. A saved signature can be deleted before completing its current job/visit.
+
+Appointments suggest an available qualified technician and a time; repair visits default to one name selector. Review the proposed skill, duration and customer availability before confirmation. Installation scheduling also suggests a lead and start time. Demo receipt presets fill a unique reference and one unique serial for a serialized item, or no serial for quantity stock.
+
+Private images are files in UPLOAD_DIR; PostgreSQL stores the job/visit/customer links and metadata. See NATIVE_APPS.md for the restored local upload path, permissions, backup requirements and the distinction between in-app customer notifications and external delivery.

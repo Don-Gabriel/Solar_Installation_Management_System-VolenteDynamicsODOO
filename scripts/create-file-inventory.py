@@ -150,7 +150,7 @@ for name,text in scripts.items():add('scripts/'+name,*(x+'.' for x in text.split
 # Each migration is an ordered, versioned change rather than a runtime reset.
 migration_topics=['core business records','data integrity and immutable accepted terms','service visits, repair diagnosis and returns','separate labour warranty coverage','installation crews','diagnosis revision history','individual crew payments','linked follow-up requests','service callout charges','operational tasks and holidays','financial corrections and settlement','customer intake, contact history and document snapshots','component-linked and deduplicated evidence','reviewed service outcomes and installation disputes','external equipment and supplier recoveries','repair parts readiness','individual delivery receipts and incidents','damaged stock and physical-count reviews','reviewed order cancellation','reviewed quotation discounts','engineering-approved replacement models','linked change orders','transit-damage replacement records','private customer accounts and in-app notifications']
 for p in sorted((ROOT/'db/migrations').glob('*.sql')):
- topic=migration_topics[int(p.name[:3])-1];add(p.relative_to(ROOT).as_posix(),f'Adds database support for {topic}.','Runs in sequence through the migration tool and preserves the existing migration history.')
+ topic=(migration_topics+['administrator-authorized demo account switching'])[int(p.name[:3])-1];add(p.relative_to(ROOT).as_posix(),f'Adds database support for {topic}.','Runs in sequence through the migration tool and preserves the existing migration history.')
 for p in (ROOT/'apps/web/src/components/ui').glob('*.tsx'):
  label=p.stem.replace('-',' ');add(p.relative_to(ROOT).as_posix(),f'Defines the shared {label} interface component.','Provides consistent styling and interaction behavior wherever the application uses it.')
 files=set(subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard'],cwd=ROOT,text=True).splitlines())
@@ -158,10 +158,10 @@ files={f for f in files if (ROOT/f).is_file()}
 if (ROOT/'.env').exists():files.add('.env')
 for f in files:
  if f.endswith('package.json'):
-  scope={'package.json':'workspace','apps/api/package.json':'API server','apps/web/package.json':'browser application','packages/contracts/package.json':'shared request contracts'}[f]
+  scope={'package.json':'workspace','apps/api/package.json':'API server','apps/web/package.json':'browser application','packages/contracts/package.json':'shared request contracts','native/windows/package.json':'Windows desktop client'}[f]
   add(f,f'Declares the {scope} package and its dependencies.','Defines the package commands or exports used by the build and development tools.')
  elif f.endswith('tsconfig.json'):add(f,'Configures TypeScript compilation for this directory and its source files.','Defines the language checks and module settings inherited or used by the build.')
- elif f=='package-lock.json':add(f,'Pins the exact installed dependency versions for the workspace.','Makes installation repeatable across development and continuous-integration environments.')
+ elif f.endswith('package-lock.json'):add(f,'Pins the exact installed dependency versions for its package.','Makes installation repeatable across development and continuous-integration environments.')
 final={
 'output/pdf/SunPower_All_Files_and_Purposes.pdf':'Lists every included project file and its purpose in two sentences|Provides the requested file-by-file reference without an introduction',
 'output/pdf/SunPower_Real_World_Scenarios.pdf':'Contains the two-hundred-scenario acceptance document and execution information|Explains the business situations and distinguishes verified results from remaining limitations',
@@ -176,14 +176,38 @@ final={
 for f,text in final.items():
  if (ROOT/f).exists() or f==OUT.relative_to(ROOT).as_posix():files.add(f);add(f,*(x+'.' for x in text.split('|')))
 for p in sorted((ROOT/'output/barcodes/png').glob('*.png')):
+ if p.stem not in {a['serial'] for a in json.loads((ROOT/'output/guide-data/demo.json').read_text(encoding='utf-8'))['assets']}:continue
  f=p.relative_to(ROOT).as_posix();files.add(f);add(f,f'Contains the scannable label for demo serial {p.stem}.','Use this image to test that specific device; current allocation and warranty status must be checked in the live app.')
 add('apps/api/src/modules/customer-portal.ts','Serves customer-owned systems, visits, repairs, invoices and inbox messages.','Enforces customer identity and prevents reading or marking another customer’s messages.')
 add('apps/web/src/features/customer-portal.tsx','Displays the private customer service portal and automatically refreshes its inbox.','Shows appointments, repair status and bills while keeping staff controls outside the customer view.')
 add('db/seeds/customer-portal.ts','Creates two synthetic customer logins linked to existing demo customer records.','Preserves existing accounts and adds an explicitly labelled welcome message.')
 add('scripts/seed-customer-portal.ts','Adds the customer portal demo accounts to an existing demonstration database.','Requires demo mode and hashes the configured password before creating accounts.')
 add('tests/e2e/customer-portal.spec.ts','Tests customer login, private views, inbox interaction and account switching in browsers.','Checks accessibility and horizontal layout on the configured desktop and phone viewports.')
-add('docs/MANUAL_CHECKS.md','Gives step-by-step instructions for the six remaining acceptance gates and customer notification demo.','Separates physical-device checks from native installers that have not been built.')
+add('docs/MANUAL_CHECKS.md','Gives step-by-step instructions for the six remaining acceptance gates and customer notification demo.','Separates verified native demo builds from remaining physical-device and production-signing checks.')
 add('apps/web/src/app/app-update.tsx','Detects newer offline app versions and shows a visible reload notice.','Lets the user save unfinished work before loading the updated interface.')
+extra={
+'apps/web/src/app/demo-switcher.tsx':'Displays a searchable role filter and demo account selector|Clears previous-user data and requires a discard choice before abandoning unsaved work',
+'apps/web/src/app/page-navigation.tsx':'Adds Back and Refresh controls to public, staff and customer screens|Follows actual navigation history and refreshes server data while retaining unsaved entries',
+'tests/e2e/demo-controls.spec.ts':'Tests role filtering, demo account switching and customer isolation through the interface|Checks actual back navigation and preservation of unsaved entries during refresh',
+'scripts/build-android.ps1':'Compiles Android resources and Java code into an installable demo APK|Aligns the package and signs it with a locally retained development key',
+'scripts/check-native-windows.mjs':'Launches the packaged Windows client for an automated smoke check|Verifies login, customer isolation and switching back to the administrator',
+'scripts/check-native-android.mjs':'Exercises the installed Android demo client on the QA emulator|Checks login, customer isolation, role switching and saved sessions after restart',
+'scripts/restore-demo.mjs':'Builds and validates a fresh synthetic database before activating it locally|Preserves the old database and copies the verified backup and private environment configuration',
+'docs/NATIVE_APPS.md':'Explains Windows and Android setup, build commands and shared server requirements|Describes demo switching, suggested scheduling, private image storage and release limitations',
+'native/windows/main.cjs':'Starts the isolated Windows application window and connects to the configured server|Restricts navigation and camera permissions while providing native menu actions',
+'native/android/settings.gradle':'Configures the Android project modules and dependency repositories|Lets Android Studio and Gradle discover the application module',
+'native/android/build.gradle':'Pins the Android application build plugin|Keeps the Gradle build definition reproducible for the included Android project',
+'native/android/app/build.gradle':'Defines the Android application identity, platform levels and version|Provides the application module configuration for Android Studio builds',
+'native/android/app/src/main/AndroidManifest.xml':'Declares the Android activity, network access and optional camera capability|Disables application backups and applies the network security policy',
+'native/android/app/src/main/res/xml/network_security_config.xml':'Requires encrypted remote connections while allowing local USB-forwarded HTTP|Preserves normal certificate validation for HTTPS servers',
+'native/android/app/src/main/java/local/sunpower/operations/MainActivity.java':'Hosts the shared interface inside the Android application|Handles server selection, camera permission, image picking, navigation and persistent login cookies'
+}
+for f,text in extra.items():add(f,*(s+'.' for s in text.split('|')))
+for f,text in {
+'output/native/windows/SunPower-Windows-0.1.0.exe':'Runs the portable Windows desktop demo|Connects to the shared server and currently has no production publisher signature',
+'output/native/android/SunPower-Android-demo.apk':'Installs the Android development application|Uses a local demo signature and connects to the same server as the desktop client'
+}.items():
+ if (ROOT/f).exists():files.add(f);add(f,*(s+'.' for s in text.split('|')))
 missing=sorted(files-purpose.keys());assert not missing,missing
 for f in files:
  assert len(purpose[f])==2 and all(s.endswith('.') for s in purpose[f]),f

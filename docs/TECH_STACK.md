@@ -80,7 +80,7 @@ No automatic offline payment, dispatch or warranty mutations in the first releas
 
 - Fastify is selected over NestJS to reduce framework ceremony for one developer. Keep explicit modules so simplicity does not turn into one giant route file.
 - PostgreSQL is selected over Firebase/Supabase-hosted backends to align with the supplied transcript. The Supabase-authored skill is database guidance, not a dependency on its service.
-- A responsive PWA is selected over React Native/Flutter/Electron to share UI and avoid native packaging within the deadline.
+- The responsive PWA remains the shared interface. At the user's later request, Electron 45.2.1 packages a Windows client and a Java WebView client packages Android; both use the same server and database. React Native was considered but would duplicate the existing interface for this demo.
 - Explicit SQL is selected over an ORM to make data integrity and transactions easy to review. Parameterization, mapping and transaction-client discipline are mandatory.
 - No Redis, message broker, microservices or WebSocket infrastructure by default. Persisted dynamic records and refetches meet the brief; add infrastructure only for an actual unresolved need.
 
