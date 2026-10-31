@@ -1,10 +1,10 @@
 # Scenario execution register
 
-Checked 2026-10-31T10:43:37.323Z. Application source commit: f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d.
+Checked 2026-10-31T11:16:53.643Z. Application source commit: 616cc7433e58b1d01c1b223cbb809fb58d3c8ac8.
 
 All 200 scenarios assessed: 194 PASS, 6 BLOCKED.
 
-114/114 backend tests passed. Browser results and restore checks are recorded separately. A test can verify several named scenarios; 200 scenarios does not mean 200 automated test functions.
+117/117 backend tests passed. Browser results and restore checks are recorded separately. A test can verify several named scenarios; 200 scenarios does not mean 200 automated test functions.
 
 BLOCKED means the full required workflow or necessary test environment is unavailable. Some blocked scenarios have partial passing checks, retained in execution.json. They are not counted as passes. Source assessments in the original catalogue remain the historical d0d1038 baseline.
 

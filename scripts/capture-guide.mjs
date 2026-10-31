@@ -92,5 +92,15 @@ await page
   .getByRole("heading", { name: /Good morning|Good afternoon/ })
   .waitFor();
 await shot("mobile-home");
+const customerContext = await browser.newContext({ viewport: { width: 1100, height: 780 } });
+const customerPage = await customerContext.newPage();
+await customerPage.goto(base);
+await customerPage.getByLabel("Email address").fill("lakshmi.customer@sunpower.local");
+await customerPage.getByLabel("Password").fill(process.env.DEMO_PASSWORD);
+await customerPage.getByRole("button", { name: "Sign in", exact: true }).click();
+await customerPage.getByRole("heading", { name: "Your solar systems" }).waitFor();
+await customerPage.evaluate(() => document.fonts.ready);
+await customerPage.screenshot({ path: "output/guide-screens/customer-portal.png", fullPage: false });
+captured++;
 await browser.close();
 console.log(`Captured ${captured} guide screenshots from the running app.`);

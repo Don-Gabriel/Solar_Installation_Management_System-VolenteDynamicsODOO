@@ -1,13 +1,13 @@
 # Screen guide and barcode test pack
 
-The application includes **Screen guide**, a searchable explanation of all 23 screens and project sections. Its source is `docs/screen-guide.json`; the PDF uses the same content. **Barcode labels** lets authorized staff filter, copy and print labels from the actual saved device records. **Team & access** is an administrator-only staff directory with audited role, access, skill and working-day changes.
+The application includes **Screen guide**, a searchable explanation of all available screens and project sections. Its source is `docs/screen-guide.json`; the PDF uses the same content. **Barcode labels** lets authorized staff filter, copy and print labels from the actual saved device records. **Team & access** is an administrator-only staff directory with audited role, access, skill and working-day changes.
 
-The expanded synthetic seed contains 40 projects, 34 staff across eight roles (15 active dispatch technicians and four historical technician identities) and 198 serialized devices. The extra seed is additive and idempotent; rerunning it does not reset used serials or completed work. Quantity-tracked panels and installation materials do not require individual device serials under this application's rules.
+The expanded synthetic seed contains 40 projects, 34 staff across eight roles plus two private customer accounts (15 active dispatch technicians and four historical technician identities) and 199 serialized devices. The extra seed is additive and idempotent; rerunning it does not reset used serials or completed work. Quantity-tracked panels and installation materials do not require individual device serials under this application's rules.
 
 ## Local deliverables
 
 - `output/pdf/SunPower_Screen_Guide.pdf`: illustrated guide, choices, responsibilities, test walkthrough, design research and staff directory.
-- `output/pdf/SunPower_Test_Barcodes.pdf`: printable Code 128 labels for all 198 saved devices, including their stock status at export time.
+- `output/pdf/SunPower_Test_Barcodes.pdf`: printable Code 128 labels for all 199 saved devices, including their stock status at export time.
 - `output/SunPower_Barcode_Test_Kit.zip`: individual PNG labels, CSV index and barcode PDF.
 
 These generated outputs are intentionally ignored by Git. The app's barcode screen always reads current stock status. Printed labels identify devices; reprinting or rescanning does not make an allocated device available again. For a new test order choose a compatible **Available** device. Its normal scan action still checks reservations, identity, quantity and duplicates.

@@ -15,7 +15,7 @@ Open http://127.0.0.1:3001. These are synthetic examples, not records of real fi
 | Field technician | 19 | Assigned installations and repairs; 15 are on the new dispatch roster |
 | Accounts | 2 | Payments, costs and individual crew payouts |
 
-There are 34 named staff accounts and no customer login. Four historical technician identities are preserved alongside the 15-person dispatch roster. The separate 27-person F15 planning fixture is not the live staff directory.
+There are 34 named staff accounts plus two customer logins with a private service portal and in-app inbox. Four historical technician identities are preserved alongside the 15-person dispatch roster. The separate 27-person F15 planning fixture is not the live staff directory.
 
 ## Show the reviewer’s 15-technician example
 

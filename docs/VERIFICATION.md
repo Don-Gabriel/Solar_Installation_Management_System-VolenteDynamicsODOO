@@ -1,20 +1,24 @@
 # Verification record
 
-Updated 31 October 2026. Tested application revision: `f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d`.
+Updated 31 October 2026. Tested application revision: `616cc7433e58b1d01c1b223cbb809fb58d3c8ac8`.
+
+GitHub Actions: [successful verification run](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO/actions/runs/41196075984).
 
 ## Completed checks
 
 - TypeScript checks and production frontend/API build passed.
-- PostgreSQL-backed integration suite: **114 passed, zero failed**. Tests use disposable schemas, including concurrency, stale revisions, permission failures, stock balances, warranty decisions and financial corrections.
-- Browser suite: **28 passed, zero failed or skipped**, covering Chromium desktop and WebKit mobile emulation. Includes role-based navigation, interrupted drafts, full repair completion, reviewed invoice credits, remote support, scheduling and reviewed stock counts.
+- PostgreSQL-backed integration suite: **117 passed, zero failed**. Tests use disposable schemas, including concurrency, stale revisions, permission failures, stock balances, warranty decisions and financial corrections.
+- Browser suite: **30 passed, zero failed or skipped**, covering Chromium desktop and WebKit mobile emulation. Includes role-based navigation, interrupted drafts, full repair completion, reviewed invoice credits, remote support, scheduling and reviewed stock counts.
 - All six original review regressions passed again through `scripts/probe-review-scenarios.ts`.
 - The complete 200-case register records **194 PASS, 6 BLOCKED, 0 FAIL, 0 NOT RUN**. A scenario can be supported by an API test, a browser journey or both; this does not mean 200 separate full browser journeys ran.
-- Backup and disposable restore passed for **58 tables and 2 private evidence files**. Financial totals and file bytes matched.
+- Backup and disposable restore passed for **59 tables and 6 private evidence files**. Financial totals and file bytes matched.
 - Local load scenario checked 1,000 searchable projects and 200 requests. This is local synthetic-load evidence, not a production capacity guarantee.
-- All **198 individual barcode images** and all **198 labels in the printable PDF** decoded successfully in software. Physical camera scanning remains unverified.
-- The local application at `http://127.0.0.1:3001` reports a connected database. Migrations 001–023 are applied, preserving the demo workspace.
-- File inventory: **376 files**, exactly two purpose sentences each, no introduction. All filenames were checked against the extracted PDF and page text stayed inside the margins.
-- Screen guide: **32 pages**. Barcode PDF: **18 pages**. Scenario document: **68 pages**, with every scenario identifier present and text bounds checked. PDF page renders were inspected for layout.
+- All **199 individual barcode images** and all **199 labels in the printable PDF** decoded successfully in software. Physical camera scanning remains unverified.
+- The local application at `http://127.0.0.1:3001` reports a connected database. Migrations 001–024 are applied, preserving the demo workspace.
+- File inventory: **384 files**, exactly two purpose sentences each, no introduction. All filenames were checked against the extracted PDF and page text stayed inside the margins.
+- Screen guide: **34 pages**. Barcode PDF: **18 pages**. Scenario document: **68 pages**, with every scenario identifier present and text bounds checked. PDF page renders were inspected for layout.
+
+Customer portal tests cover customer isolation, forbidden staff APIs, CSRF, inbox read state, transaction rollback and idempotent notifications. All ten listed staff/customer demo logins were verified against the running app. The scanner was also checked using a synthetic video stream at 390px: the guide crop decoded the expected serial, stopped its tracks, and did not allocate stock. This is not physical-camera evidence.
 
 ## Remaining acceptance limitations
 
@@ -25,7 +29,7 @@ Updated 31 October 2026. Tested application revision: `f9e4e5fbb91ab5175ef10e014
 - **UXP-07**: No signed Windows native build exists. Desktop web/PWA is the implemented client.
 - **UXP-09**: All generated barcode images can be decoded by software; physical-phone camera scanning in HTTPS remains unverified.
 
-Firefox automation could not launch on this Windows host (`spawn UNKNOWN`), even after checking the installed browser package. The passing local browser report explicitly covers Chromium and WebKit; Firefox is not represented as locally passed. The repository CI configuration also defines Firefox on Linux, whose result must be checked separately.
+Firefox automation could not launch on this Windows host (`spawn UNKNOWN`), even after checking the installed browser package. The passing local browser report explicitly covers Chromium and WebKit; Firefox is not represented as locally passed. GitHub Actions run 41196075984 passed on Linux for the tested revision, including Chromium, Firefox and WebKit. Its browser result is 45 passed; local Windows coverage remains 30 tests across Chromium and WebKit.
 
 The application is responsive browser/PWA software, not a signed React Native Android or Windows package. Mobile emulation cannot establish physical camera permission behavior, software-keyboard usability or a complete screen-reader walkthrough. The user is handling physical barcode checks; no unreported manual outcome is counted as a pass.
 

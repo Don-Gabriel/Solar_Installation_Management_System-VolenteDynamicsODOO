@@ -99,8 +99,8 @@
         "observed": "Passed: Review regressions and real operational requests [INT-01 SEC-01] support creates audited installation intake without gaining stock or finance authority",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -118,8 +118,8 @@
         "observed": "Passed: Customer intake and contact history [INT-02 INT-05 INT-06] unknown capacity stays explicit, survey sizes it, and hazard creates tracked review; Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (chromium); Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/navigation.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -137,8 +137,8 @@
         "observed": "Passed: Customer intake and contact history [INT-03 INT-04 CRM-03] returning customer can add a site or another system while repeated calls append to one request; Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (chromium); Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/navigation.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -156,8 +156,8 @@
         "observed": "Passed: Customer intake and contact history [INT-03 INT-04 CRM-03] returning customer can add a site or another system while repeated calls append to one request; Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (chromium); Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/navigation.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -175,8 +175,8 @@
         "observed": "Passed: Customer intake and contact history [INT-02 INT-05 INT-06] unknown capacity stays explicit, survey sizes it, and hazard creates tracked review",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -194,8 +194,8 @@
         "observed": "Passed: Customer intake and contact history [INT-02 INT-05 INT-06] unknown capacity stays explicit, survey sizes it, and hazard creates tracked review",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -213,8 +213,8 @@
         "observed": "Passed: Additional acceptance boundaries [INT-07] malformed phone is rejected without creating a partial customer",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -232,8 +232,8 @@
         "observed": "Passed: Customer intake and contact history [INT-08] cancellation preserves enquiry history and releases the future survey appointment",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -251,8 +251,8 @@
         "observed": "Passed: [INT-09 UXP-03] interrupted enquiry recovers its draft and in-app/back navigation offers stay or discard (chromium); Passed: [INT-09 UXP-03] interrupted enquiry recovers its draft and in-app/back navigation offers stay or discard (webkit)",
         "evidence": "tests/e2e/navigation.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -270,8 +270,8 @@
         "observed": "Passed: Final billing and intake guards [INT-10] explicit phone-only setting blocks anonymous creation while staff intake stays usable",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -289,8 +289,8 @@
         "observed": "Passed: Additional acceptance boundaries [CRM-01 CRM-02] phone search distinguishes customers sharing a phone by name and site",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -308,8 +308,8 @@
         "observed": "Passed: Additional acceptance boundaries [CRM-01 CRM-02] phone search distinguishes customers sharing a phone by name and site",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -327,8 +327,8 @@
         "observed": "Passed: Customer intake and contact history [INT-03 INT-04 CRM-03] returning customer can add a site or another system while repeated calls append to one request; Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (chromium); Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/navigation.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -346,8 +346,8 @@
         "observed": "Passed: Customer intake and contact history [CRM-04 CRM-05 CRM-07 CRM-10] verified optimistic contact edits preserve issued name/address and restrict old phone history",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -365,8 +365,8 @@
         "observed": "Passed: Customer intake and contact history [CRM-04 CRM-05 CRM-07 CRM-10] verified optimistic contact edits preserve issued name/address and restrict old phone history",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -384,8 +384,8 @@
         "observed": "Passed: Customer intake and contact history [CRM-06] assigned technician receives versioned site access instructions; Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (chromium); Passed: [INT-02 INT-03 INT-04 CRM-03 CRM-06] returning caller chooses a site, saves unknown size and records shared access instructions (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/navigation.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -403,8 +403,8 @@
         "observed": "Passed: Customer intake and contact history [CRM-04 CRM-05 CRM-07 CRM-10] verified optimistic contact edits preserve issued name/address and restrict old phone history",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -422,8 +422,8 @@
         "observed": "Passed: Customer intake and contact history [CRM-08] reviewed administrator merge preserves project and all invoice identifiers",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -441,8 +441,8 @@
         "observed": "Passed: [CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (chromium); Passed: [CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (webkit)",
         "evidence": "tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -460,8 +460,8 @@
         "observed": "Passed: Customer intake and contact history [CRM-04 CRM-05 CRM-07 CRM-10] verified optimistic contact edits preserve issued name/address and restrict old phone history",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -479,8 +479,8 @@
         "observed": "Passed: Sales lifecycle and snapshots [SUR-01] blocks direct quote issuance without an approved survey",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -498,8 +498,8 @@
         "observed": "Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -517,8 +517,8 @@
         "observed": "Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -536,8 +536,8 @@
         "observed": "Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -555,8 +555,8 @@
         "observed": "Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -574,8 +574,8 @@
         "observed": "Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -593,8 +593,8 @@
         "observed": "Passed: Final concurrency and revision checks [SUR-07 SUR-09 DSP-04] survey no-access remains explicit and leave-triggered crew reassignment preserves history; Passed: Operational exceptions and follow-through [SUR-07] surveyor no-access creates a real reschedule and customer-contact task without completing the visit",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -612,8 +612,8 @@
         "observed": "Passed: Review regressions and real operational requests [SUR-08] two-worker survey stores both crew members and blocks both calendars; Passed: [SUR-08] coordinator books a two-person survey crew against the selected site (chromium); Passed: [SUR-08] coordinator books a two-person survey crew against the selected site (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -631,8 +631,8 @@
         "observed": "Passed: Final concurrency and revision checks [SUR-07 SUR-09 DSP-04] survey no-access remains explicit and leave-triggered crew reassignment preserves history",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -650,8 +650,8 @@
         "observed": "Passed: Additional acceptance boundaries [SUR-02 SUR-03 SUR-04 SUR-05 SUR-06 SUR-10] survey measurements, grid suitability, revised approval and accepted-order protection; Passed: [QUO-09 SUR-10] accepted-order additions use a linked survey-approved change order and bill only approved extras",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -669,8 +669,8 @@
         "observed": "Passed: Additional acceptance boundaries [QUO-01 PAY-01] package lines and totals carry through to one installation invoice",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -688,8 +688,8 @@
         "observed": "Passed: Sales lifecycle and snapshots [QUO-02 QUO-03 CON-01] acceptance is idempotent and material prices remain snapshots",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -707,8 +707,8 @@
         "observed": "Passed: Sales lifecycle and snapshots [QUO-02 QUO-03 CON-01] acceptance is idempotent and material prices remain snapshots",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -726,8 +726,8 @@
         "observed": "Passed: Additional acceptance boundaries [QUO-04] concurrent customer acceptance produces one order, invoice and job",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -745,8 +745,8 @@
         "observed": "Passed: [QUO-05] discount ceiling and independent approval create a fresh quote without rewriting the original",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -764,8 +764,8 @@
         "observed": "Passed: Financial corrections and settlement [QUO-06 QUO-07] stale and expired quotations require a fresh reviewed version",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -783,8 +783,8 @@
         "observed": "Passed: Financial corrections and settlement [QUO-06 QUO-07] stale and expired quotations require a fresh reviewed version",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -802,8 +802,8 @@
         "observed": "Passed: [QUO-08] reviewed paid-order cancellation releases stock, credits the retained invoice and permits only the actual refundable amount",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -821,8 +821,8 @@
         "observed": "Passed: [QUO-09 SUR-10] accepted-order additions use a linked survey-approved change order and bill only approved extras",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -840,8 +840,8 @@
         "observed": "Passed: Additional acceptance boundaries [QUO-10] unavailable package refuses an empty quote",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -859,8 +859,8 @@
         "observed": "Passed: Additional acceptance boundaries [QUO-01 PAY-01] package lines and totals carry through to one installation invoice",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -878,8 +878,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [PAY-02 DLV-01 STK-06] blocks reservation before advance, incomplete scans and unknown serials",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -897,8 +897,8 @@
         "observed": "Passed: Additional acceptance boundaries [PAY-03] exact required advance permits reservation",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -916,8 +916,8 @@
         "observed": "Passed: Sales lifecycle and snapshots [PAY-04 PAY-05 CON-02 CON-08] does not duplicate payments and blocks overpayment or changed retries",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -935,8 +935,8 @@
         "observed": "Passed: Sales lifecycle and snapshots [PAY-04 PAY-05 CON-02 CON-08] does not duplicate payments and blocks overpayment or changed retries",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -954,8 +954,8 @@
         "observed": "Passed: Additional acceptance boundaries [PAY-06] two cashiers cannot collect the final balance twice",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -973,8 +973,8 @@
         "observed": "Passed: Financial corrections and settlement [PAY-07] pending receipts do not release stock and only finance can verify settlement",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -992,8 +992,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-05 BIL-03 PAY-08] customer retail differs from acquisition cost and service part-payments leave initial invoice unchanged",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1011,8 +1011,8 @@
         "observed": "Passed: Financial corrections and settlement [PAY-09] reversing an incorrect receipt preserves history and reopens the balance once",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1030,8 +1030,8 @@
         "observed": "Passed: Additional acceptance boundaries [PAY-10] identical reference text on different invoices remains independently scoped",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1049,8 +1049,8 @@
         "observed": "Passed: Additional acceptance boundaries [STK-01 STK-09] receipt creates three distinct devices and scan normalizes case and spaces",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1068,8 +1068,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [STK-02] receipt rollback preserves stock when duplicate serials are submitted",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1087,8 +1087,8 @@
         "observed": "Passed: Additional acceptance boundaries [STK-03] insufficient package stock leaves no hidden partial reservation",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1106,8 +1106,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [STK-04] concurrent allocations can never claim the same physical device twice",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1125,8 +1125,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [STK-05 STK-07] rejects a wrong product and duplicate serial scans",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1144,8 +1144,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [PAY-02 DLV-01 STK-06] blocks reservation before advance, incomplete scans and unknown serials",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1163,8 +1163,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [STK-05 STK-07] rejects a wrong product and duplicate serial scans",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1182,8 +1182,8 @@
         "observed": "Passed: [STK-08] damaged allocated serial is quarantined and a substitute must be scanned before dispatch",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1201,8 +1201,8 @@
         "observed": "Passed: Additional acceptance boundaries [STK-01 STK-09] receipt creates three distinct devices and scan normalizes case and spaces",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1220,8 +1220,8 @@
         "observed": "Passed: [STK-10] stock count needs a second reviewer, preserves reservations and rejects stale counts; Passed: [STK-10] warehouse count is reviewed separately by accounts through the desktop and phone interface (chromium); Passed: [STK-10] warehouse count is reviewed separately by accounts through the desktop and phone interface (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1239,8 +1239,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [PAY-02 DLV-01 STK-06] blocks reservation before advance, incomplete scans and unknown serials",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1258,8 +1258,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [DLV-02 DLV-03 DLV-04 DLV-05] starts warranties on delivery only, and delivery retries preserve dates",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1277,8 +1277,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [DLV-02 DLV-03 DLV-04 DLV-05] starts warranties on delivery only, and delivery retries preserve dates",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1296,8 +1296,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [DLV-02 DLV-03 DLV-04 DLV-05] starts warranties on delivery only, and delivery retries preserve dates",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1315,8 +1315,8 @@
         "observed": "Passed: Inventory integrity and warranty timing [DLV-02 DLV-03 DLV-04 DLV-05] starts warranties on delivery only, and delivery retries preserve dates",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1334,8 +1334,8 @@
         "observed": "Passed: [DLV-06] separate line receipts start only received-component warranties and retain dates on retry",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1353,8 +1353,8 @@
         "observed": "Passed: [DLV-07 DLV-09] failed destination and customer refusal preserve custody, block warranty and create follow-up tasks",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1372,8 +1372,8 @@
         "observed": "Passed: [DLV-08] transit-damaged device is quarantined, replacement shipment is reviewed and only the received replacement gains warranty",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1391,8 +1391,8 @@
         "observed": "Passed: [DLV-07 DLV-09] failed destination and customer refusal preserve custody, block warranty and create follow-up tasks",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1410,8 +1410,8 @@
         "observed": "Passed: Customer follow-up and workflow compatibility [DLV-10] warranty instants are invariant when database session timezones differ",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1429,8 +1429,8 @@
         "observed": "Passed: Review regressions and real operational requests [SCH-01] fifteen dispatch workers, thirteen occupied and precisely two free in the demonstrated interval",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1448,8 +1448,8 @@
         "observed": "Passed: Capacity, payroll and workload verification [SCH-02 SCH-09] full working-day capacity returns explicit alternatives and Sunday is excluded; Passed: Operational exceptions and follow-through [SCH-02 SCH-09] full holiday window creates one persisted capacity task and returns working-day alternatives; Passed: [SCH-02 SCH-09] a holiday search shows alternatives and a tracked follow-up that can be completed (chromium); Passed: [SCH-02 SCH-09] a holiday search shows alternatives and a tracked follow-up that can be completed (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1467,8 +1467,8 @@
         "observed": "Passed: Review regressions and real operational requests [SCH-03 SCH-04 SCH-08 DSP-10] skills, leave, office hours and stale suggestions are enforced on booking",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1486,8 +1486,8 @@
         "observed": "Passed: Review regressions and real operational requests [SCH-03 SCH-04 SCH-08 DSP-10] skills, leave, office hours and stale suggestions are enforced on booking",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1505,8 +1505,8 @@
         "observed": "Passed: Review regressions and real operational requests [SCH-05 SCH-07 SCH-10] travel buffer and two coordinators racing for one worker",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1524,8 +1524,8 @@
         "observed": "Passed: Field work and service [SCH-06 INS-06] blocks overlapping assignments and completion without saved evidence",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1543,8 +1543,8 @@
         "observed": "Passed: Review regressions and real operational requests [SCH-05 SCH-07 SCH-10] travel buffer and two coordinators racing for one worker",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1562,8 +1562,8 @@
         "observed": "Passed: Review regressions and real operational requests [SCH-03 SCH-04 SCH-08 DSP-10] skills, leave, office hours and stale suggestions are enforced on booking",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1581,8 +1581,8 @@
         "observed": "Passed: Capacity, payroll and workload verification [SCH-02 SCH-09] full working-day capacity returns explicit alternatives and Sunday is excluded; Passed: Operational exceptions and follow-through [SCH-02 SCH-09] full holiday window creates one persisted capacity task and returns working-day alternatives; Passed: [SCH-02 SCH-09] a holiday search shows alternatives and a tracked follow-up that can be completed (chromium); Passed: [SCH-02 SCH-09] a holiday search shows alternatives and a tracked follow-up that can be completed (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1600,8 +1600,8 @@
         "observed": "Passed: Review regressions and real operational requests [SCH-05 SCH-07 SCH-10] travel buffer and two coordinators racing for one worker",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1619,8 +1619,8 @@
         "observed": "Passed: Review regressions and real operational requests [DSP-01 SEC-08] twenty concurrent calls survive without appointments or shared identities",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1638,8 +1638,8 @@
         "observed": "Passed: [DSP-02] dispatch ranks aged requests and urgent targets, then suggests qualified crews by workload with travel and stable tie reasons",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1657,8 +1657,8 @@
         "observed": "Passed: [DSP-03] urgent fault creates human hazard escalation and displaced customers get explicit rescheduling and contact tasks",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1676,8 +1676,8 @@
         "observed": "Passed: Final concurrency and revision checks [SUR-07 SUR-09 DSP-04] survey no-access remains explicit and leave-triggered crew reassignment preserves history; Passed: Operational exceptions and follow-through [DSP-04] sick-worker reassignment retains a tracked customer-contact task with an audited outcome",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1695,8 +1695,8 @@
         "observed": "Passed: Review regressions and real operational requests [DSP-05 DSP-09 CON-07] rescheduling releases old time atomically, rejects stale revision and supports retry",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1714,8 +1714,8 @@
         "observed": "Passed: Operational exceptions and follow-through [DSP-06] an actual overrun flags downstream appointments and customer contact without silently moving them",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1733,8 +1733,8 @@
         "observed": "Passed: Operational exceptions and follow-through [DSP-07 DSP-08] overdue acknowledgement is actionable, acknowledgement clears it, and decline returns work to dispatch",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1752,8 +1752,8 @@
         "observed": "Passed: Operational exceptions and follow-through [DSP-07 DSP-08] overdue acknowledgement is actionable, acknowledgement clears it, and decline returns work to dispatch",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1771,8 +1771,8 @@
         "observed": "Passed: Review regressions and real operational requests [DSP-05 DSP-09 CON-07] rescheduling releases old time atomically, rejects stale revision and supports retry",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1790,8 +1790,8 @@
         "observed": "Passed: Review regressions and real operational requests [SCH-03 SCH-04 SCH-08 DSP-10] skills, leave, office hours and stale suggestions are enforced on booking",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1809,8 +1809,8 @@
         "observed": "Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1828,8 +1828,8 @@
         "observed": "Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1847,8 +1847,8 @@
         "observed": "Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1866,8 +1866,8 @@
         "observed": "Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1885,8 +1885,8 @@
         "observed": "Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1904,8 +1904,8 @@
         "observed": "Passed: Field work and service [SCH-06 INS-06] blocks overlapping assignments and completion without saved evidence",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1923,8 +1923,8 @@
         "observed": "Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1942,8 +1942,8 @@
         "observed": "Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost; Passed: Capacity, payroll and workload verification [INS-08] individual crew payout does not pay the other worker or duplicate the first payment",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1961,8 +1961,8 @@
         "observed": "Passed: Reviewed service exceptions [INS-09] disputed installation handover creates review and cannot complete using an invented signature",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1980,8 +1980,8 @@
         "observed": "Passed: Final billing and intake guards [INS-10] material capacity discrepancy blocks handover for review",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -1999,8 +1999,8 @@
         "observed": "Passed: Review regressions and real operational requests [SRV-01 SRV-02 SRV-03 SEC-03] unknown-component complaint, full installed list and different repair worker access",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2018,8 +2018,8 @@
         "observed": "Passed: Review regressions and real operational requests [SRV-01 SRV-02 SRV-03 SEC-03] unknown-component complaint, full installed list and different repair worker access",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2037,8 +2037,8 @@
         "observed": "Passed: Review regressions and real operational requests [SRV-01 SRV-02 SRV-03 SEC-03] unknown-component complaint, full installed list and different repair worker access",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2056,8 +2056,8 @@
         "observed": "Passed: [SRV-04 SRV-06] support sees possible duplicate work and a separate coordinator reviews safe remote resolution (chromium); Passed: [SRV-04 SRV-06] support sees possible duplicate work and a separate coordinator reviews safe remote resolution (webkit)",
         "evidence": "tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2075,8 +2075,8 @@
         "observed": "Passed: Customer follow-up and workflow compatibility [SRV-05 SEC-06] coordinator has explicit call intake powers and support can append a repeated call without duplicating work",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2094,8 +2094,8 @@
         "observed": "Passed: Reviewed service exceptions [SRV-06] reviewed safe remote resolution records customer confirmation without onsite work or charges; Passed: [SRV-04 SRV-06] support sees possible duplicate work and a separate coordinator reviews safe remote resolution (chromium); Passed: [SRV-04 SRV-06] support sees possible duplicate work and a separate coordinator reviews safe remote resolution (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2113,8 +2113,8 @@
         "observed": "Passed: Additional acceptance boundaries [SRV-07] support cancellation releases appointment and records reason",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2132,8 +2132,8 @@
         "observed": "Passed: Review regressions and real operational requests [SRV-08 SRV-09 EVD-08] no access and waiting-for-parts preserve open work; a customer dispute prevents closure; Passed: [RMA-07 SRV-08] unavailable parts block a promised return visit until replenishment and warehouse readiness",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2151,8 +2151,8 @@
         "observed": "Passed: Review regressions and real operational requests [SRV-08 SRV-09 EVD-08] no access and waiting-for-parts preserve open work; a customer dispute prevents closure",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2170,8 +2170,8 @@
         "observed": "Passed: Customer follow-up and workflow compatibility [SRV-10 RMA-08] failed replacement follow-up retains both identities, original bill and evidence",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2189,8 +2189,8 @@
         "observed": "Passed: Review regressions and real operational requests [DIA-01 WAR-03 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2208,8 +2208,8 @@
         "observed": "Passed: Review regressions and real operational requests [DIA-02 DIA-03 CON-03] foreign component, excessive quantity and stale diagnosis are rejected",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2227,8 +2227,8 @@
         "observed": "Passed: Review regressions and real operational requests [DIA-02 DIA-03 CON-03] foreign component, excessive quantity and stale diagnosis are rejected",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2246,8 +2246,8 @@
         "observed": "Passed: External equipment and independent supplier claims [DIA-04] third-party equipment is recorded without creating company entitlement",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2265,8 +2265,8 @@
         "observed": "Passed: Reviewed service exceptions [DIA-05] no-fault onsite findings need a photo and separate review, with zero charge and no replacement",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2284,8 +2284,8 @@
         "observed": "Passed: Review regressions and real operational requests [DIA-06 BIL-06] editing diagnosis invalidates approval and unapproved work cannot create an invoice",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2303,8 +2303,8 @@
         "observed": "Passed: Financial corrections and settlement [BIL-08 DIA-07] reviewed credits and replacement invoices preserve original charges and bound refunds; Passed: Final concurrency and revision checks [EVD-06 EVD-09 DIA-07] changed diagnosis invalidates earlier evidence and issued work cannot be edited or erased",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2322,8 +2322,8 @@
         "observed": "Passed: Customer follow-up and workflow compatibility [DIA-08] declined diagnosis stays disputed with no invoice or unapproved replacement",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2341,8 +2341,8 @@
         "observed": "Passed: Reviewed service exceptions [DIA-09] cumulative quantity replacements require explicit coordinator entitlement review beyond installed count",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2360,8 +2360,8 @@
         "observed": "Passed: Field work and service [DIA-10] traces replacement serials and preserves the original warranty dates",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2379,8 +2379,8 @@
         "observed": "Passed: Additional acceptance boundaries [WAR-01 WAR-02 WAR-04 WAR-05] coverage follows complaint instant, with exclusive expiry, even after policy expires before visit",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2398,8 +2398,8 @@
         "observed": "Passed: Additional acceptance boundaries [WAR-01 WAR-02 WAR-04 WAR-05] coverage follows complaint instant, with exclusive expiry, even after policy expires before visit",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2417,8 +2417,8 @@
         "observed": "Passed: Review regressions and real operational requests [DIA-01 WAR-03 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2436,8 +2436,8 @@
         "observed": "Passed: Additional acceptance boundaries [WAR-01 WAR-02 WAR-04 WAR-05] coverage follows complaint instant, with exclusive expiry, even after policy expires before visit",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2455,8 +2455,8 @@
         "observed": "Passed: Additional acceptance boundaries [WAR-01 WAR-02 WAR-04 WAR-05] coverage follows complaint instant, with exclusive expiry, even after policy expires before visit",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2474,8 +2474,8 @@
         "observed": "Passed: Review regressions and real operational requests [WAR-06 WAR-10 SEC-02 SEC-05] coverage review needs authorization and reason; coordinator cannot collect money or fake field completion",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2493,8 +2493,8 @@
         "observed": "Passed: Final billing and intake guards [WAR-07] missing promised policy requires a reviewed decision, never silent billing",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2512,8 +2512,8 @@
         "observed": "Passed: Review regressions and real operational requests [WAR-08 BIL-04] covered parts can have approved charged labour and callout, while full cover credits all three",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2531,8 +2531,8 @@
         "observed": "Passed: External equipment and independent supplier claims [WAR-09 RMA-09] supplier custody, disputed decisions and bounded recoveries do not change customer cover or invoices",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2550,8 +2550,8 @@
         "observed": "Passed: Review regressions and real operational requests [WAR-06 WAR-10 SEC-02 SEC-05] coverage review needs authorization and reason; coordinator cannot collect money or fake field completion",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2569,8 +2569,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2588,8 +2588,8 @@
         "observed": "Passed: Additional acceptance boundaries [RMA-02 RMA-03] replacement cannot use wrong model or device allocated to another customer",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2607,8 +2607,8 @@
         "observed": "Passed: Additional acceptance boundaries [RMA-02 RMA-03] replacement cannot use wrong model or device allocated to another customer",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2626,8 +2626,8 @@
         "observed": "Passed: [RMA-04] different-model replacement needs engineering and customer agreement and preserves the original warranty",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2645,8 +2645,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2664,8 +2664,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2683,8 +2683,8 @@
         "observed": "Passed: [RMA-07 SRV-08] unavailable parts block a promised return visit until replenishment and warehouse readiness",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2702,8 +2702,8 @@
         "observed": "Passed: Customer follow-up and workflow compatibility [SRV-10 RMA-08] failed replacement follow-up retains both identities, original bill and evidence",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2721,8 +2721,8 @@
         "observed": "Passed: External equipment and independent supplier claims [WAR-09 RMA-09] supplier custody, disputed decisions and bounded recoveries do not change customer cover or invoices",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2740,8 +2740,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2759,8 +2759,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2778,8 +2778,8 @@
         "observed": "Passed: Review regressions and real operational requests [DIA-01 WAR-03 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2797,8 +2797,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-05 BIL-03 PAY-08] customer retail differs from acquisition cost and service part-payments leave initial invoice unchanged",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2816,8 +2816,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure; Passed: Review regressions and real operational requests [WAR-08 BIL-04] covered parts can have approved charged labour and callout, while full cover credits all three",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2835,8 +2835,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-05 BIL-03 PAY-08] customer retail differs from acquisition cost and service part-payments leave initial invoice unchanged",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2854,8 +2854,8 @@
         "observed": "Passed: Review regressions and real operational requests [DIA-06 BIL-06] editing diagnosis invalidates approval and unapproved work cannot create an invoice",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2873,8 +2873,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2892,8 +2892,8 @@
         "observed": "Passed: Financial corrections and settlement [BIL-08 DIA-07] reviewed credits and replacement invoices preserve original charges and bound refunds; Passed: [BIL-08] invoice correction needs a second reviewer and displays the retained original and credit (chromium); Passed: [BIL-08] invoice correction needs a second reviewer and displays the retained original and credit (webkit)",
         "evidence": "tests/integration/lifecycle.test.ts; tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2911,8 +2911,8 @@
         "observed": "Passed: Review regressions and real operational requests [DIA-01 WAR-03 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2930,8 +2930,8 @@
         "observed": "Passed: [CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (chromium); Passed: [CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (webkit)",
         "evidence": "tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2949,8 +2949,8 @@
         "observed": "Passed: Review regressions and real operational requests [EVD-01] valid diagnosis and approval still cannot complete without this visit photo",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2968,8 +2968,8 @@
         "observed": "Passed: Component photo evidence [EVD-02 EVD-04] component-linked uploads reject foreign assets and concurrent retries store one private image",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -2987,8 +2987,8 @@
         "observed": "Passed: Additional acceptance boundaries [EVD-03 EVD-10] disguised executable rejected and private evidence cannot be opened anonymously",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3006,8 +3006,8 @@
         "observed": "Passed: Component photo evidence [EVD-02 EVD-04] component-linked uploads reject foreign assets and concurrent retries store one private image; Passed: Storage and transport failures [EVD-04] an interrupted HTTP upload creates no evidence and a complete retry stores one usable photo",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3025,8 +3025,8 @@
         "observed": "A file picker is available; camera-denial recovery still needs a physical-device test.",
         "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
         "defect": "GAP-EVD-05",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3044,8 +3044,8 @@
         "observed": "Passed: Final concurrency and revision checks [EVD-06 EVD-09 DIA-07] changed diagnosis invalidates earlier evidence and issued work cannot be edited or erased",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3063,8 +3063,8 @@
         "observed": "Passed: Review regressions and real operational requests [BIL-01 BIL-04 BIL-07 RMA-01 RMA-05 RMA-06 RMA-10 EVD-07] covered serial replacement, visible zero document, return quarantine, retry and phone closure",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3082,8 +3082,8 @@
         "observed": "Passed: Review regressions and real operational requests [SRV-08 SRV-09 EVD-08] no access and waiting-for-parts preserve open work; a customer dispute prevents closure",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3101,8 +3101,8 @@
         "observed": "Passed: Final concurrency and revision checks [EVD-06 EVD-09 DIA-07] changed diagnosis invalidates earlier evidence and issued work cannot be edited or erased",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3120,8 +3120,8 @@
         "observed": "Passed: Additional acceptance boundaries [EVD-03 EVD-10] disguised executable rejected and private evidence cannot be opened anonymously",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3139,8 +3139,8 @@
         "observed": "Passed: Review regressions and real operational requests [INT-01 SEC-01] support creates audited installation intake without gaining stock or finance authority",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3158,8 +3158,8 @@
         "observed": "Passed: Review regressions and real operational requests [WAR-06 WAR-10 SEC-02 SEC-05] coverage review needs authorization and reason; coordinator cannot collect money or fake field completion",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3177,8 +3177,8 @@
         "observed": "Passed: Review regressions and real operational requests [SRV-01 SRV-02 SRV-03 SEC-03] unknown-component complaint, full installed list and different repair worker access",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3196,8 +3196,8 @@
         "observed": "Passed: Additional acceptance boundaries [SEC-04 SEC-07 SEC-10] admin access changes take effect on open sessions and flag assigned work",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3215,8 +3215,8 @@
         "observed": "Passed: Review regressions and real operational requests [WAR-06 WAR-10 SEC-02 SEC-05] coverage review needs authorization and reason; coordinator cannot collect money or fake field completion",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3234,8 +3234,8 @@
         "observed": "Passed: Customer follow-up and workflow compatibility [SRV-05 SEC-06] coordinator has explicit call intake powers and support can append a repeated call without duplicating work",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3253,8 +3253,8 @@
         "observed": "Passed: Additional acceptance boundaries [SEC-04 SEC-07 SEC-10] admin access changes take effect on open sessions and flag assigned work",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3272,8 +3272,8 @@
         "observed": "Passed: Review regressions and real operational requests [DSP-01 SEC-08] twenty concurrent calls survive without appointments or shared identities",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3291,8 +3291,8 @@
         "observed": "Passed: Session and authorization [SEC-09] protects the staff directory and complete barcode library by role",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3310,8 +3310,8 @@
         "observed": "Passed: Additional acceptance boundaries [SEC-04 SEC-07 SEC-10] admin access changes take effect on open sessions and flag assigned work",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3329,8 +3329,8 @@
         "observed": "Passed: Sales lifecycle and snapshots [QUO-02 QUO-03 CON-01] acceptance is idempotent and material prices remain snapshots",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3348,8 +3348,8 @@
         "observed": "Passed: Sales lifecycle and snapshots [PAY-04 PAY-05 CON-02 CON-08] does not duplicate payments and blocks overpayment or changed retries",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3367,8 +3367,8 @@
         "observed": "Passed: Review regressions and real operational requests [DIA-02 DIA-03 CON-03] foreign component, excessive quantity and stale diagnosis are rejected",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3386,8 +3386,8 @@
         "observed": "Passed: Final concurrency and revision checks [CON-04] competing tickets cannot replace one original device twice",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3405,8 +3405,8 @@
         "observed": "Passed: Final concurrency and revision checks [CON-05] last unreserved device cannot be promised to both sale and replacement",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3424,8 +3424,8 @@
         "observed": "Passed: Review regressions and real operational requests [CON-06] database failure after replacement changes rolls back stock, original serial, invoice and ticket together",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3443,8 +3443,8 @@
         "observed": "Passed: Review regressions and real operational requests [DSP-05 DSP-09 CON-07] rescheduling releases old time atomically, rejects stale revision and supports retry",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3462,8 +3462,8 @@
         "observed": "Passed: Sales lifecycle and snapshots [PAY-04 PAY-05 CON-02 CON-08] does not duplicate payments and blocks overpayment or changed retries",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3481,8 +3481,8 @@
         "observed": "Passed: Additional acceptance boundaries [INS-01 INS-02 INS-03 INS-04 INS-05 INS-07 INS-08 CON-09] installation crews have private access, lead sign-off, individual time and one completion cost",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3500,8 +3500,8 @@
         "observed": "Passed: Additional acceptance boundaries [CON-10] nonexistent record yields controlled error without an orphan ticket",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3519,8 +3519,8 @@
         "observed": "Passed: Field work and service [OPS-01] persists committed data across a new application instance",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3538,8 +3538,8 @@
         "observed": "Passed: Storage and transport failures [OPS-02] a real database connection loss rolls back intake and the same retry creates one record",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3557,8 +3557,8 @@
         "observed": "Passed: Storage and transport failures [OPS-03] injected disk-full write removes a partial file and never creates evidence metadata",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3576,8 +3576,8 @@
         "observed": "Passed: [OPS-04] PostgreSQL dump and restore, financial totals and private photo bytes",
         "evidence": "scripts/check-backup-restore.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3595,8 +3595,8 @@
         "observed": "Passed: Capacity, payroll and workload verification [OPS-05] work queue distinguishes new, scheduled, active, blocked and awaiting-confirmation work",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3614,8 +3614,8 @@
         "observed": "Passed: Field work and service [OPS-06] reconciles report amounts against invoice, material and labour records",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3633,8 +3633,8 @@
         "observed": "Passed: Field work and service [OPS-07] keeps covered repair free but accounts for internal costs",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3652,8 +3652,8 @@
         "observed": "Passed: Capacity, payroll and workload verification [OPS-08] LOAD1 preserves all 1000 searchable projects and 200 requests with measured local response time",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3671,8 +3671,8 @@
         "observed": "Passed: Final concurrency and revision checks [OPS-09] repair review audit retains before and after decisions with actor and time",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3690,8 +3690,8 @@
         "observed": "Passed: Capacity, payroll and workload verification [OPS-10] rerunning demo setup preserves existing work, collections and evidence; Passed: [OPS-10] named isolated training reset replays only its selected dataset and refuses nontraining names",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3709,8 +3709,8 @@
         "observed": "Passed: [UXP-01] project next step and back navigation preserve search and stage (chromium); Passed: [UXP-01] project next step and back navigation preserve search and stage (webkit)",
         "evidence": "tests/e2e/navigation.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3728,8 +3728,8 @@
         "observed": "Passed: [UXP-02] staff roles show permitted next steps, different workspaces and server access rules (chromium); Passed: [UXP-02] staff roles show permitted next steps, different workspaces and server access rules (webkit); Passed: [UXP-02] responsive navigation, saved next steps and accessible core screens (chromium); Passed: [UXP-02] responsive navigation, saved next steps and accessible core screens (webkit)",
         "evidence": "tests/e2e/navigation.spec.ts; tests/e2e/workflow.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3747,8 +3747,8 @@
         "observed": "Passed: [INT-09 UXP-03] interrupted enquiry recovers its draft and in-app/back navigation offers stay or discard (chromium); Passed: [INT-09 UXP-03] interrupted enquiry recovers its draft and in-app/back navigation offers stay or discard (webkit)",
         "evidence": "tests/e2e/navigation.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3766,8 +3766,8 @@
         "observed": "Responsive browser widths pass, but a physical phone with the software keyboard open was not tested.",
         "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
         "defect": "GAP-UXP-04",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3785,8 +3785,8 @@
         "observed": "Automated accessibility checks and Escape behavior pass; a full screen-reader and keyboard-only walkthrough remains unverified.",
         "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
         "defect": "GAP-UXP-05",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3804,8 +3804,8 @@
         "observed": "No signed Android native build exists. Responsive mobile web/PWA is the implemented client.",
         "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
         "defect": "GAP-UXP-06",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3823,8 +3823,8 @@
         "observed": "No signed Windows native build exists. Desktop web/PWA is the implemented client.",
         "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
         "defect": "GAP-UXP-07",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3842,8 +3842,8 @@
         "observed": "Passed: [CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (chromium); Passed: [CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (webkit)",
         "evidence": "tests/e2e/repairs.spec.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3861,8 +3861,8 @@
         "observed": "All generated barcode images can be decoded by software; physical-phone camera scanning in HTTPS remains unverified.",
         "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
         "defect": "GAP-UXP-09",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     },
@@ -3880,8 +3880,8 @@
         "observed": "Passed: Customer follow-up and workflow compatibility [UXP-10] older repair payload cannot silently supply a charge or replacement outside approved diagnosis",
         "evidence": "tests/integration/lifecycle.test.ts",
         "defect": "",
-        "checked_at": "2026-10-31T10:43:37.323Z",
-        "commit": "f9e4e5fbb91ab5175ef10e0144f7cb43e46d2c6d",
+        "checked_at": "2026-10-31T11:16:53.643Z",
+        "commit": "616cc7433e58b1d01c1b223cbb809fb58d3c8ac8",
         "environment": "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified."
       }
     }
