@@ -49,13 +49,69 @@ export function Schedule() {
     setQuery("");
   }, [params]);
   const searchCommand = useCommand("/schedule/search");
-  const available = query ? searchCommand.data : null,
-    searchError = searchCommand.error,
-    isFetching = searchCommand.isPending;
+  const automatic = useData(
+    "/schedule/availability?" +
+      new URLSearchParams({
+        from,
+        to,
+        skill,
+        duration_hours: String(duration),
+        crew_size: String(size),
+        ...(params.get("visit") ? { visit_id: params.get("visit")! } : {}),
+      }),
+    canPlan && !!(purpose === "repair" ? ticketId : projectId),
+  );
+  const available = query ? searchCommand.data : automatic.data,
+    searchError = searchCommand.error || automatic.error,
+    isFetching = searchCommand.isPending || automatic.isFetching;
+  useEffect(() => {
+    setQuery("");
+    setSlot(null);
+    setCrew([]);
+    setLead("");
+  }, [ticketId, projectId, purpose, from, to, skill, duration, size]);
+  useEffect(() => {
+    const ticket = tickets?.find((t: any) => t.id === ticketId);
+    if (purpose === "repair" && ticket)
+      setSkill(
+        /battery/i.test(
+          `${ticket.fault_code || ""} ${ticket.description || ""}`,
+        )
+          ? "battery_repair"
+          : "inverter_repair",
+      );
+  }, [ticketId, tickets, purpose]);
+  useEffect(() => {
+    if (!(purpose === "repair" ? ticketId : projectId)) {
+      setSlot(null);
+      return;
+    }
+    const best = available?.slots?.[0];
+    if (!best) {
+      setSlot(null);
+      setCrew([]);
+      setLead("");
+      return;
+    }
+    const leader = best.candidates.find((t: any) => t.can_lead);
+    if (!leader) return;
+    setSlot(best);
+    setLead(leader.id);
+    setCrew([
+      leader.id,
+      ...best.candidates
+        .filter((t: any) => t.id !== leader.id)
+        .slice(0, size - 1)
+        .map((t: any) => t.id),
+    ]);
+  }, [available, size, purpose, ticketId, projectId]);
   const booking = useCommand("/visits", () => {
     setSlot(null);
     setCrew([]);
     setQuery("");
+    setTicket("");
+    setProject("");
+    setLead("");
   });
   const previous = data?.visits.find(
     (v: any) => v.id === params.get("visit") && v.status === "scheduled",
@@ -71,7 +127,7 @@ export function Schedule() {
       <Can roles={["admin", "coordinator"]}>
         <Panel
           title="Find a free technician or crew"
-          description="Routine target: days 3–5. Search checks skills, leave, 09:00–17:00 IST working hours and a 30-minute travel buffer."
+          description="Choose a request and we suggest the earliest free time and a qualified technician with the lightest workload. Routine target: days 3–5. Review and confirm before booking."
         >
           <form
             className="form-grid"
@@ -238,8 +294,19 @@ export function Schedule() {
                     key={s.starts_at}
                     onClick={() => {
                       setSlot(s);
-                      setCrew([]);
-                      setLead("");
+                      const leader = s.candidates.find((t: any) => t.can_lead);
+                      setCrew(
+                        leader
+                          ? [
+                              leader.id,
+                              ...s.candidates
+                                .filter((t: any) => t.id !== leader.id)
+                                .slice(0, size - 1)
+                                .map((t: any) => t.id),
+                            ]
+                          : [],
+                      );
+                      setLead(leader?.id || "");
                     }}
                   >
                     <strong>{date(s.starts_at, true)}</strong>
@@ -265,40 +332,70 @@ export function Schedule() {
                 Choose {size} {size === 1 ? "worker" : "workers"} for{" "}
                 {date(slot.starts_at, true)}
               </h3>
-              <div className="crew-options">
-                {slot.candidates.map((t: any) => (
-                  <label key={t.id}>
-                    <input
-                      type="checkbox"
-                      checked={crew.includes(t.id)}
-                      onChange={(e) => {
-                        setCrew(
-                          e.target.checked
-                            ? [...crew, t.id]
-                            : crew.filter((x) => x !== t.id),
-                        );
-                        if (!e.target.checked && lead === t.id) setLead("");
-                      }}
-                    />
-                    {t.name}
-                    {t.can_lead ? " · Lead qualified" : ""}
-                    <small>{t.reason}</small>
-                  </label>
-                ))}
-              </div>
-              <label>
-                Crew lead
-                <select value={lead} onChange={(e) => setLead(e.target.value)}>
-                  <option value="">Choose lead</option>
-                  {slot.candidates
-                    .filter((t: any) => crew.includes(t.id) && t.can_lead)
-                    .map((t: any) => (
-                      <option key={t.id} value={t.id}>
+              {size === 1 ? (
+                <label>
+                  Technician
+                  <select
+                    value={lead}
+                    onChange={(e) => {
+                      setLead(e.target.value);
+                      setCrew([e.target.value]);
+                    }}
+                  >
+                    {slot.candidates
+                      .filter((t: any) => t.can_lead)
+                      .map((t: any) => (
+                        <option value={t.id} key={t.id}>
+                          {t.name}
+                        </option>
+                      ))}
+                  </select>
+                  <small>
+                    One technician handles this visit. Date and time are filled
+                    above.
+                  </small>
+                </label>
+              ) : (
+                <>
+                  <div className="crew-options">
+                    {slot.candidates.map((t: any) => (
+                      <label key={t.id}>
+                        <input
+                          type="checkbox"
+                          checked={crew.includes(t.id)}
+                          onChange={(e) => {
+                            setCrew(
+                              e.target.checked
+                                ? [...crew, t.id]
+                                : crew.filter((x) => x !== t.id),
+                            );
+                            if (!e.target.checked && lead === t.id) setLead("");
+                          }}
+                        />
                         {t.name}
-                      </option>
+                        {t.can_lead ? " · Lead qualified" : ""}
+                        <small>{t.reason}</small>
+                      </label>
                     ))}
-                </select>
-              </label>
+                  </div>
+                  <label>
+                    Crew lead
+                    <select
+                      value={lead}
+                      onChange={(e) => setLead(e.target.value)}
+                    >
+                      <option value="">Choose lead</option>
+                      {slot.candidates
+                        .filter((t: any) => crew.includes(t.id) && t.can_lead)
+                        .map((t: any) => (
+                          <option key={t.id} value={t.id}>
+                            {t.name}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                </>
+              )}
               <Button
                 disabled={
                   crew.length !== size ||

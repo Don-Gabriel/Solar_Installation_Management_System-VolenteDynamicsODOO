@@ -503,6 +503,34 @@ export function EvidenceCapture({
         </p>
       )}
       <EvidenceList evidence={evidence} />
+      {evidence
+        .filter((e) => e.kind === "signature")
+        .map((e) => (
+          <Button
+            key={e.id}
+            variant="outline"
+            disabled={!!busy}
+            onClick={async () => {
+              setBusy("signature removal");
+              setError(null);
+              setSaved("");
+              try {
+                await api(`/evidence/${e.id}`, { method: "DELETE" });
+                pad.current?.clear();
+                await queryClient.invalidateQueries();
+                setSaved(
+                  "Signature removed. Ask the homeowner to sign again before completing the visit.",
+                );
+              } catch (err) {
+                setError(err as Error);
+              } finally {
+                setBusy("");
+              }
+            }}
+          >
+            Delete saved signature
+          </Button>
+        ))}
     </div>
   );
 }

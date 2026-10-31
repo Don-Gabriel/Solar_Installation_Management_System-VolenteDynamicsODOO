@@ -13,6 +13,72 @@ export const uploadDir = resolve(process.env.UPLOAD_DIR || "data/uploads");
 export const evidenceStorage = { writeFile };
 export async function fileRoutes(app: FastifyInstance) {
   await mkdir(uploadDir, { recursive: true });
+  app.delete(
+    "/api/evidence/:id",
+    { schema: { params: Params } },
+    async (req) => {
+      allow(req, ["admin", "technician"]);
+      const { id } = req.params as { id: string };
+      const filename = await transaction(async (db) => {
+        const file = await one(db, "SELECT * FROM evidence WHERE id=$1", [id]);
+        ensure(file, "Signature not found.", 404);
+        ensure(
+          file.kind === "signature",
+          "Only signatures can be removed here.",
+          400,
+        );
+        const parent = file.job_id
+          ? await accessibleJob(db, req.user, file.job_id)
+          : await accessibleTicket(db, req.user, file.ticket_id, true);
+        const visit = file.visit_id
+          ? await one(db, "SELECT * FROM visits WHERE id=$1 FOR UPDATE", [
+              file.visit_id,
+            ])
+          : null;
+        ensure(
+          file.job_id
+            ? parent.status === "in_progress"
+            : visit?.status === "in_progress" &&
+                !["closed", "cancelled", "awaiting_confirmation"].includes(
+                  parent.status,
+                ),
+          "Completed signatures cannot be removed. Only the current visit can be corrected.",
+        );
+        if (visit && req.user.role === "technician")
+          ensure(
+            await one(
+              db,
+              "SELECT 1 FROM visit_crew WHERE visit_id=$1 AND user_id=$2",
+              [visit.id, req.user.id],
+            ),
+            "This visit belongs to another technician.",
+            403,
+          );
+        const removed = await one(
+          db,
+          "DELETE FROM evidence WHERE id=$1 RETURNING filename",
+          [id],
+        );
+        ensure(removed, "Signature has already been removed.", 404);
+        await audit(
+          db,
+          req.user.id,
+          "project",
+          parent.project_id,
+          "signature.removed",
+          { evidence_id: id },
+        );
+        return removed.filename;
+      });
+      await unlink(resolve(uploadDir, filename)).catch((error) =>
+        app.log.error(
+          { error, filename },
+          "Removed signature file could not be cleaned up",
+        ),
+      );
+      return { removed: true };
+    },
+  );
   for (const target of ["jobs", "tickets"])
     app.post(
       `/api/${target}/:id/evidence`,

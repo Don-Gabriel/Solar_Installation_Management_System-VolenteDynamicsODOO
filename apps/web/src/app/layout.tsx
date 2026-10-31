@@ -1,4 +1,5 @@
 import { clearDrafts } from "./form-safety";
+import { DemoSwitcher } from "./demo-switcher";
 import { useEffect, useState } from "react";
 import { NavLink, Outlet, Link, useLocation } from "react-router";
 import {
@@ -245,7 +246,7 @@ export function Layout() {
             </nav>
           </div>
           <div className="topbar-right">
-            <span className="role-indicator">{roleNames[user.role]}</span>
+            <DemoSwitcher />
             <span className="demo-indicator">Demo workspace</span>
           </div>
         </header>

@@ -19,7 +19,9 @@ import {
 type Entry = { discard: () => void };
 const Context = createContext<{
   set: (id: string, value: Entry | null) => void;
-}>({ set: () => {} });
+  dirty: boolean;
+  discard: () => void;
+}>({ set: () => {}, dirty: false, discard: () => {} });
 export function FormSafety({ children }: { children: ReactNode }) {
   const entries = useRef(new Map<string, Entry>()),
     [dirty, setDirty] = useState(false);
@@ -35,7 +37,18 @@ export function FormSafety({ children }: { children: ReactNode }) {
         currentLocation.search !== nextLocation.search),
   );
   return (
-    <Context value={{ set }}>
+    <Context
+      value={{
+        set,
+        dirty,
+        discard: () => {
+          for (const e of entries.current.values()) e.discard();
+          entries.current.clear();
+          setDirty(false);
+          clearDrafts();
+        },
+      }}
+    >
       {children}
       <Dialog
         open={blocker.state === "blocked"}

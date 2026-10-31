@@ -482,6 +482,7 @@ export function NewProject({ publicForm = false }: { publicForm?: boolean }) {
   );
 }
 export function ProjectDetail() {
+  const navigate = useNavigate();
   const location = useLocation();
   const returnTo =
     typeof location.state?.returnTo === "string" &&
@@ -565,19 +566,15 @@ export function ProjectDetail() {
   }
   return (
     <>
-      <Link to={returnTo} className="back-link">
+      <Button
+        variant="outline"
+        disabled={!(window.history.state?.idx > 0)}
+        onClick={() => navigate(-1)}
+        className="back-link"
+      >
         <ArrowLeft />
-        Back to{" "}
-        {returnTo.startsWith("/projects")
-          ? "project list"
-          : returnTo.startsWith("/inventory")
-            ? "stock"
-            : returnTo.startsWith("/jobs")
-              ? "jobs"
-              : returnTo.startsWith("/service")
-                ? "repairs"
-                : "reports"}
-      </Link>
+        Back to previous screen
+      </Button>
       <PageHead
         title={p.customer_name}
         description={`${projectNumber(p.number)} · ${p.capacity_kw ? p.capacity_kw + " kW" : "Size pending survey"} ${human(p.system_type)}`}

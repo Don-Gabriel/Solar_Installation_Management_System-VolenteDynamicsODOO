@@ -164,7 +164,17 @@ export async function availability(
       if (new Date(start).getTime() < Date.now()) continue;
       const candidates = [];
       for (const t of techs) {
-        if (!(await eligible(pool, t, start, end, q.skill, q.visit_id || null)))
+        if (
+          !(await eligible(
+            pool,
+            t,
+            start,
+            end,
+            q.skill,
+            q.visit_id || null,
+            q.job_id || null,
+          ))
+        )
           candidates.push({
             id: t.id,
             name: t.name,

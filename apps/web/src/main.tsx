@@ -1,4 +1,5 @@
 import { FormSafety } from "./app/form-safety";
+import { PageNavigation } from "./app/page-navigation";
 import { AppUpdate } from "./app/app-update";
 import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
@@ -105,14 +106,24 @@ function Workspace() {
   if (!session.data) return <Login />;
   if (session.data.user.role === "customer")
     return (
-      <SessionContext value={{ user: session.data.user }}>
+      <SessionContext
+        value={{
+          user: session.data.user,
+          canSwitchDemoUser: session.data.canSwitchDemoUser,
+        }}
+      >
         <Suspense fallback={<Loading />}>
           <CustomerPortal />
         </Suspense>
       </SessionContext>
     );
   return (
-    <SessionContext value={{ user: session.data.user }}>
+    <SessionContext
+      value={{
+        user: session.data.user,
+        canSwitchDemoUser: session.data.canSwitchDemoUser,
+      }}
+    >
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Overview />} />
@@ -204,6 +215,7 @@ const router = createBrowserRouter([
     path: "*",
     element: (
       <FormSafety>
+        <PageNavigation />
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/enquire" element={<NewProject publicForm />} />

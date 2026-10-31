@@ -18,6 +18,7 @@ import {
   Action,
   Status,
   Blank,
+  ErrorNotice,
 } from "@/components/shared";
 import {
   SerialScanner,
@@ -187,6 +188,24 @@ export function InstallationPanel({ data }: { data: any }) {
   const [extraCrew, setExtraCrew] = useState<string[]>([]);
   const { data: users } = useData("/users");
   const j = data.job;
+  const planningDate = (offset: number) =>
+    new Date(Date.now() + offset * 86400000).toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kolkata",
+    });
+  const suggestion = useData(
+    "/schedule/availability?" +
+      new URLSearchParams({
+        from: planningDate(3),
+        to: planningDate(5),
+        skill: "installation",
+        duration_hours: String(Math.min(j?.duration_hours || 4, 8)),
+        crew_size: "1",
+        ...(j?.id ? { job_id: j.id } : {}),
+      }),
+    assign && !!j,
+  );
+  const suggestedSlot = suggestion.data?.slots?.[0];
+  const suggestedLead = suggestedSlot?.candidates.find((u: any) => u.can_lead);
   if (!j)
     return (
       <Panel title="Installation">
@@ -427,50 +446,64 @@ export function InstallationPanel({ data }: { data: any }) {
               ))}
           </div>
         </fieldset>
-        <CommandForm
-          path={`/jobs/${j.id}/assignment`}
-          onDone={() => setAssign(false)}
-          submit="Save assignment"
-          defaults={{
-            technician_id:
-              j.technician_id ||
-              users?.items.find((u: any) => u.role === "technician")?.id,
-            duration_hours: j.duration_hours,
-            scheduled_at: j.scheduled_at
-              ? new Date(new Date(j.scheduled_at).getTime() + 330 * 60000)
-                  .toISOString()
-                  .slice(0, 16)
-              : "",
-          }}
-          transform={(b) => ({
-            ...b,
-            scheduled_at: new Date(b.scheduled_at + "+05:30").toISOString(),
-            technician_ids: [...new Set([b.technician_id, ...extraCrew])],
-          })}
-          fields={[
-            {
-              name: "technician_id",
-              label: "Technician",
-              type: "select",
-              options: users?.items
-                .filter((u: any) => u.role === "technician")
-                .map((u: any) => ({ value: u.id, label: u.name })),
-              full: true,
-            },
-            {
-              name: "scheduled_at",
-              label: "Start date & time",
-              type: "datetime-local",
-            },
-            {
-              name: "duration_hours",
-              label: "Expected duration (hours)",
-              type: "number",
-              min: 1,
-              max: 12,
-            },
-          ]}
-        />
+        {suggestion.isFetching && (
+          <p role="status">Finding a qualified technician and free time…</p>
+        )}
+        <ErrorNotice error={suggestion.error} />
+        {!suggestion.isFetching && (
+          <CommandForm
+            key={suggestedSlot?.starts_at || "manual"}
+            path={`/jobs/${j.id}/assignment`}
+            onDone={() => setAssign(false)}
+            submit="Save assignment"
+            defaults={{
+              technician_id:
+                suggestedLead?.id ||
+                j.technician_id ||
+                users?.items.find((u: any) => u.role === "technician")?.id,
+              duration_hours: j.duration_hours,
+              scheduled_at:
+                suggestedSlot?.starts_at || j.scheduled_at
+                  ? new Date(
+                      new Date(
+                        suggestedSlot?.starts_at || j.scheduled_at,
+                      ).getTime() +
+                        330 * 60000,
+                    )
+                      .toISOString()
+                      .slice(0, 16)
+                  : "",
+            }}
+            transform={(b) => ({
+              ...b,
+              scheduled_at: new Date(b.scheduled_at + "+05:30").toISOString(),
+              technician_ids: [...new Set([b.technician_id, ...extraCrew])],
+            })}
+            fields={[
+              {
+                name: "technician_id",
+                label: "Technician",
+                type: "select",
+                options: users?.items
+                  .filter((u: any) => u.role === "technician")
+                  .map((u: any) => ({ value: u.id, label: u.name })),
+                full: true,
+              },
+              {
+                name: "scheduled_at",
+                label: "Start date & time",
+                type: "datetime-local",
+              },
+              {
+                name: "duration_hours",
+                label: "Expected duration (hours)",
+                type: "number",
+                min: 1,
+                max: 12,
+              },
+            ]}
+          />
+        )}
       </Modal>
     </div>
   );

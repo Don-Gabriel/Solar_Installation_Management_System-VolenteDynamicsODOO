@@ -1,6 +1,9 @@
 import { createContext, useContext } from "react";
 import type { User } from "../../../../packages/contracts/src/index";
-export const SessionContext = createContext<{ user: User }>({
+export const SessionContext = createContext<{
+  user: User;
+  canSwitchDemoUser?: boolean;
+}>({
   user: null as unknown as User,
 });
 export const useSession = () => useContext(SessionContext);

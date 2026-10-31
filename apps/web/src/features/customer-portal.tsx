@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { DemoSwitcher } from "@/app/demo-switcher";
 import { useState } from "react";
 import { useSession } from "@/app/session";
 import { clearDrafts } from "@/app/form-safety";
@@ -66,6 +67,7 @@ export function CustomerPortal() {
           <h1>My solar service</h1>
           <p>Welcome, {user.name}</p>
         </div>
+        <DemoSwitcher />
         <Button variant="outline" onClick={logout}>
           Sign out
         </Button>

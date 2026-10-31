@@ -19,9 +19,15 @@ test("[UXP-02] responsive navigation, saved next steps and accessible core scree
   page.on("pageerror", (error) => errors.push(error.message));
   await signIn(page);
   await page.goto("/api/refresh-app");
-  await expect(page.getByRole("heading", { name: "Load the latest SunPower app" })).toBeVisible();
-  await page.getByRole("button", { name: "Load latest app", exact: true }).click();
-  await expect(page.getByRole("heading", { name: /Good morning|Good afternoon/ })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Load the latest SunPower app" }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Load latest app", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: /Good morning|Good afternoon/ }),
+  ).toBeVisible();
   await page.screenshot({
     path: `output/qa/${testInfo.project.name}-overview.png`,
     fullPage: true,
@@ -196,6 +202,49 @@ test("[UXP-02] responsive navigation, saved next steps and accessible core scree
   const bars = encoded.encodings.map((e: any) => e.data).join("");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${bars.length * 3 + 60}" height="180"><rect width="100%" height="100%" fill="white"/>${[...bars].map((bit, i) => (bit === "1" ? `<rect x="${30 + i * 3}" y="20" width="3" height="140"/>` : "")).join("")}</svg>`;
   const label = await sharp(Buffer.from(svg)).png().toBuffer();
+  if (testInfo.project.name === "chromium") {
+    await page.evaluate(
+      async (data) => {
+        const c = document.createElement("canvas");
+        c.width = 1920;
+        c.height = 1080;
+        const image = new Image();
+        image.src = data;
+        await image.decode();
+        const ctx = c.getContext("2d")!;
+        const draw = () => {
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, 1920, 1080);
+          ctx.drawImage(
+            image,
+            (1920 - image.width) / 2,
+            (1080 - image.height) / 2,
+          );
+        };
+        draw();
+        const stream = c.captureStream(10);
+        (window as any).barcodeTestStream = stream;
+        (window as any).barcodeTestTimer = setInterval(draw, 100);
+        Object.defineProperty(navigator.mediaDevices, "getUserMedia", {
+          configurable: true,
+          value: async () => stream,
+        });
+      },
+      "data:image/png;base64," + label.toString("base64"),
+    );
+    await page.getByRole("button", { name: "Use camera", exact: true }).click();
+    await expect(page.getByLabel("Device serial number")).toHaveValue(
+      serials[0],
+    );
+    expect(
+      await page.evaluate(() => {
+        clearInterval((window as any).barcodeTestTimer);
+        return (window as any).barcodeTestStream
+          .getTracks()
+          .every((t: MediaStreamTrack) => t.readyState === "ended");
+      }),
+    ).toBe(true);
+  }
   await page.getByLabel("Barcode photo", { exact: true }).setInputFiles({
     name: "barcode.png",
     mimeType: "image/png",

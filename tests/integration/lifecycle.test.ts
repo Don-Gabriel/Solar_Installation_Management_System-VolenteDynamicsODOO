@@ -12,6 +12,70 @@ let app: FastifyInstance,
   db: any,
   accounts: Record<string, { cookie: string; csrf: string; id: string }> = {};
 const id = () => randomUUID();
+it("demo switching rotates sessions and preserves customer permissions without granting other users switching", async () => {
+  const previous = process.env.DEMO_TOOLS;
+  process.env.DEMO_TOOLS = "true";
+  try {
+    await login("switchAdmin", "admin@sunpower.local");
+    await login("switchCustomer", "lakshmi.customer@sunpower.local");
+    const users = await get("/demo-users", "switchAdmin");
+    const customer = users.find(
+      (u: any) => u.email === "lakshmi.customer@sunpower.local",
+    );
+    expect(customer).toBeTruthy();
+    expect(
+      (await req("GET", "/demo-users", undefined, "switchCustomer")).statusCode,
+    ).toBe(403);
+    expect(
+      (
+        await req(
+          "POST",
+          "/demo-switch",
+          { user_id: accounts.switchAdmin.id },
+          "switchCustomer",
+        )
+      ).statusCode,
+    ).toBe(403);
+    const switched = await req(
+      "POST",
+      "/demo-switch",
+      { user_id: customer.id },
+      "switchAdmin",
+    );
+    expect(switched.statusCode, switched.body).toBe(200);
+    expect((await req("GET", "/me", undefined, "switchAdmin")).statusCode).toBe(
+      401,
+    );
+    accounts.switched = {
+      cookie: switched.cookies.map((c) => `${c.name}=${c.value}`).join(";"),
+      csrf: switched.json().csrfToken,
+      id: customer.id,
+    };
+    expect(switched.json().user.role).toBe("customer");
+    expect(accounts.switched.csrf).not.toBe(accounts.switchAdmin.csrf);
+    expect((await get("/customer/home", "switched")).customer.name).toBe(
+      "Lakshmi Iyer",
+    );
+    expect(
+      (await req("GET", "/reports", undefined, "switched")).statusCode,
+    ).toBe(403);
+    expect(
+      (
+        await req(
+          "POST",
+          "/demo-switch",
+          { user_id: accounts.switchAdmin.id },
+          "switched",
+        )
+      ).statusCode,
+    ).toBe(200);
+    process.env.DEMO_TOOLS = "false";
+    expect((await req("GET", "/demo-users")).statusCode).toBe(403);
+  } finally {
+    if (previous === undefined) delete process.env.DEMO_TOOLS;
+    else process.env.DEMO_TOOLS = previous;
+  }
+});
 it("customer accounts see only their own systems, appointments, invoices and notifications", async () => {
   await login("customerA", "lakshmi.customer@sunpower.local");
   await login("customerB", "sneha.customer@sunpower.local");
@@ -2583,7 +2647,7 @@ describe("Final concurrency and revision checks", () => {
         "x-csrf-token": accounts.technician.csrf,
       },
     });
-    expect(deletion.statusCode).toBe(404);
+    expect(deletion.statusCode).toBe(400);
     expect(
       (await req("GET", "/evidence/" + oldPhoto.json().id)).statusCode,
     ).toBe(200);
@@ -5041,4 +5105,53 @@ it("business events notify the linked customer once and roll back with failed ch
       )
     ).rows[0].n,
   ).toBe(after.length);
+});
+
+it("assigned technicians can remove a current signature, while photos and completed signatures remain protected", async () => {
+  const f = await operationFixture();
+  await post(
+    `/visits/${f.visit.id}/action`,
+    { action: "start", version: f.visit.version },
+    "technician",
+  );
+  const saved = await repairPhoto(
+    f.ticket.id,
+    "technician",
+    "tickets",
+    "signature",
+  );
+  expect(saved.statusCode, saved.body).toBe(200);
+  const remove = (evidenceId: string, role: string) =>
+    app.inject({
+      method: "DELETE",
+      url: `/api/evidence/${evidenceId}`,
+      headers: {
+        cookie: accounts[role].cookie,
+        "x-csrf-token": accounts[role].csrf,
+      },
+    });
+  expect((await remove(saved.json().id, "support")).statusCode).toBe(403);
+  expect((await remove(saved.json().id, "other")).statusCode).toBe(403);
+  expect((await remove(saved.json().id, "technician")).statusCode).toBe(200);
+  expect((await req("GET", `/evidence/${saved.json().id}`)).statusCode).toBe(
+    404,
+  );
+  expect(
+    (await get(`/tickets/${f.ticket.id}`)).evidence.some(
+      (e: any) => e.kind === "signature",
+    ),
+  ).toBe(false);
+  const replacement = await repairPhoto(
+    f.ticket.id,
+    "technician",
+    "tickets",
+    "signature",
+  );
+  expect(replacement.statusCode).toBe(200);
+  const photo = await repairPhoto(f.ticket.id, "technician");
+  expect((await remove(photo.json().id, "technician")).statusCode).toBe(400);
+  await db.query("UPDATE visits SET status='completed' WHERE id=$1", [
+    f.visit.id,
+  ]);
+  expect((await remove(replacement.json().id, "admin")).statusCode).toBe(409);
 });

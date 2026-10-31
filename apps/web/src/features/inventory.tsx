@@ -29,6 +29,7 @@ export function Inventory() {
   const { data, error, isPending } = useData("/inventory"),
     { data: projects } = useData("/projects?status=confirmed");
   const [receive, setReceive] = useState(false);
+  const demo = useData("/demo-tools");
   const [params, setParams] = useSearchParams();
   const search = params.get("search") || "";
   function change(key: string, value: string) {
@@ -288,6 +289,27 @@ export function Inventory() {
       >
         <CommandForm
           path="/receipts"
+          presets={
+            demo.data?.enabled
+              ? products.map((p: any) => ({
+                  label: `Demo: ${p.sku}`,
+                  values: {
+                    product_id: p.id,
+                    supplier: "Synthetic Solar Supplies",
+                    reference: "DEMO-" + crypto.randomUUID().slice(0, 12),
+                    quantity: 1,
+                    unit_cost_minor: p.average_cost_minor || p.cost_minor || 0,
+                    serials:
+                      p.kind === "serialized"
+                        ? "DEMO-" +
+                          p.sku +
+                          "-" +
+                          crypto.randomUUID().slice(0, 12)
+                        : "",
+                  },
+                }))
+              : undefined
+          }
           onDone={() => setReceive(false)}
           submit="Receive into inventory"
           defaults={{

@@ -122,11 +122,15 @@ test("[UXP-01] project next step and back navigation preserve search and stage",
   await expect(
     page.getByRole("heading", { name: "Record a site survey", exact: true }),
   ).toBeVisible();
+  const previousProjectUrl = page.url();
   await page.getByRole("button", { name: "Go to this step" }).click();
   await expect(
     page.getByRole("tab", { name: "Site survey", exact: true }),
   ).toHaveAttribute("aria-selected", "true");
-  await page.getByRole("link", { name: "Back to project list" }).click();
+  await page.getByRole("button", { name: "Back to previous screen" }).click();
+  // The first Back restores the project URL before the explicit tab visit.
+  await expect(page).toHaveURL(previousProjectUrl);
+  await page.getByRole("button", { name: "Back to previous screen" }).click();
   await expect(page.getByLabel("Search projects")).toHaveValue("Priya");
   await expect(page.getByLabel("Filter by stage")).toHaveValue("enquiry");
   await page.reload();

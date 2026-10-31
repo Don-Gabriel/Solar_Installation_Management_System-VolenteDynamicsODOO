@@ -63,10 +63,9 @@ test("[CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo
   ).toBeVisible();
   await page.getByRole("button", { name: "Find available times" }).click();
   await page.locator(".slot").first().click();
-  await page.locator(".crew-options input").first().check();
   await page
-    .getByRole("combobox", { name: "Crew lead", exact: true })
-    .selectOption({ index: 1 });
+    .getByRole("combobox", { name: "Technician", exact: true })
+    .selectOption({ index: 0 });
   await page.getByRole("button", { name: "Confirm appointment" }).click();
   await expect(
     page.getByRole("button", { name: "Confirm appointment" }),

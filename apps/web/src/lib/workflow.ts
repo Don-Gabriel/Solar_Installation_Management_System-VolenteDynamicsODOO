@@ -1,4 +1,5 @@
 export const roleNames: Record<string, string> = {
+  customer: "Customer",
   coordinator: "Service coordinator",
   admin: "Administrator",
   sales: "Sales",
@@ -9,6 +10,8 @@ export const roleNames: Record<string, string> = {
   accounts: "Accounts",
 };
 export const roleDescriptions: Record<string, string> = {
+  customer:
+    "See your own installation, appointments, repair bills and updates.",
   coordinator:
     "Plan visits and crews, check availability, manage leave and review repair estimates.",
   admin:

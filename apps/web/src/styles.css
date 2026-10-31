@@ -3920,3 +3920,52 @@ select {
     break-inside: avoid;
   }
 }
+/* Shared navigation stays available on login, staff and customer screens. */
+.page-navigation {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 1rem;
+  background: #f4f8f8;
+  border-bottom: 1px solid #dce6e8;
+}
+.page-navigation button {
+  min-height: 40px;
+}
+.demo-user-list {
+  display: grid;
+  gap: 0.5rem;
+  max-height: 45vh;
+  overflow: auto;
+}
+.demo-user-list button {
+  height: auto;
+  min-height: 54px;
+  justify-content: flex-start;
+  text-align: left;
+  white-space: normal;
+}
+.demo-user-list small {
+  display: block;
+  font-weight: 400;
+}
+@media (max-width: 600px) {
+  .page-navigation .field-hint {
+    display: none;
+  }
+}
+@media (min-width: 801px) {
+  body:has(.app-shell) .page-navigation {
+    margin-left: 236px;
+  }
+}
+@media (min-width: 801px) and (max-width: 1250px) {
+  body:has(.app-shell) .page-navigation {
+    margin-left: 210px;
+  }
+}
+@media print {
+  .page-navigation {
+    display: none;
+  }
+}

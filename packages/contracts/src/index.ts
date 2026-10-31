@@ -258,6 +258,7 @@ export const Availability = Type.Object(
     duration_hours: Type.Integer({ minimum: 1, maximum: 8 }),
     crew_size: Type.Integer({ minimum: 1, maximum: 5 }),
     visit_id: Type.Optional(Id),
+    job_id: Type.Optional(Id),
   },
   { additionalProperties: false },
 );
