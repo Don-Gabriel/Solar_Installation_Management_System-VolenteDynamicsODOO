@@ -1,17 +1,39 @@
 {
-  "name": "sunpower-operations", "private": true, "version": "0.1.0", "type": "module",
-  "workspaces": ["apps/*", "packages/*"],
+  "name": "sunpower-operations",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "concurrently -k -n api,web \"npm run dev -w apps/api\" \"npm run dev -w apps/web\"",
     "build": "npm run build -w apps/web && npm run build -w apps/api",
     "typecheck": "tsc --noEmit -p apps/api && tsc --noEmit -p apps/web",
     "db:local": "node scripts/local-database.mjs",
-    "db:migrate": "tsx --env-file=.env scripts/migrate.ts",
-    "db:seed": "tsx --env-file=.env db/seeds/demo.ts",
-    "start": "node --env-file=.env apps/api/dist/apps/api/src/server.js",
+    "db:migrate": "tsx --env-file-if-exists=.env scripts/migrate.ts",
+    "db:seed": "tsx --env-file-if-exists=.env db/seeds/demo.ts",
+    "start": "node --env-file-if-exists=.env apps/api/dist/apps/api/src/server.js",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "npm run build && node scripts/test-e2e.mjs"
   },
-  "engines": {"node": ">=24"},
-  "devDependencies": {"typescript": "latest", "tsx": "latest", "concurrently": "latest", "vitest": "latest", "@playwright/test": "latest", "@types/node": "latest", "@types/pg": "latest"}
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "@types/node": "26.6.6",
+    "@types/pg": "8.23.1",
+    "concurrently": "10.0.6",
+    "prettier": "3.9.10",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "5.0.5"
+  },
+  "overrides": {
+    "glob": "14.0.3",
+    "minimatch": "11.0.3"
+  }
 }

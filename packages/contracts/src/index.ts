@@ -1,23 +1,167 @@
-import { Type, type Static } from 'typebox';
-const text=(max=500)=>Type.String({minLength:1,maxLength:max});
-const optionalText=(max=2000)=>Type.Optional(Type.String({maxLength:max}));
-export const Id=Type.String({format:'uuid'});
-export const Money=Type.Integer({minimum:0,maximum:1000000000000});
-export const Login=Type.Object({email:Type.String({format:'email',maxLength:200}),password:text(200)},{additionalProperties:false});
-export const Enquiry=Type.Object({name:text(150),phone:Type.String({pattern:'^[+0-9 ()-]{7,20}$'}),address:text(1000),capacity_kw:Type.Integer({minimum:1,maximum:5}),system_type:Type.Union([Type.Literal('on_grid'),Type.Literal('off_grid'),Type.Literal('panel_set')]),source:text(100),notes:optionalText(),subsidy_interest:Type.Boolean(),owner_id:Type.Optional(Id),follow_up:Type.Optional(Type.String({format:'date'}))},{additionalProperties:false});
-export type EnquiryInput=Static<typeof Enquiry>;
-export const Survey=Type.Object({roof_area:Type.Number({minimum:1,maximum:100000}),bill_minor:Money,grid_suitable:Type.Boolean(),direction:text(80),tilt:Type.Number({minimum:0,maximum:90}),cable_distance:Type.Number({minimum:0,maximum:10000}),notes:optionalText()},{additionalProperties:false});
-export const Approval=Type.Object({approved:Type.Boolean()},{additionalProperties:false});
-export const Payment=Type.Object({amount_minor:Type.Integer({minimum:1,maximum:1000000000000}),method:Type.Union(['cash','bank','upi','card'].map(v=>Type.Literal(v))),reference:text(120)},{additionalProperties:false});
-export const Receipt=Type.Object({product_id:Id,supplier:text(150),reference:text(150),quantity:Type.Integer({minimum:1,maximum:10000}),unit_cost_minor:Money,serials:Type.Array(Type.String({minLength:2,maxLength:100}),{maxItems:10000})},{additionalProperties:false});
-export const Scan=Type.Object({serial:text(100)},{additionalProperties:false});
-export const Assignment=Type.Object({technician_id:Id,scheduled_at:Type.String({format:'date-time'}),duration_hours:Type.Integer({minimum:1,maximum:12})},{additionalProperties:false});
-export const Completion=Type.Object({capacity_kw:Type.Number({minimum:0.1,maximum:5}),generation_kw:Type.Number({minimum:0,maximum:10}),labour_minutes:Type.Integer({minimum:1,maximum:10080}),signer_name:text(150),checklist:Type.Object({mounting:Type.Boolean(),earthing:Type.Boolean(),wiring:Type.Boolean(),inverter:Type.Boolean(),handover:Type.Boolean()},{additionalProperties:false})},{additionalProperties:false});
-export const Ticket=Type.Object({warranty_id:Id,complaint:text(2000),fault_code:text(100),assigned_to:Type.Optional(Id)},{additionalProperties:false});
-export const Resolution=Type.Object({resolution:text(2000),parts_cost_minor:Money,labour_cost_minor:Money,replacement_serial:optionalText(100)},{additionalProperties:false});
-export const Confirmation=Type.Object({confirmed_by:text(150)},{additionalProperties:false});
-export const Subsidy=Type.Object({status:Type.Union(['documents_pending','submitted','approved','received','not_applicable'].map(v=>Type.Literal(v))),reference:Type.String({maxLength:150}),next_action:Type.String({maxLength:1000}),documents:Type.Object({identity:Type.Boolean(),electricity_bill:Type.Boolean(),bank_details:Type.Boolean(),installation_proof:Type.Boolean()},{additionalProperties:false}),owner_id:Type.Optional(Id)},{additionalProperties:false});
-export const Params=Type.Object({id:Id});
-export const ListQuery=Type.Object({search:Type.Optional(Type.String({maxLength:150})),page:Type.Optional(Type.Integer({minimum:1,maximum:10000})),limit:Type.Optional(Type.Integer({minimum:1,maximum:100})),status:Type.Optional(Type.String({maxLength:40}))});
-export type Role='admin'|'sales'|'surveyor'|'warehouse'|'technician'|'support'|'accounts';
-export type User={id:string;name:string;email:string;role:Role};
+import { Type, type Static } from "typebox";
+const text = (max = 500) => Type.String({ minLength: 1, maxLength: max });
+const optionalText = (max = 2000) =>
+  Type.Optional(Type.String({ maxLength: max }));
+export const Id = Type.String({ format: "uuid" });
+export const Money = Type.Integer({ minimum: 0, maximum: 1000000000000 });
+export const Login = Type.Object(
+  {
+    email: Type.String({ format: "email", maxLength: 200 }),
+    password: text(200),
+  },
+  { additionalProperties: false },
+);
+export const Enquiry = Type.Object(
+  {
+    name: text(150),
+    phone: Type.String({ pattern: "^[+0-9 ()-]{7,20}$" }),
+    address: text(1000),
+    capacity_kw: Type.Integer({ minimum: 1, maximum: 5 }),
+    system_type: Type.Union([
+      Type.Literal("on_grid"),
+      Type.Literal("off_grid"),
+      Type.Literal("panel_set"),
+    ]),
+    source: text(100),
+    notes: optionalText(),
+    subsidy_interest: Type.Boolean(),
+    owner_id: Type.Optional(Id),
+    follow_up: Type.Optional(Type.String({ format: "date" })),
+  },
+  { additionalProperties: false },
+);
+export type EnquiryInput = Static<typeof Enquiry>;
+export const Survey = Type.Object(
+  {
+    roof_area: Type.Number({ minimum: 1, maximum: 100000 }),
+    bill_minor: Money,
+    grid_suitable: Type.Boolean(),
+    direction: text(80),
+    tilt: Type.Number({ minimum: 0, maximum: 90 }),
+    cable_distance: Type.Number({ minimum: 0, maximum: 10000 }),
+    notes: optionalText(),
+  },
+  { additionalProperties: false },
+);
+export const Approval = Type.Object(
+  { approved: Type.Boolean() },
+  { additionalProperties: false },
+);
+export const Payment = Type.Object(
+  {
+    amount_minor: Type.Integer({ minimum: 1, maximum: 1000000000000 }),
+    method: Type.Union(
+      ["cash", "bank", "upi", "card"].map((v) => Type.Literal(v)),
+    ),
+    reference: text(120),
+  },
+  { additionalProperties: false },
+);
+export const Receipt = Type.Object(
+  {
+    product_id: Id,
+    supplier: text(150),
+    reference: text(150),
+    quantity: Type.Integer({ minimum: 1, maximum: 10000 }),
+    unit_cost_minor: Money,
+    serials: Type.Array(Type.String({ minLength: 2, maxLength: 100 }), {
+      maxItems: 10000,
+    }),
+  },
+  { additionalProperties: false },
+);
+export const Scan = Type.Object(
+  { serial: text(100) },
+  { additionalProperties: false },
+);
+export const Assignment = Type.Object(
+  {
+    technician_id: Id,
+    scheduled_at: Type.String({ format: "date-time" }),
+    duration_hours: Type.Integer({ minimum: 1, maximum: 12 }),
+  },
+  { additionalProperties: false },
+);
+export const Completion = Type.Object(
+  {
+    capacity_kw: Type.Number({ minimum: 0.1, maximum: 5 }),
+    generation_kw: Type.Number({ minimum: 0, maximum: 10 }),
+    labour_minutes: Type.Integer({ minimum: 1, maximum: 10080 }),
+    signer_name: text(150),
+    checklist: Type.Object(
+      {
+        mounting: Type.Boolean(),
+        earthing: Type.Boolean(),
+        wiring: Type.Boolean(),
+        inverter: Type.Boolean(),
+        handover: Type.Boolean(),
+      },
+      { additionalProperties: false },
+    ),
+  },
+  { additionalProperties: false },
+);
+export const Ticket = Type.Object(
+  {
+    warranty_id: Id,
+    complaint: text(2000),
+    fault_code: text(100),
+    assigned_to: Type.Optional(Id),
+  },
+  { additionalProperties: false },
+);
+export const Resolution = Type.Object(
+  {
+    resolution: text(2000),
+    parts_cost_minor: Money,
+    labour_cost_minor: Money,
+    replacement_serial: optionalText(100),
+  },
+  { additionalProperties: false },
+);
+export const Confirmation = Type.Object(
+  { confirmed_by: text(150) },
+  { additionalProperties: false },
+);
+export const Subsidy = Type.Object(
+  {
+    status: Type.Union(
+      [
+        "documents_pending",
+        "submitted",
+        "approved",
+        "received",
+        "not_applicable",
+      ].map((v) => Type.Literal(v)),
+    ),
+    reference: Type.String({ maxLength: 150 }),
+    next_action: Type.String({ maxLength: 1000 }),
+    documents: Type.Object(
+      {
+        identity: Type.Boolean(),
+        electricity_bill: Type.Boolean(),
+        bank_details: Type.Boolean(),
+        installation_proof: Type.Boolean(),
+      },
+      { additionalProperties: false },
+    ),
+    owner_id: Type.Optional(Id),
+  },
+  { additionalProperties: false },
+);
+export const Params = Type.Object({ id: Id });
+export const ListQuery = Type.Object({
+  search: Type.Optional(Type.String({ maxLength: 150 })),
+  page: Type.Optional(Type.Integer({ minimum: 1, maximum: 10000 })),
+  limit: Type.Optional(Type.Integer({ minimum: 1, maximum: 100 })),
+  status: Type.Optional(Type.String({ maxLength: 40 })),
+});
+export type Role =
+  | "admin"
+  | "sales"
+  | "surveyor"
+  | "warehouse"
+  | "technician"
+  | "support"
+  | "accounts";
+export type User = { id: string; name: string; email: string; role: Role };

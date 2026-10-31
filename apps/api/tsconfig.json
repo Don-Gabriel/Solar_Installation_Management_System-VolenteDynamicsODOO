@@ -1,1 +1,9 @@
-{"extends":"../../tsconfig.json","compilerOptions":{"outDir":"dist","rootDir":"../..","rewriteRelativeImportExtensions":true},"include":["src/**/*.ts","../../packages/contracts/src/**/*.ts"]}
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "../..",
+    "rewriteRelativeImportExtensions": true
+  },
+  "include": ["src/**/*.ts", "../../packages/contracts/src/**/*.ts"]
+}
