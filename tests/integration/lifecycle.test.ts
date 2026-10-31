@@ -4031,3 +4031,885 @@ describe("Reviewed service exceptions", () => {
     ).toContain("newly failed");
   });
 });
+
+describe("External equipment and independent supplier claims", () => {
+  it("[DIA-04] third-party equipment is recorded without creating company entitlement", async () => {
+    repairDay += 7;
+    const f = await operationFixture();
+    await post(
+      `/visits/${f.visit.id}/action`,
+      { action: "start", version: f.visit.version },
+      "technician",
+    );
+    const before = await get(`/tickets/${f.ticket.id}`);
+    const payload = {
+      name: "Third party UPS",
+      serial: "EXT-" + id(),
+      findings: "Customer-owned UPS alarm; outside supplied system",
+    };
+    expect(
+      (
+        await req(
+          "POST",
+          `/tickets/${f.ticket.id}/external-equipment`,
+          payload,
+          "support",
+        )
+      ).statusCode,
+    ).toBe(403);
+    await post(
+      `/tickets/${f.ticket.id}/external-equipment`,
+      payload,
+      "technician",
+    );
+    const after = await get(`/tickets/${f.ticket.id}`);
+    expect(after.external_equipment[0].findings).toBe(payload.findings);
+    expect(after.components).toEqual(before.components);
+    expect(after.lines).toHaveLength(0);
+  });
+  it("[WAR-09 RMA-09] supplier custody, disputed decisions and bounded recoveries do not change customer cover or invoices", async () => {
+    const f = await operationFixture();
+    await startDiagnosis(f, { labour_price_minor: 0 });
+    await approveRepair(f);
+    await repairPhoto(f.ticket.id);
+    await post(`/tickets/${f.ticket.id}/resolution`, {
+      resolution: "Covered replacement tested",
+    });
+    let d = await get(`/tickets/${f.ticket.id}`);
+    const original = JSON.stringify({
+        invoices: d.invoices,
+        components: d.components,
+      }),
+      r = d.returns[0];
+    const shipment = {
+      supplier: "Synthetic manufacturer",
+      reference: id(),
+      tracking_reference: "SHIP-" + id(),
+      requested_minor: 50000,
+    };
+    expect(
+      (
+        await req(
+          "POST",
+          `/service-returns/${r.id}/supplier-claim`,
+          shipment,
+          "warehouse",
+        )
+      ).statusCode,
+    ).toBe(409);
+    await post(
+      `/service-returns/${r.id}/receive`,
+      { confirmed_by: "Warehouse received faulty unit" },
+      "warehouse",
+    );
+    const c = await post(
+      `/service-returns/${r.id}/supplier-claim`,
+      shipment,
+      "warehouse",
+    );
+    expect((await get(`/tickets/${f.ticket.id}`)).returns[0].status).toBe(
+      "sent_to_supplier",
+    );
+    expect(
+      (
+        await req(
+          "POST",
+          `/supplier-claims/${c.id}/decision`,
+          {
+            version: 1,
+            status: "approved",
+            amount_minor: 40000,
+            note: "Manufacturer approval",
+          },
+          "warehouse",
+        )
+      ).statusCode,
+    ).toBe(403);
+    await post(
+      `/supplier-claims/${c.id}/decision`,
+      {
+        version: 1,
+        status: "disputed",
+        amount_minor: 0,
+        note: "Manufacturer requested test results",
+      },
+      "accounts",
+    );
+    await post(
+      `/supplier-claims/${c.id}/decision`,
+      {
+        version: 2,
+        status: "approved",
+        amount_minor: 40000,
+        note: "Manufacturer accepted revised claim",
+      },
+      "accounts",
+    );
+    const attempts = await Promise.all([
+      req(
+        "POST",
+        `/supplier-claims/${c.id}/recoveries`,
+        { amount_minor: 30000, reference: id() },
+        "accounts",
+      ),
+      req(
+        "POST",
+        `/supplier-claims/${c.id}/recoveries`,
+        { amount_minor: 30000, reference: id() },
+        "accounts",
+      ),
+    ]);
+    expect(attempts.map((x) => x.statusCode).sort()).toEqual([200, 409]);
+    await post(
+      `/supplier-claims/${c.id}/recoveries`,
+      { amount_minor: 10000, reference: id() },
+      "accounts",
+    );
+    const claim = (await get("/supplier-claims", "accounts")).items.find(
+      (x: any) => x.id === c.id,
+    );
+    expect(claim.status).toBe("paid");
+    expect(claim.recovered_minor).toBe(40000);
+    d = await get(`/tickets/${f.ticket.id}`);
+    expect(d.returns[0].status).toBe("closed");
+    expect(
+      JSON.stringify({ invoices: d.invoices, components: d.components }),
+    ).toBe(original);
+  });
+});
+
+it("[RMA-07 SRV-08] unavailable parts block a promised return visit until replenishment and warehouse readiness", async () => {
+  const f = await operationFixture();
+  await startDiagnosis(f, { action: "repair", replacement_serial: "" });
+  const d = await get(`/tickets/${f.ticket.id}`),
+    component = d.components.find((c: any) => c.kind === "quantity");
+  const stock = (
+    await db.query("SELECT * FROM products WHERE id=$1", [component.product_id])
+  ).rows[0];
+  const request = await post(
+    `/tickets/${f.ticket.id}/parts-requests`,
+    {
+      product_id: component.product_id,
+      quantity: stock.stock_qty + 1,
+      note: "Supplier checking availability",
+    },
+    "technician",
+  );
+  await post(
+    `/visits/${f.visit.id}/action`,
+    {
+      action: "diagnosis_done",
+      version: d.visits[0].version,
+      reason: "Parts unavailable; diagnosis visit complete",
+    },
+    "technician",
+  );
+  const next = {
+    ...f.body,
+    starts_at: new Date(
+      +new Date(f.body.starts_at) + 86400000 * 14,
+    ).toISOString(),
+  };
+  expect((await req("POST", "/visits", next, "coordinator")).statusCode).toBe(
+    409,
+  );
+  expect(
+    (
+      await req(
+        "POST",
+        `/parts-requests/${request.id}/readiness`,
+        { version: 1, outcome: "Supplier only promised stock" },
+        "warehouse",
+      )
+    ).statusCode,
+  ).toBe(409);
+  await post(
+    "/receipts",
+    {
+      product_id: component.product_id,
+      supplier: "QA parts supplier",
+      reference: id(),
+      quantity: stock.reserved_qty + 2,
+      unit_cost_minor: 100,
+      serials: [],
+    },
+    "warehouse",
+  );
+  await post(
+    `/parts-requests/${request.id}/readiness`,
+    { version: 1, outcome: "Warehouse physically received stock" },
+    "warehouse",
+  );
+  const v = await post("/visits", next, "coordinator");
+  expect(v.status).toBe("scheduled");
+  expect(
+    (await get("/operational-tasks", "coordinator")).items.some(
+      (x: any) => x.ticket_id === f.ticket.id && x.kind === "parts",
+    ),
+  ).toBe(true);
+  repairDay += 14;
+});
+
+it("[DLV-06] separate line receipts start only received-component warranties and retain dates on retry", async () => {
+  const d = await paid();
+  await scanAll(d);
+  await post(`/orders/${d.order.id}/dispatch`);
+  const lines = d.order.lines.filter((l: any) => l.kind !== "service");
+  await post(`/orders/${d.order.id}/delivery`, {
+    line_ids: [lines[0].id],
+    received_by: "Customer accepts this line only",
+  });
+  let current = await get(`/projects/${d.project.id}`);
+  expect(current.order.status).toBe("dispatched");
+  expect(current.order.lines.filter((l: any) => l.delivered_at)).toHaveLength(
+    1,
+  );
+  expect(
+    current.warranties.every((w: any) => w.order_line_id === lines[0].id),
+  ).toBe(true);
+  const original = JSON.stringify(current.warranties);
+  await post(`/orders/${d.order.id}/delivery`, {
+    line_ids: [lines[0].id],
+    received_by: "Retry same receipt",
+  });
+  expect(
+    JSON.stringify((await get(`/projects/${d.project.id}`)).warranties),
+  ).toBe(original);
+  await post(`/orders/${d.order.id}/delivery`);
+  current = await get(`/projects/${d.project.id}`);
+  expect(current.order.status).toBe("delivered");
+  expect(
+    current.order.lines
+      .filter((l: any) => l.kind !== "service")
+      .every((l: any) => l.delivered_at),
+  ).toBe(true);
+});
+it("[DLV-07 DLV-09] failed destination and customer refusal preserve custody, block warranty and create follow-up tasks", async () => {
+  const d = await paid();
+  await scanAll(d);
+  await post(`/orders/${d.order.id}/dispatch`);
+  const wrong = await post(
+    `/orders/${d.order.id}/delivery-incidents`,
+    {
+      kind: "wrong_destination",
+      custody: "Driver QA, truck at wrong gate",
+      reason: "Address could not be verified",
+    },
+    "warehouse",
+  );
+  expect(
+    (await req("POST", `/orders/${d.order.id}/delivery`, {}, "warehouse"))
+      .statusCode,
+  ).toBe(409);
+  expect((await get(`/projects/${d.project.id}`)).warranties).toHaveLength(0);
+  await post(
+    `/delivery-incidents/${wrong.id}/review`,
+    {
+      version: 1,
+      status: "retry",
+      custody: "Driver returning to verified address",
+      outcome: "Customer confirmed correct gate",
+    },
+    "coordinator",
+  );
+  const refusal = await post(
+    `/orders/${d.order.id}/delivery-incidents`,
+    {
+      kind: "refused",
+      custody: "Driver QA retaining unopened shipment",
+      reason: "Customer requested return",
+    },
+    "warehouse",
+  );
+  await post(
+    `/delivery-incidents/${refusal.id}/review`,
+    {
+      version: 1,
+      status: "returned",
+      custody: "Warehouse return bay; not saleable stock",
+      outcome: "Return received for review",
+    },
+    "coordinator",
+  );
+  expect(
+    (await req("POST", `/orders/${d.order.id}/delivery`, {}, "warehouse"))
+      .statusCode,
+  ).toBe(409);
+  const tasks = (await get("/operational-tasks", "coordinator")).items.filter(
+    (t: any) => t.project_id === d.project.id,
+  );
+  expect(tasks.some((t: any) => t.kind === "reschedule")).toBe(true);
+  expect(tasks.some((t: any) => t.kind === "customer_contact")).toBe(true);
+});
+
+it("[STK-08] damaged allocated serial is quarantined and a substitute must be scanned before dispatch", async () => {
+  const d = await paid();
+  await scanAll(d);
+  let current = await get(`/projects/${d.project.id}`);
+  const a = (
+    await db.query("SELECT * FROM assets WHERE id=$1", [current.assets[0].id])
+  ).rows[0];
+  await post(
+    `/assets/${a.id}/quarantine`,
+    { reason: "Cracked case found while packing; isolated bin Q1" },
+    "warehouse",
+  );
+  expect(
+    (await req("POST", `/orders/${d.order.id}/dispatch`, {}, "warehouse"))
+      .statusCode,
+  ).toBe(409);
+  expect(
+    (
+      await req(
+        "POST",
+        `/orders/${d.order.id}/scans`,
+        { serial: a.serial },
+        "warehouse",
+      )
+    ).statusCode,
+  ).toBe(409);
+  const spare = (
+    await db.query(
+      "SELECT serial FROM assets WHERE product_id=$1 AND status='available' LIMIT 1",
+      [a.product_id],
+    )
+  ).rows[0];
+  await post(
+    `/orders/${d.order.id}/scans`,
+    { serial: spare.serial },
+    "warehouse",
+  );
+  await post(`/orders/${d.order.id}/dispatch`, {}, "warehouse");
+  expect(
+    (await db.query("SELECT status FROM assets WHERE id=$1", [a.id])).rows[0]
+      .status,
+  ).toBe("quarantined");
+});
+it("[STK-10] stock count needs a second reviewer, preserves reservations and rejects stale counts", async () => {
+  const p = (
+    await db.query(
+      "SELECT * FROM products WHERE kind='quantity' AND stock_qty>reserved_qty+2 LIMIT 1",
+    )
+  ).rows[0];
+  const count = await post(
+    "/stock-counts",
+    {
+      product_id: p.id,
+      counted_quantity: p.stock_qty - 1,
+      reason: "Physical count found one damaged quantity unit",
+    },
+    "warehouse",
+  );
+  expect(
+    (
+      await req(
+        "POST",
+        `/stock-counts/${count.id}/review`,
+        { approved: true, note: "Self approval" },
+        "warehouse",
+      )
+    ).statusCode,
+  ).toBe(403);
+  await post(
+    `/stock-counts/${count.id}/review`,
+    { approved: true, note: "Verified physical count independently" },
+    "accounts",
+  );
+  expect(
+    (await db.query("SELECT stock_qty FROM products WHERE id=$1", [p.id]))
+      .rows[0].stock_qty,
+  ).toBe(p.stock_qty - 1);
+  const stale = await post(
+    "/stock-counts",
+    {
+      product_id: p.id,
+      counted_quantity: p.stock_qty - 1,
+      reason: "Second count",
+    },
+    "warehouse",
+  );
+  await post(
+    "/receipts",
+    {
+      product_id: p.id,
+      supplier: "QA",
+      reference: id(),
+      quantity: 1,
+      unit_cost_minor: 100,
+      serials: [],
+    },
+    "warehouse",
+  );
+  expect(
+    (
+      await req(
+        "POST",
+        `/stock-counts/${stale.id}/review`,
+        { approved: true, note: "Stale review" },
+        "accounts",
+      )
+    ).statusCode,
+  ).toBe(409);
+});
+
+it("[QUO-08] reviewed paid-order cancellation releases stock, credits the retained invoice and permits only the actual refundable amount", async () => {
+  const d = await paid();
+  await scanAll(d);
+  const c = await post(
+    `/orders/${d.order.id}/cancellation`,
+    { reason: "Customer cancelled before shipment" },
+    "sales",
+  );
+  await post(
+    `/order-cancellations/${c.id}/review`,
+    { approved: true, note: "Verified customer withdrawal before dispatch" },
+    "accounts",
+  );
+  const after = await get(`/projects/${d.project.id}`);
+  expect(after.order.status).toBe("cancelled");
+  expect(after.job.status).toBe("cancelled");
+  expect(after.assets).toHaveLength(0);
+  expect(after.order.lines.every((l: any) => !l.reserved)).toBe(true);
+  expect(
+    (
+      await req(
+        "POST",
+        `/orders/${d.order.id}/scans`,
+        { serial: "NONE" },
+        "warehouse",
+      )
+    ).statusCode,
+  ).toBe(409);
+  const ledger = await get(`/invoices/${d.invoices[0].id}/ledger`, "accounts");
+  expect(ledger.invoice.net_total_minor).toBe(0);
+  expect(ledger.invoice.total_minor).toBe(d.invoices[0].total_minor);
+  await post(
+    `/invoices/${d.invoices[0].id}/refunds`,
+    {
+      amount_minor: d.order.minimum_advance_minor,
+      reference: id(),
+      reason: "Cancellation advance returned",
+    },
+    "accounts",
+  );
+  expect(
+    (
+      await req(
+        "POST",
+        `/invoices/${d.invoices[0].id}/refunds`,
+        { amount_minor: 1, reference: id(), reason: "Duplicate refund" },
+        "accounts",
+      )
+    ).statusCode,
+  ).toBe(409);
+});
+
+it("[QUO-05] discount ceiling and independent approval create a fresh quote without rewriting the original", async () => {
+  const p = await surveyed(),
+    q = await post(`/projects/${p.id}/quotes`);
+  expect(
+    (
+      await req(
+        "POST",
+        `/quotes/${q.id}/discount`,
+        { percent: 21, reason: "Too large" },
+        "sales",
+      )
+    ).statusCode,
+  ).toBe(400);
+  const r = await post(
+    `/quotes/${q.id}/discount`,
+    { percent: 10, reason: "Customer negotiated campaign offer" },
+    "sales",
+  );
+  expect(
+    (
+      await req(
+        "POST",
+        `/quote-discounts/${r.id}/review`,
+        { approved: true, note: "Sales self approval" },
+        "sales",
+      )
+    ).statusCode,
+  ).toBe(403);
+  const approved = await post(
+    `/quote-discounts/${r.id}/review`,
+    { approved: true, note: "Within demo discount policy" },
+    "admin",
+  );
+  const d = await get(`/projects/${p.id}`);
+  expect(d.quotes[0].id).toBe(approved.result.id);
+  expect(d.quotes[0].total_minor).toBeLessThan(q.total_minor);
+  expect(d.quotes.find((x: any) => x.id === q.id).total_minor).toBe(
+    q.total_minor,
+  );
+  expect(
+    (
+      await req(
+        "POST",
+        `/projects/${p.id}/acceptance`,
+        { quote_id: q.id },
+        "sales",
+      )
+    ).statusCode,
+  ).toBe(409);
+  await post(
+    `/projects/${p.id}/acceptance`,
+    { quote_id: approved.result.id },
+    "sales",
+  );
+});
+
+it("[RMA-04] different-model replacement needs engineering and customer agreement and preserves the original warranty", async () => {
+  const f = await operationFixture();
+  await post(
+    `/visits/${f.visit.id}/action`,
+    { action: "start", version: f.visit.version },
+    "technician",
+  );
+  let d = await get(`/tickets/${f.ticket.id}`);
+  const component = d.components.find(
+    (c: any) => c.asset_status === "delivered",
+  );
+  const model = (
+      await db.query(
+        "SELECT * FROM products WHERE kind='serialized' AND id<>$1 LIMIT 1",
+        [component.product_id],
+      )
+    ).rows[0],
+    serial = ("COMPAT-" + id()).toUpperCase();
+  await post(
+    "/receipts",
+    {
+      product_id: model.id,
+      supplier: "QA engineering supplier",
+      reference: id(),
+      quantity: 1,
+      unit_cost_minor: 45000,
+      serials: [serial],
+    },
+    "warehouse",
+  );
+  const line = {
+    order_line_id: component.order_line_id,
+    asset_id: component.asset_id,
+    quantity: 1,
+    finding: "Original model discontinued; replacement engineered",
+    action: "replace",
+    replacement_serial: serial,
+    labour_minutes: 30,
+    labour_price_minor: 0,
+  };
+  expect(
+    (
+      await req(
+        "POST",
+        `/tickets/${f.ticket.id}/diagnosis`,
+        { version: d.ticket.version, lines: [line] },
+        "technician",
+      )
+    ).statusCode,
+  ).toBe(409);
+  const approval = {
+    asset_id: component.asset_id,
+    replacement_product_id: model.id,
+    compatibility_note:
+      "Synthetic engineering sign-off: ratings, connectors and protection checked for this test configuration",
+    customer_agreement: "Customer agreed to substitute and stated retail value",
+    unit_price_minor: 60000,
+  };
+  expect(
+    (
+      await req(
+        "POST",
+        `/tickets/${f.ticket.id}/engineering-substitutes`,
+        approval,
+        "technician",
+      )
+    ).statusCode,
+  ).toBe(403);
+  await post(
+    `/tickets/${f.ticket.id}/engineering-substitutes`,
+    approval,
+    "coordinator",
+  );
+  await post(
+    `/tickets/${f.ticket.id}/diagnosis`,
+    { version: d.ticket.version, lines: [line] },
+    "technician",
+  );
+  await approveRepair(f);
+  await repairPhoto(f.ticket.id);
+  await post(`/tickets/${f.ticket.id}/resolution`, {
+    resolution: "Approved substitute commissioned and tested",
+  });
+  d = await get(`/tickets/${f.ticket.id}`);
+  const replacement = d.components.find((c: any) => c.serial === serial);
+  expect(replacement.product_id).toBe(model.id);
+  expect(replacement.expires_at).toBe(component.expires_at);
+  expect(
+    d.invoices[0].lines.some(
+      (l: any) =>
+        l.replacement_serial === serial && l.gross_unit_price_minor === 60000,
+    ),
+  ).toBe(true);
+});
+
+it("[QUO-09 SUR-10] accepted-order additions use a linked survey-approved change order and bill only approved extras", async () => {
+  const original = await delivered(),
+    before = JSON.stringify(original.invoices),
+    battery = (
+      await db.query(
+        "SELECT * FROM products WHERE kind='serialized' AND name ILIKE '%battery%' LIMIT 1",
+      )
+    ).rows[0];
+  const change = await post(
+    `/projects/${original.project.id}/change-orders`,
+    {
+      reason:
+        "Customer requests an additional battery after initial acceptance",
+      lines: [{ product_id: battery.id, quantity: 1 }],
+    },
+    "sales",
+  );
+  expect(
+    (await req("POST", `/projects/${change.id}/quotes`, {}, "sales"))
+      .statusCode,
+  ).toBe(409);
+  await post(
+    `/projects/${change.id}/surveys`,
+    {
+      roof_area: 50,
+      bill_minor: 100000,
+      grid_suitable: true,
+      direction: "South",
+      tilt: 15,
+      cable_distance: 10,
+      notes: "Additional battery compatibility and location checked",
+    },
+    "surveyor",
+  );
+  await post(
+    `/projects/${change.id}/survey-approval`,
+    { approved: true },
+    "surveyor",
+  );
+  await post(`/projects/${change.id}/quotes`, {}, "sales");
+  const pending = await get(`/projects/${change.id}`);
+  expect(pending.quotes[0].lines).toHaveLength(1);
+  expect(pending.quotes[0].total_minor).toBe(battery.price_minor);
+  await post(
+    `/projects/${change.id}/acceptance`,
+    { quote_id: pending.quotes[0].id },
+    "sales",
+  );
+  const after = await get(`/projects/${original.project.id}`);
+  expect(JSON.stringify(after.invoices)).toBe(before);
+  expect(after.change_orders[0].id).toBe(change.id);
+});
+
+it("[DLV-08] transit-damaged device is quarantined, replacement shipment is reviewed and only the received replacement gains warranty", async () => {
+  const d = await paid();
+  await scanAll(d);
+  await post(`/orders/${d.order.id}/dispatch`);
+  const a = (
+    await db.query(
+      "SELECT a.* FROM assets a JOIN order_lines l ON l.id=a.order_line_id WHERE l.order_id=$1 LIMIT 1",
+      [d.order.id],
+    )
+  ).rows[0];
+  const r = await post(
+    `/orders/${d.order.id}/delivery-incidents`,
+    {
+      kind: "transit_damage",
+      custody: "Returned truck, bay Q2",
+      reason: "Impact damage to device case",
+    },
+    "warehouse",
+  );
+  await post(
+    `/delivery-incidents/${r.id}/review`,
+    {
+      version: 1,
+      status: "returned",
+      custody: "Quarantine inspection bay",
+      outcome: "Customer refused damaged device",
+    },
+    "coordinator",
+  );
+  expect(
+    (
+      await req(
+        "POST",
+        `/delivery-incidents/${r.id}/review`,
+        {
+          version: 2,
+          status: "retry",
+          custody: "Truck",
+          outcome: "No replacement yet",
+        },
+        "coordinator",
+      )
+    ).statusCode,
+  ).toBe(409);
+  const spare = (
+    await db.query(
+      "SELECT serial FROM assets WHERE product_id=$1 AND status='available' LIMIT 1",
+      [a.product_id],
+    )
+  ).rows[0];
+  await post(
+    `/delivery-incidents/${r.id}/replacements`,
+    {
+      asset_id: a.id,
+      replacement_serial: spare.serial,
+      note: "Replacement inspected and loaded; original isolated",
+    },
+    "warehouse",
+  );
+  await post(
+    `/delivery-incidents/${r.id}/review`,
+    {
+      version: 2,
+      status: "retry",
+      custody: "Driver with replacement shipment",
+      outcome: "Inspected replacement and customer agreed new delivery",
+    },
+    "coordinator",
+  );
+  await post(`/orders/${d.order.id}/delivery`, {}, "warehouse");
+  expect(
+    (await db.query("SELECT status FROM assets WHERE id=$1", [a.id])).rows[0]
+      .status,
+  ).toBe("quarantined");
+  expect(
+    (await db.query("SELECT id FROM warranties WHERE asset_id=$1", [a.id]))
+      .rows,
+  ).toHaveLength(0);
+  expect(
+    (
+      await db.query(
+        "SELECT w.id FROM warranties w JOIN assets a ON a.id=w.asset_id WHERE a.serial=$1",
+        [spare.serial],
+      )
+    ).rows,
+  ).toHaveLength(1);
+});
+
+it("[OPS-10] named isolated training reset replays only its selected dataset and refuses nontraining names", async () => {
+  const { trainingWorkspace } =
+    await import("../../scripts/training-workspace.mjs");
+  const name = "qa_" + id().replaceAll("-", "").slice(0, 12);
+  const before = (await db.query("SELECT count(*)::int AS n FROM projects"))
+    .rows[0].n;
+  await expect(trainingWorkspace(baseUrl, "../public", true)).rejects.toThrow();
+  const result = await trainingWorkspace(baseUrl, name);
+  const scoped = new Pool({ connectionString: result.url });
+  try {
+    const count = (
+      await scoped.query("SELECT count(*)::int AS n FROM projects")
+    ).rows[0].n;
+    await scoped.query("UPDATE customers SET name='Training edit'");
+    await trainingWorkspace(baseUrl, name, true);
+    expect(
+      (await scoped.query("SELECT count(*)::int AS n FROM projects")).rows[0].n,
+    ).toBe(count);
+    expect(
+      (
+        await scoped.query(
+          "SELECT count(*)::int AS n FROM customers WHERE name='Training edit'",
+        )
+      ).rows[0].n,
+    ).toBe(0);
+    expect(
+      (await db.query("SELECT count(*)::int AS n FROM projects")).rows[0].n,
+    ).toBe(before);
+  } finally {
+    await scoped.end();
+    await adminDb.query(`DROP SCHEMA ${result.schema} CASCADE`);
+  }
+});
+it("[DSP-02] dispatch ranks aged requests and urgent targets, then suggests qualified crews by workload with travel and stable tie reasons", async () => {
+  const f = await operationFixture();
+  const old = await post(
+    "/tickets",
+    {
+      project_id: f.project.project.id,
+      complaint: "Long-waiting routine customer",
+      fault_code: "Low generation",
+    },
+    "support",
+  );
+  await db.query(
+    "UPDATE tickets SET opened_at=now()-interval '9 days' WHERE id=$1",
+    [old.id],
+  );
+  const urgent = await post(
+    "/tickets",
+    {
+      project_id: f.project.project.id,
+      complaint: "Reported smoke; isolate and escalate",
+      fault_code: "Electrical hazard",
+      priority: "urgent",
+    },
+    "support",
+  );
+  const rows = await get("/tickets", "coordinator");
+  expect(rows.findIndex((t: any) => t.id === old.id)).toBeLessThan(
+    rows.findIndex((t: any) => t.id === urgent.id),
+  );
+  expect(rows.find((t: any) => t.id === old.id).dispatch_reason).toContain(
+    "starvation",
+  );
+  const day = f.body.starts_at.slice(0, 10);
+  const available = await get(
+    `/schedule/availability?from=${day}&to=${day}&skill=inverter_repair&duration_hours=1&crew_size=1`,
+    "coordinator",
+  );
+  expect(available.slots.length).toBeGreaterThan(0);
+  for (const slot of available.slots) {
+    const hours = slot.candidates.map((c: any) => c.booked_hours);
+    expect(hours).toEqual([...hours].sort((a, b) => a - b));
+    expect(
+      slot.candidates.every((c: any) =>
+        c.reason.includes("30-minute travel buffer"),
+      ),
+    ).toBe(true);
+  }
+});
+it("[DSP-03] urgent fault creates human hazard escalation and displaced customers get explicit rescheduling and contact tasks", async () => {
+  const f = await operationFixture();
+  await post(
+    "/tickets",
+    {
+      project_id: f.project.project.id,
+      complaint: "Smoke reported at inverter",
+      fault_code: "Electrical hazard",
+      priority: "urgent",
+    },
+    "support",
+  );
+  const tasks = await get("/operational-tasks", "coordinator");
+  expect(
+    tasks.items.some(
+      (t: any) => t.project_id === f.project.project.id && t.kind === "hazard",
+    ),
+  ).toBe(true);
+  const next = {
+    ...f.body,
+    visit_id: f.visit.id,
+    version: f.visit.version,
+    starts_at: new Date(
+      +new Date(f.body.starts_at) + 14 * 86400000,
+    ).toISOString(),
+    reason: "Customer agreed new date after urgent dispatch review",
+  };
+  await post("/visits", next, "coordinator");
+  expect(
+    (await get("/operational-tasks", "coordinator")).items.some(
+      (t: any) =>
+        t.project_id === f.project.project.id && t.kind === "customer_contact",
+    ),
+  ).toBe(true);
+  repairDay += 14;
+});

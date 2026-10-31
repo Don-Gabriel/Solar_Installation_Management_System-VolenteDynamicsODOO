@@ -10,9 +10,11 @@ async function login(page: any, email = "admin@sunpower.local") {
     page.getByRole("heading", { name: /Good morning|Good afternoon/ }),
   ).toBeVisible();
 }
-test("[CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and service document on desktop and phone", async ({
+test("[CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo and service document on desktop and phone", async ({
   page,
+  context,
 }, info) => {
+  const complaint = `Synthetic browser repair ${info.project.name} ${Date.now()}`;
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await login(page);
@@ -40,9 +42,7 @@ test("[CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and se
   await page
     .getByRole("combobox", { name: "Installation", exact: true })
     .selectOption({ index: 1 });
-  await page
-    .getByLabel("What the customer reported")
-    .fill("Synthetic browser test: inverter stopped producing power");
+  await page.getByLabel("What the customer reported").fill(complaint);
   await page
     .getByRole("button", { name: "Save repair request", exact: true })
     .click();
@@ -50,7 +50,7 @@ test("[CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and se
   await page
     .locator(".ticket-card")
     .filter({
-      hasText: "Synthetic browser test: inverter stopped producing power",
+      hasText: complaint,
     })
     .first()
     .getByRole("button", { name: "Open repair request" })
@@ -84,6 +84,22 @@ test("[CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and se
   await page
     .getByLabel("Fault found")
     .fill("Loose internal connection confirmed, repaired and tested");
+  await context.setOffline(true);
+  await page
+    .getByRole("button", { name: "Save diagnosis and estimate" })
+    .click();
+  await expect(
+    page.getByText(/You are offline. This change was not submitted/),
+  ).toBeVisible();
+  await context.setOffline(false);
+  const unsent = await page.request
+    .get("/api/tickets/" + ticket)
+    .then((r) => r.json());
+  expect(unsent.lines).toHaveLength(0);
+  await page.reload();
+  await expect(page.getByLabel("Fault found")).toHaveValue(
+    "Loose internal connection confirmed, repaired and tested",
+  );
   await page
     .getByRole("button", { name: "Save diagnosis and estimate" })
     .click();
@@ -317,4 +333,145 @@ test("[SCH-02 SCH-09] a holiday search shows alternatives and a tracked follow-u
     .getByRole("button", { name: "Finish follow-up", exact: true })
     .click();
   await expect(task).toBeHidden();
+});
+
+test("[SRV-04 SRV-06] support sees possible duplicate work and a separate coordinator reviews safe remote resolution", async ({
+  page,
+}) => {
+  await login(page, "support@sunpower.local");
+  await page.goto("/service");
+  await page
+    .getByRole("button", { name: "New repair request", exact: true })
+    .click();
+  await page
+    .getByRole("combobox", { name: "Installation", exact: true })
+    .selectOption({ index: 1 });
+  const complaint = "Remote monitoring check " + Date.now();
+  await page.getByLabel("What the customer reported").fill(complaint);
+  await page
+    .getByRole("combobox", { name: "Problem category" })
+    .selectOption("Monitoring app");
+  await page
+    .getByRole("button", { name: "Save repair request", exact: true })
+    .click();
+  await expect(page.getByRole("dialog")).toBeHidden();
+  await page
+    .getByRole("button", { name: "New repair request", exact: true })
+    .click();
+  await page
+    .getByRole("combobox", { name: "Installation", exact: true })
+    .selectOption({ index: 1 });
+  await expect(page.getByText(/Possible repeated call/)).toBeVisible();
+  await page.getByRole("link", { name: new RegExp(complaint) }).click();
+  await page
+    .getByLabel("Checks performed and outcome")
+    .fill(
+      "Explained the monitoring reading; customer confirms normal operation",
+    );
+  await page
+    .getByLabel("Customer confirmation name and call reference")
+    .fill("Synthetic customer, call DEMO-42");
+  await page.getByRole("button", { name: "Send outcome for review" }).click();
+  await expect(
+    page.getByText("Remote support", { exact: false }).last(),
+  ).toBeVisible();
+  const url = page.url();
+  if (
+    !(await page
+      .getByRole("button", { name: "Sign out", exact: true })
+      .isVisible())
+  )
+    await page
+      .getByRole("button", { name: "Open navigation", exact: true })
+      .click();
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await login(page, "coordinator@sunpower.local");
+  await page.goto(url);
+  await page
+    .getByRole("checkbox", { name: "Approve this documented outcome" })
+    .check();
+  await page
+    .getByLabel("Outcome review reason")
+    .fill("Checked safe remote category and customer confirmation");
+  await page.getByRole("button", { name: "Review service outcome" }).click();
+  await expect(page.getByText("Closed", { exact: true }).first()).toBeVisible();
+  const ticket = new URL(url).searchParams.get("ticket");
+  const saved = await page.request
+    .get("/api/tickets/" + ticket)
+    .then((r) => r.json());
+  expect(saved.visits).toHaveLength(0);
+  expect(saved.evidence).toHaveLength(0);
+  expect(saved.invoices).toHaveLength(0);
+});
+
+test("[STK-10] warehouse count is reviewed separately by accounts through the desktop and phone interface", async ({
+  page,
+}) => {
+  await login(page, "warehouse@sunpower.local");
+  await page.goto("/inventory");
+  await page
+    .getByText("Record a physical material count", { exact: true })
+    .click();
+  const countStamp = Date.now();
+  const inventory = await (await page.request.get("/api/inventory")).json();
+  const product = inventory.products.find(
+    (p: any) => p.kind === "quantity" && p.stock_qty > p.reserved_qty + 2,
+  );
+  await page
+    .getByRole("combobox", { name: "Counted material", exact: true })
+    .selectOption(product.id);
+  await page
+    .getByLabel("Physical quantity counted")
+    .fill(String(product.stock_qty - 1));
+  await page
+    .getByLabel("Count notes and discrepancy reason")
+    .fill("Browser count review " + product.sku + " " + countStamp);
+  await page
+    .getByRole("button", { name: "Send stock count for review", exact: true })
+    .click();
+  await expect(
+    page.getByText("Browser count review " + product.sku + " " + countStamp, {
+      exact: true,
+    }),
+  ).toBeVisible();
+  const menu = page.getByRole("button", {
+    name: "Open navigation",
+    exact: true,
+  });
+  if (await menu.isVisible()) await menu.click();
+  await page.getByRole("button", { name: "Sign out", exact: true }).click();
+  await login(page, "accounts@sunpower.local");
+  await page.goto("/inventory");
+  await page
+    .locator(".ticket-card")
+    .filter({
+      hasText: "Browser count review " + product.sku + " " + countStamp,
+    })
+    .getByRole("checkbox", { name: "Approve counted quantity", exact: true })
+    .check();
+  await page
+    .locator(".ticket-card")
+    .filter({
+      hasText: "Browser count review " + product.sku + " " + countStamp,
+    })
+    .getByLabel("Stock count review reason")
+    .fill("Independent recount confirms the quantity " + countStamp);
+  await page
+    .locator(".ticket-card")
+    .filter({
+      hasText: "Browser count review " + product.sku + " " + countStamp,
+    })
+    .getByRole("button", { name: "Review stock count", exact: true })
+    .click();
+  await expect(
+    page.getByText("Independent recount confirms the quantity " + countStamp, {
+      exact: false,
+    }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByText("Independent recount confirms the quantity " + countStamp, {
+      exact: false,
+    }),
+  ).toBeVisible();
 });

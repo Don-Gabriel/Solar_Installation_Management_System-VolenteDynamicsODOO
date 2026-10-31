@@ -22,6 +22,8 @@ const changedSource = execFileSync(
   ],
   { encoding: "utf8" },
 ).trim();
+const untrackedSource=execFileSync('git',['ls-files','--others','--exclude-standard','--','apps','packages','db','tests'],{encoding:'utf8'}).trim();
+if (untrackedSource) throw Error('Commit new application source before recording its revision: '+untrackedSource);
 if (changedSource)
   throw Error(
     "Commit the tested application source before recording its revision: " +
