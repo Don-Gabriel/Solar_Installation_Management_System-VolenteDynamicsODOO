@@ -11,9 +11,10 @@
       "technician",
       "support",
       "accounts",
-      "coordinator"
+      "coordinator",
+      "customer"
     ],
-    "purpose": "Enter your staff account. Your role controls the screens and actions you can use.",
+    "purpose": "Enter a staff or customer account. Staff open their permitted workspace; customers open only their own solar service portal.",
     "options": [
       "Email address and password",
       "Sign in",
@@ -24,6 +25,28 @@
       "Password: enter the configured demo password."
     ],
     "next": "Home opens after sign-in. To test another role, sign out and use its own account. There is no identity-switch bypass."
+  },
+  {
+    "id": "customer-portal",
+    "title": "My solar service",
+    "path": "/ after customer sign-in",
+    "roles": [
+      "customer"
+    ],
+    "purpose": "See only your own systems, appointments, repair requests, itemized bills and in-app updates. Customer records are isolated from staff screens and other customer accounts.",
+    "options": [
+      "Updates: read the latest 100 messages and mark them as read",
+      "Visits: date, time, status and assigned team",
+      "Repairs: complaint and current status",
+      "Bills: items, zero-priced covered components, credits, net paid and amount due",
+      "Refresh updates: check now; updates also refresh every 15 seconds while visible",
+      "Sign out: switch to another account safely"
+    ],
+    "fields": [
+      "No staff data entry is available in this portal. Contact support to request work, approve an estimate or confirm completion.",
+      "In-app demonstration only: no SMS, email, WhatsApp or background push alerts are sent."
+    ],
+    "next": "In a separate browser window, support creates a repair for the same customer and a coordinator books it. Refresh this portal to see the saved updates and correct appointment."
   },
   {
     "id": "public",
@@ -226,7 +249,8 @@
       "View allocated devices and delivery dates",
       "Receive individual complete lines; only received components start warranty coverage",
       "Record failed delivery, customer refusal or transit damage with current goods custody",
-      "Return and replace a damaged serial, then obtain coordinator approval before retrying delivery"
+      "Return and replace a damaged serial, then obtain coordinator approval before retrying delivery",
+      "Use camera: align the whole barcode inside the white box. Read barcode photo is the local fallback; Add serial performs the stock check and saves."
     ],
     "fields": [
       "Serial: scan the generated Code 128 label, paste it, or use the local test picker.",
@@ -282,7 +306,8 @@
     "options": [
       "View product or serial, delivery date, expiry date and coverage",
       "Review old and replacement devices",
-      "Open related service work where allowed"
+      "Open related service work where allowed",
+      "Use camera: align the whole barcode inside the white box. Read barcode photo is the local fallback; Add serial performs the stock check and saves."
     ],
     "fields": [
       "No manual data entry on this section."
@@ -354,7 +379,8 @@
       "Barcode labels",
       "Quarantine a damaged available or allocated device and scan a substitute",
       "Submit physical quantity counts for independent finance review",
-      "Track supplier claims, decisions and partial recoveries separately from customer billing"
+      "Track supplier claims, decisions and partial recoveries separately from customer billing",
+      "Use camera: align the whole barcode inside the white box. Read barcode photo is the local fallback; Add serial performs the stock check and saves."
     ],
     "fields": [
       "Receipt: choose product; enter supplier, purchase reference, received quantity and unit cost.",
@@ -442,7 +468,8 @@
       "Request parts and confirm readiness before booking a return visit",
       "Record engineering compatibility, customer agreement and price for a substitute model",
       "Request separately reviewed remote or no-fault completion",
-      "Recover an unsent diagnosis after losing connection; reconnect and submit manually"
+      "Recover an unsent diagnosis after losing connection; reconnect and submit manually",
+      "Use camera: align the whole barcode inside the white box. Read barcode photo is the local fallback; Add serial performs the stock check and saves."
     ],
     "fields": [
       "The version check prevents a later save from silently overwriting another employee's changes.",
@@ -470,7 +497,8 @@
       "Compare selling value, warranty credit and payable amount",
       "See labour and callout as separate lines",
       "Print the saved service document",
-      "Accounts records payment against this service invoice using its payment form"
+      "Accounts records payment against this service invoice using its payment form",
+      "Use camera: align the whole barcode inside the white box. Read barcode photo is the local fallback; Add serial performs the stock check and saves."
     ],
     "fields": [
       "A covered replacement stays visible with zero payable.",
@@ -531,7 +559,8 @@
     ],
     "fields": [
       "Period: select.",
-      "Installer payment: enter the actual receipt/payment reference."
+      "Installer payment: enter the actual receipt/payment reference.",
+      "Equipment & work costs means equipment/material acquisition costs allocated to this project, installation workers and repairs. Zero means no cost recorded yet; office expenses are excluded, and unfinished jobs do not show a completed contribution."
     ],
     "next": "Contribution means invoiced amount minus recorded material, installation labour and service costs. It is not company net profit; cash and profit are different."
   },
@@ -550,7 +579,8 @@
       "Search serial",
       "Copy serial",
       "Print these labels",
-      "Back to stock"
+      "Back to stock",
+      "Use camera: align the whole barcode inside the white box. Read barcode photo is the local fallback; Add serial performs the stock check and saves."
     ],
     "fields": [
       "Filters: select product/status; optional serial search."

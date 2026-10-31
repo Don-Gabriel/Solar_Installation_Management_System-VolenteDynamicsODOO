@@ -90,3 +90,7 @@ Availability ranks qualified free workers by booked hours, then name and staff I
 Repair drafts require manual resubmission after reconnecting. Parts readiness is checked against current unreserved stock at booking and final consumption, not a guaranteed supplier delivery date. Different replacement models require explicit engineering notes, customer agreement and price approval; the software does not certify electrical compatibility.
 
 The named training-workspace command creates or resets only a marked solar_training_ namespace. It uses a separate configuration and upload path, leaving operational records outside that namespace unchanged.
+
+## Customer accounts and notifications
+
+Migration 024 links the customer role to exactly one customer identity and records recipient-owned inbox events. Authentication denies all staff routes for customer sessions before their handlers run. Portal queries select only the linked customer and its projects; private staff files and internal acquisition/labour costs are not exposed. Database triggers record repair, appointment, installation, order-status and invoice updates in the same transaction as the business change. The visible page polls every 15 seconds and can refresh immediately. No external messaging provider or background push delivery is configured.

@@ -148,7 +148,7 @@ scripts={
 'create-file-inventory.py':'Builds the filename-and-purpose PDF requested for this project|Checks that each included file has exactly two purpose sentences'}
 for name,text in scripts.items():add('scripts/'+name,*(x+'.' for x in text.split('|')))
 # Each migration is an ordered, versioned change rather than a runtime reset.
-migration_topics=['core business records','data integrity and immutable accepted terms','service visits, repair diagnosis and returns','separate labour warranty coverage','installation crews','diagnosis revision history','individual crew payments','linked follow-up requests','service callout charges','operational tasks and holidays','financial corrections and settlement','customer intake, contact history and document snapshots','component-linked and deduplicated evidence','reviewed service outcomes and installation disputes','external equipment and supplier recoveries','repair parts readiness','individual delivery receipts and incidents','damaged stock and physical-count reviews','reviewed order cancellation','reviewed quotation discounts','engineering-approved replacement models','linked change orders','transit-damage replacement records']
+migration_topics=['core business records','data integrity and immutable accepted terms','service visits, repair diagnosis and returns','separate labour warranty coverage','installation crews','diagnosis revision history','individual crew payments','linked follow-up requests','service callout charges','operational tasks and holidays','financial corrections and settlement','customer intake, contact history and document snapshots','component-linked and deduplicated evidence','reviewed service outcomes and installation disputes','external equipment and supplier recoveries','repair parts readiness','individual delivery receipts and incidents','damaged stock and physical-count reviews','reviewed order cancellation','reviewed quotation discounts','engineering-approved replacement models','linked change orders','transit-damage replacement records','private customer accounts and in-app notifications']
 for p in sorted((ROOT/'db/migrations').glob('*.sql')):
  topic=migration_topics[int(p.name[:3])-1];add(p.relative_to(ROOT).as_posix(),f'Adds database support for {topic}.','Runs in sequence through the migration tool and preserves the existing migration history.')
 for p in (ROOT/'apps/web/src/components/ui').glob('*.tsx'):
@@ -177,6 +177,12 @@ for f,text in final.items():
  if (ROOT/f).exists() or f==OUT.relative_to(ROOT).as_posix():files.add(f);add(f,*(x+'.' for x in text.split('|')))
 for p in sorted((ROOT/'output/barcodes/png').glob('*.png')):
  f=p.relative_to(ROOT).as_posix();files.add(f);add(f,f'Contains the scannable label for demo serial {p.stem}.','Use this image to test that specific device; current allocation and warranty status must be checked in the live app.')
+add('apps/api/src/modules/customer-portal.ts','Serves customer-owned systems, visits, repairs, invoices and inbox messages.','Enforces customer identity and prevents reading or marking another customer’s messages.')
+add('apps/web/src/features/customer-portal.tsx','Displays the private customer service portal and automatically refreshes its inbox.','Shows appointments, repair status and bills while keeping staff controls outside the customer view.')
+add('db/seeds/customer-portal.ts','Creates two synthetic customer logins linked to existing demo customer records.','Preserves existing accounts and adds an explicitly labelled welcome message.')
+add('scripts/seed-customer-portal.ts','Adds the customer portal demo accounts to an existing demonstration database.','Requires demo mode and hashes the configured password before creating accounts.')
+add('tests/e2e/customer-portal.spec.ts','Tests customer login, private views, inbox interaction and account switching in browsers.','Checks accessibility and horizontal layout on the configured desktop and phone viewports.')
+add('docs/MANUAL_CHECKS.md','Gives step-by-step instructions for the six remaining acceptance gates and customer notification demo.','Separates physical-device checks from native installers that have not been built.')
 missing=sorted(files-purpose.keys());assert not missing,missing
 for f in files:
  assert len(purpose[f])==2 and all(s.endswith('.') for s in purpose[f]),f

@@ -113,12 +113,12 @@ export function Reports() {
               >
                 {money(data.completed_contribution_minor)}
               </strong>
-              <p>Completed jobs only · after direct costs</p>
+              <p>Completed jobs only · after equipment and worker costs</p>
             </div>
           </div>
           <Panel
             title="Project contribution"
-            description="Orders confirmed in the selected period. Completed contribution = invoices − consumed materials − installation labour − repair costs. Work in progress is excluded."
+            description="Orders confirmed in this period. For completed work, contribution means the bill amount after credits, minus equipment, installation labour and repair costs. It is not final profit: office rent and other general expenses are not included."
           >
             {data.jobs.length ? (
               <div
@@ -131,10 +131,10 @@ export function Reports() {
                   <thead>
                     <tr>
                       <th>Project</th>
-                      <th>Invoiced</th>
-                      <th>Collected</th>
-                      <th>Direct costs</th>
-                      <th>Contribution</th>
+                      <th>Amount billed</th>
+                      <th>Money received</th>
+                      <th>Equipment & work costs</th>
+                      <th>Left after these costs</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -157,11 +157,16 @@ export function Reports() {
                           <details>
                             <summary>{money(j.direct_cost_minor)}</summary>
                             <small>
-                              Materials {money(j.material_cost_minor)}
+                              Equipment & materials{" "}
+                              {money(j.material_cost_minor)}
                               <br />
-                              Labour {money(j.labour_cost_minor)}
+                              Installation workers {money(j.labour_cost_minor)}
                               <br />
-                              Repairs {money(j.service_cost_minor)}
+                              Repair parts & workers{" "}
+                              {money(j.service_cost_minor)}
+                              <br />
+                              Costs recorded so far. ₹0 means no cost is
+                              recorded yet.
                             </small>
                           </details>
                         </td>
@@ -169,7 +174,10 @@ export function Reports() {
                           className={j.contribution_minor < 0 ? "negative" : ""}
                         >
                           {j.contribution_minor === null ? (
-                            <Status value="work_in_progress" />
+                            <>
+                              <Status value="work_in_progress" />
+                              <small>Calculated after completion</small>
+                            </>
                           ) : (
                             <strong>{money(j.contribution_minor)}</strong>
                           )}
