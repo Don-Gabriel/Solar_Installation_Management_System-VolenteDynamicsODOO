@@ -2754,9 +2754,9 @@ P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Expected:** Identity, photos, invoice rules and server permissions match the desktop workflow
 
-**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+**Evidence:** scripts/build-android.ps1; scripts/check-native-android.mjs; output/qa/android-native-admin.png; docs/NATIVE_APPS.md
 
-**Observed:** No signed Android native build exists. Responsive mobile web/PWA is the implemented client.
+**Observed:** Android development APK built and signature verified. Emulator installation, login, customer isolation, demo switching and restart persistence passed; the full assigned repair, photo and invoice workflow in the installed client remains unverified.
 
 ### UXP-07 Windows native app against same backend
 P1 | Source: Missing workflow | Execution: BLOCKED
@@ -2767,9 +2767,9 @@ P1 | Source: Missing workflow | Execution: BLOCKED
 
 **Expected:** The installed client uses the same authoritative rules and handles printing and file permissions
 
-**Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
+**Evidence:** scripts/check-native-windows.mjs; output/qa/windows-native-admin.png; docs/NATIVE_APPS.md
 
-**Observed:** No signed Windows native build exists. Desktop web/PWA is the implemented client.
+**Observed:** Portable Windows executable built. Packaged-client login, customer isolation and demo switching passed; the executable has no production publisher signature and release update/uninstall checks remain unverified.
 
 ### UXP-08 Offline during field visit
 P0 | Source: Partial | Execution: PASS
@@ -2795,7 +2795,7 @@ P1 | Source: Needs verification | Execution: BLOCKED
 
 **Evidence:** Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.
 
-**Observed:** All generated barcode images can be decoded by software; physical-phone camera scanning in HTTPS remains unverified.
+**Observed:** All 198 current barcode images and printable labels decode correctly. Browser photo decoding and a synthetic moving video feed using the actual camera-frame decoder passed; physical-phone camera scanning remains unverified.
 
 ### UXP-10 Client is older than backend
 P1 | Source: Missing workflow | Execution: PASS

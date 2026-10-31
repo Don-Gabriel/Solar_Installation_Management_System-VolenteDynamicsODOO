@@ -1,10 +1,10 @@
 # Scenario execution register
 
-Checked 2026-10-31T11:16:53.643Z. Application source commit: 616cc7433e58b1d01c1b223cbb809fb58d3c8ac8.
+Checked 2026-10-31T12:33:03.681Z. Application source commit: f16b692366daefa4d3f5696e2bdb5aa28ba37784.
 
 All 200 scenarios assessed: 194 PASS, 6 BLOCKED.
 
-117/117 backend tests passed. Browser results and restore checks are recorded separately. A test can verify several named scenarios; 200 scenarios does not mean 200 automated test functions.
+119/119 backend tests passed. Browser results and restore checks are recorded separately. A test can verify several named scenarios; 200 scenarios does not mean 200 automated test functions.
 
 BLOCKED means the full required workflow or necessary test environment is unavailable. Some blocked scenarios have partial passing checks, retained in execution.json. They are not counted as passes. Source assessments in the original catalogue remain the historical d0d1038 baseline.
 
@@ -216,8 +216,8 @@ BLOCKED means the full required workflow or necessary test environment is unavai
 | UXP-03 Navigate away from unsaved form | PASS | Passed: [INT-09 UXP-03] interrupted enquiry recovers its draft and in-app/back navigation offers stay or discard (chromium); Passed: [INT-09 UXP-03] interrupted enquiry recovers its draft and in-app/back navigation offers stay or discard (webkit) |
 | UXP-04 Small phone with keyboard open | BLOCKED | Responsive browser widths pass, but a physical phone with the software keyboard open was not tested. |
 | UXP-05 Screen reader and keyboard operation | BLOCKED | Automated accessibility checks and Escape behavior pass; a full screen-reader and keyboard-only walkthrough remains unverified. |
-| UXP-06 Android native app against same backend | BLOCKED | No signed Android native build exists. Responsive mobile web/PWA is the implemented client. |
-| UXP-07 Windows native app against same backend | BLOCKED | No signed Windows native build exists. Desktop web/PWA is the implemented client. |
+| UXP-06 Android native app against same backend | BLOCKED | Android development APK built and signature verified. Emulator installation, login, customer isolation, demo switching and restart persistence passed; the full assigned repair, photo and invoice workflow in the installed client remains unverified. |
+| UXP-07 Windows native app against same backend | BLOCKED | Portable Windows executable built. Packaged-client login, customer isolation and demo switching passed; the executable has no production publisher signature and release update/uninstall checks remain unverified. |
 | UXP-08 Offline during field visit | PASS | Passed: [CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (chromium); Passed: [CRM-09 BIL-10 UXP-08] repair appointment, diagnosis, approval, real photo and service document on desktop and phone (webkit) |
-| UXP-09 Barcode camera on a physical phone | BLOCKED | All generated barcode images can be decoded by software; physical-phone camera scanning in HTTPS remains unverified. |
+| UXP-09 Barcode camera on a physical phone | BLOCKED | All 198 current barcode images and printable labels decode correctly. Browser photo decoding and a synthetic moving video feed using the actual camera-frame decoder passed; physical-phone camera scanning remains unverified. |
 | UXP-10 Client is older than backend | PASS | Passed: Customer follow-up and workflow compatibility [UXP-10] older repair payload cannot silently supply a charge or replacement outside approved diagnosis |

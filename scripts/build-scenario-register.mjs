@@ -103,7 +103,7 @@ for (const c of catalog.cases) {
     checked_at: checked,
     commit,
     environment:
-      "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Physical devices and native binaries unverified.",
+      "Windows; Node 24; PostgreSQL 18; isolated API schemas; Chromium desktop and WebKit mobile emulation. Packaged Windows and Android emulator smoke checks passed separately; physical-device and full native workflow gates remain unverified.",
   };
 }
 if (Object.keys(register).length !== 200)

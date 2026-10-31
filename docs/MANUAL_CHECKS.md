@@ -54,7 +54,7 @@ Source: [Chrome's USB port forwarding instructions](https://developer.chrome.com
 1. Install SunPower-Android-demo.apk from Downloads. It is signed with a local development key; APK signature verification passed.
 2. Connect the phone by USB and forward port 3001 as described in NATIVE_APPS.md, or configure a trusted HTTPS server through the app's Server button.
 3. Login, customer isolation, account switching and restart persistence passed on an Android 15 emulator. On the actual phone, complete a repair with photos, deny then allow camera permission, check the keyboard, restart and confirm saved state.
-4. Keep the original release acceptance gate BLOCKED until physical-device checks and production signing/distribution are completed. A debug-signed APK is an installable demo, not a Play Store release.
+4. Keep this scenario BLOCKED until the complete assigned repair, photo and invoice workflow is checked in the installed client. The verified development signature establishes an installable demo, not a Play Store release.
 
 ## UXP-07 — signed Windows application
 

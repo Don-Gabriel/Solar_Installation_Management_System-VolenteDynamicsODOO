@@ -19,19 +19,19 @@
   },
   "UXP-06": {
     "status": "BLOCKED",
-    "observed": "No signed Android native build exists. Responsive mobile web/PWA is the implemented client.",
-    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "observed": "Android development APK built and signature verified. Emulator installation, login, customer isolation, demo switching and restart persistence passed; the full assigned repair, photo and invoice workflow in the installed client remains unverified.",
+    "evidence": "scripts/build-android.ps1; scripts/check-native-android.mjs; output/qa/android-native-admin.png; docs/NATIVE_APPS.md",
     "defect": "GAP-UXP-06"
   },
   "UXP-07": {
     "status": "BLOCKED",
-    "observed": "No signed Windows native build exists. Desktop web/PWA is the implemented client.",
-    "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
+    "observed": "Portable Windows executable built. Packaged-client login, customer isolation and demo switching passed; the executable has no production publisher signature and release update/uninstall checks remain unverified.",
+    "evidence": "scripts/check-native-windows.mjs; output/qa/windows-native-admin.png; docs/NATIVE_APPS.md",
     "defect": "GAP-UXP-07"
   },
   "UXP-09": {
     "status": "BLOCKED",
-    "observed": "All generated barcode images can be decoded by software; physical-phone camera scanning in HTTPS remains unverified.",
+    "observed": "All 198 current barcode images and printable labels decode correctly. Browser photo decoding and a synthetic moving video feed using the actual camera-frame decoder passed; physical-phone camera scanning remains unverified.",
     "evidence": "Current source review against docs/scenarios/catalog-source.txt; any partial runtime evidence is retained separately.",
     "defect": "GAP-UXP-09"
   }
