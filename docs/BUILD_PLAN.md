@@ -1,10 +1,12 @@
 # Build plan
 
-Revision 3 · 31 October 2026 · Solo developer · Deadline 1 November 2026, 09:00 IST.
+Revision 4 · 31 October 2026 · Solo developer · Deadline 1 November 2026, 09:00 IST.
 
 ## Current implementation status
 
 The first working build implements the enquiry-to-installation lifecycle, serialized inventory, warranty service, role-based access, evidence storage and financial reports. The native local PostgreSQL setup is running. See [VERIFICATION.md](VERIFICATION.md) for passed checks and gaps, and [DEMO.md](DEMO.md) for rehearsal.
+
+The usability revision adds project next-step guidance, return links that preserve list context, accessible mobile navigation, categorized fields and opt-in synthetic presets. New barcode, staff-directory and screen-guide screens support demonstration. The additive demo seed now contains 40 customer projects, 32 staff and 198 serialized devices. Illustrated PDFs and the barcode test kit are generated locally; see [USER_GUIDE.md](USER_GUIDE.md). Staff account editing remains outside scope.
 
 The schedule below remains the original planning baseline. Remaining release work is physical-phone/HTTPS verification, Docker execution, demo rehearsal and the organizer's actual submission. Chromium, Firefox and WebKit journeys passed in Linux CI; the local Windows Firefox runtime cannot launch. Catalogue and user administration screens, full payroll, cancellation/refund flows and offline synchronization are outside this first build.
 

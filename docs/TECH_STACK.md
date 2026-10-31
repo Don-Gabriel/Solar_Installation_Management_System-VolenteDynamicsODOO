@@ -38,6 +38,8 @@ flowchart LR
 | Session protection | HttpOnly cookies, Secure over HTTPS, SameSite policy, CSRF protection, login throttling | Protect browser-authenticated mutations; never store session credentials in localStorage. |
 | File evidence | Multipart uploads to a private volume, metadata in PostgreSQL | Photos and signatures stay associated with a job and require authorization to retrieve. Validate size/type and generate server-side names. |
 | Barcode capture | `@zxing/browser` + compatible `@zxing/library`; keyboard-wedge scanner support | Decode on-device without calling an external service. Manual entry is an explicit fallback. |
+| Barcode labels | JsBarcode Code 128 SVG; ReportLab for the local printable pack | Encode actual saved alphanumeric serials. No external barcode service or invented device identities. |
+| Screen guide | Shared JSON, in-app React help and a local ReportLab PDF generator | Keep screen explanations consistent; illustrated artifacts are generated separately from the production app. |
 | Signature capture | `signature_pad` | Touch/mouse signature input, linked to a saved completion record. This is evidence capture, not identity certification. |
 | Reports | SQL-backed summaries, responsive charts/tables, print styles and CSV export | Trace totals to records; prevent CSV formula injection. Print-to-PDF provides shareable reports without a remote PDF API. |
 | PWA shell | Manifest and a small service worker using `vite-plugin-pwa` | Home-screen/app-like access where supported. Cache only the public static shell, not authenticated APIs or private evidence. |

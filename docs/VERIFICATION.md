@@ -2,7 +2,21 @@
 
 Verified locally on Windows, 31 October 2026, using Node 24.15.0 and dedicated PostgreSQL 18.6. Results describe this build, not a security certification or a claim of production readiness.
 
-The [GitHub Actions Linux run for application commit 1aa525c](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO/actions/runs/41173148316) also completed successfully: clean `npm ci`, type checks, **20 integration tests**, production build and **6 browser tests across Chromium, Firefox and WebKit**. This subsequent update changes documentation only.
+The previous [GitHub Actions Linux run for application commit 1aa525c](https://github.com/Don-Gabriel/Solar_Installation_Management_System-VolenteDynamicsODOO/actions/runs/41173148316) completed successfully: clean `npm ci`, type checks, **20 integration tests**, production build and **6 browser tests across Chromium, Firefox and WebKit**. The new usability revision is recorded separately below.
+
+## Usability revision - 31 October 2026
+
+- Type checks and production build passed.
+- **22 PostgreSQL integration tests passed**, including the complete barcode library, administrator-only staff directory, denied access for other roles, disabled test helpers and proof that the available-serial picker does not mutate stock.
+- **10 local browser tests passed across Chromium and WebKit**: full saved installation journey, public enquiry, next-step navigation, retained search/stage after returning and reloading, mobile menu Escape behavior, six screen overflow/accessibility checks, and separate staff-role sessions with server denial checks.
+- Axe checks report no violations for the selected WCAG 2 A/AA and 2.1 AA tags on Home and the six phone screens: staff, barcodes, guide, stock, repairs and reports. This is automated sample coverage, not full conformance.
+- Demo export confirms **40 projects, 32 staff (19 installers), and 198 serialized devices**. Seed expansion preserves existing demo work and has its own idempotent marker.
+- Generated and visually reviewed **29 guide pages and 18 barcode pages**. Software decoding matches all **198 PNG labels and 198 unique PDF labels** to saved serials. Actual printed-label/camera scanning remains unverified.
+- `npm audit --omit=dev`: **0 reported vulnerabilities**. Full dependency audit still reports six low-severity development advisories.
+- Static Latin font weights replace variable-font imports after a WebKit readability issue. Focusable table regions, wrapped phone tabs and inactive-tab colors were corrected based on browser failures and retested successfully.
+- The guide documents the remaining lack of a general in-app unsaved-form guard. Save forms before changing sections. List search/filter context is retained.
+
+The results below describe the earlier baseline where counts differ.
 
 ## Passed
 
