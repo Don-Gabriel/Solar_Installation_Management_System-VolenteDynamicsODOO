@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import { seedExpanded } from "./expanded.js";
+import { seedOperations } from "./operations.js";
 import { pool, transaction, one } from "../../apps/api/src/db.js";
 import * as sales from "../../apps/api/src/modules/sales.js";
 import * as stock from "../../apps/api/src/modules/inventory.js";
@@ -214,13 +215,16 @@ try {
       const job = await one(db, "SELECT * FROM jobs WHERE order_id=$1", [
         order.id,
       ]);
-      const scheduled = new Date();
-      scheduled.setHours(9 + (index % 3) * 3, 0, 0, 0);
-      await field.assignJob(db, admin, job.id, {
-        technician_id: techs[index % techs.length].id,
-        scheduled_at: scheduled.toISOString(),
-        duration_hours: 3,
-      });
+      const scheduled = new Date(new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'})+'T'+String(9+(index%3)*2).padStart(2,'0')+':00:00+05:30');
+      // Synthetic historical schedule import. Live booking still requires future working hours.
+      await db.query(
+        "UPDATE jobs SET technician_id=$2,scheduled_at=$3,duration_hours=3,status='scheduled' WHERE id=$1",
+        [job.id, techs[index % techs.length].id, scheduled],
+      );
+      await db.query(
+        "INSERT INTO job_crew(job_id,user_id,is_lead) VALUES($1,$2,true)",
+        [job.id, techs[index % techs.length].id],
+      );
       if (stage === "packing") continue;
       await stock.reserveStock(db, admin.id, order.id);
       const lines = (
@@ -294,6 +298,10 @@ try {
     );
   });
   await seedExpanded(hash);
+  await pool.query(
+    "UPDATE job_crew c SET labour_minutes=j.labour_minutes,hourly_rate_minor=j.hourly_rate_minor,labour_cost_minor=j.labour_cost_minor FROM jobs j WHERE c.job_id=j.id AND j.status='completed' AND c.labour_cost_minor IS NULL",
+  );
+  await seedOperations(hash);
 } finally {
   await pool.end();
 }

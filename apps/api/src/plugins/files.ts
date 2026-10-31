@@ -6,97 +6,129 @@ import sharp from "sharp";
 import type { FastifyInstance } from "fastify";
 import { pool, one, ensure, transaction, audit } from "../db.js";
 import { accessibleJob } from "../modules/field.js";
+import { accessibleTicket } from "../modules/service.js";
 import { allow } from "./auth.js";
 import { Params } from "../../../../packages/contracts/src/index.js";
 export const uploadDir = resolve(process.env.UPLOAD_DIR || "data/uploads");
 export async function fileRoutes(app: FastifyInstance) {
   await mkdir(uploadDir, { recursive: true });
-  app.post(
-    "/api/jobs/:id/evidence",
-    { schema: { params: Params } },
-    async (req) => {
-      allow(req, ["admin", "technician"]);
-      const { id } = req.params as { id: string };
-      await transaction((db) => accessibleJob(db, req.user, id));
-      const file = await req.file();
-      ensure(file, "Choose a photo or signature file.", 400);
-      const kind = (file.fields.kind as { value?: string })?.value;
-      ensure(
-        kind === "photo" || kind === "signature",
-        "Evidence kind must be photo or signature.",
-        400,
-      );
-      const bytes = await file.toBuffer();
-      ensure(
-        !file.file.truncated && bytes.length <= 8 * 1024 * 1024,
-        "File exceeds the 8 MB limit.",
-        413,
-      );
-      const png = bytes
-        .subarray(0, 8)
-        .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
-      const jpeg = bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255;
-      const webp =
-        bytes.toString("ascii", 0, 4) === "RIFF" &&
-        bytes.toString("ascii", 8, 12) === "WEBP";
-      ensure(png || jpeg || webp, "Use a PNG, JPEG or WebP image.", 415);
-      ensure(
-        kind !== "signature" || png,
-        "Signatures must be PNG images.",
-        415,
-      );
-      let normalized: Buffer;
-      try {
-        normalized = await sharp(bytes, {
-          limitInputPixels: 20000000,
-          failOn: "error",
-        })
-          .rotate()
-          .toBuffer();
-      } catch {
+  for (const target of ["jobs", "tickets"])
+    app.post(
+      `/api/${target}/:id/evidence`,
+      { schema: { params: Params } },
+      async (req) => {
+        allow(req, ["admin", "technician"]);
+        const { id } = req.params as { id: string };
+        await transaction((db) =>
+          target === "jobs"
+            ? accessibleJob(db, req.user, id)
+            : accessibleTicket(db, req.user, id, true),
+        );
+        const file = await req.file();
+        ensure(file, "Choose a photo or signature file.", 400);
+        const kind = (file.fields.kind as { value?: string })?.value;
         ensure(
-          false,
-          "The image could not be decoded. Use a valid image under 20 megapixels.",
+          kind === "photo" || kind === "signature",
+          "Evidence kind must be photo or signature.",
+          400,
+        );
+        const bytes = await file.toBuffer();
+        ensure(
+          !file.file.truncated && bytes.length <= 8 * 1024 * 1024,
+          "File exceeds the 8 MB limit.",
+          413,
+        );
+        const png = bytes
+          .subarray(0, 8)
+          .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+        const jpeg = bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255;
+        const webp =
+          bytes.toString("ascii", 0, 4) === "RIFF" &&
+          bytes.toString("ascii", 8, 12) === "WEBP";
+        ensure(png || jpeg || webp, "Use a PNG, JPEG or WebP image.", 415);
+        ensure(
+          kind !== "signature" || png,
+          "Signatures must be PNG images.",
           415,
         );
-      }
-      ensure(
-        normalized.length <= 8 * 1024 * 1024,
-        "The decoded image exceeds the 8 MB limit. Resize it and retry.",
-        413,
-      );
-      const mime = png ? "image/png" : jpeg ? "image/jpeg" : "image/webp",
-        filename = `${randomUUID()}.${png ? "png" : jpeg ? "jpg" : "webp"}`,
-        path = resolve(uploadDir, filename);
-      await writeFile(path, normalized, { flag: "wx" });
-      try {
-        return await transaction(async (db) => {
-          const job = await accessibleJob(db, req.user, id);
+        let normalized: Buffer;
+        try {
+          normalized = await sharp(bytes, {
+            limitInputPixels: 20000000,
+            failOn: "error",
+          })
+            .rotate()
+            .toBuffer();
+        } catch {
           ensure(
-            job.status === "in_progress",
-            "Start this job before saving evidence.",
+            false,
+            "The image could not be decoded. Use a valid image under 20 megapixels.",
+            415,
           );
-          const row = await one(
-            db,
-            "INSERT INTO evidence(job_id,kind,filename,mime,size_bytes,uploaded_by) VALUES($1,$2,$3,$4,$5,$6) RETURNING id,kind,size_bytes",
-            [id, kind, filename, mime, normalized.length, req.user.id],
-          );
-          await audit(
-            db,
-            req.user.id,
-            "project",
-            job.project_id,
-            "evidence.saved",
-            { kind, evidence_id: row.id },
-          );
-          return row;
-        });
-      } catch (e) {
-        await unlink(path).catch(() => {});
-        throw e;
-      }
-    },
-  );
+        }
+        ensure(
+          normalized.length <= 8 * 1024 * 1024,
+          "The decoded image exceeds the 8 MB limit. Resize it and retry.",
+          413,
+        );
+        const mime = png ? "image/png" : jpeg ? "image/jpeg" : "image/webp",
+          filename = `${randomUUID()}.${png ? "png" : jpeg ? "jpg" : "webp"}`,
+          path = resolve(uploadDir, filename);
+        await writeFile(path, normalized, { flag: "wx" });
+        try {
+          return await transaction(async (db) => {
+            const job =
+              target === "jobs"
+                ? await accessibleJob(db, req.user, id)
+                : await accessibleTicket(db, req.user, id, true);
+            const visit =
+              target === "tickets"
+                ? await one(
+                    db,
+                    "SELECT v.id FROM visits v WHERE v.ticket_id=$1 AND v.status='in_progress' AND ($2::uuid IS NULL OR EXISTS(SELECT 1 FROM visit_crew c WHERE c.visit_id=v.id AND c.user_id=$2)) ORDER BY v.starts_at DESC LIMIT 1 FOR UPDATE",
+                    [id, req.user.role === "technician" ? req.user.id : null],
+                  )
+                : null;
+            ensure(
+              target === "jobs"
+                ? job.status === "in_progress"
+                : visit &&
+                    !["closed", "cancelled", "awaiting_confirmation"].includes(
+                      job.status,
+                    ),
+              "Start the assigned visit before saving evidence. Completed evidence cannot be changed.",
+            );
+            const row = await one(
+              db,
+              "INSERT INTO evidence(job_id,ticket_id,visit_id,kind,filename,mime,size_bytes,uploaded_by,diagnosis_revision) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id,kind,size_bytes",
+              [
+                target === "jobs" ? id : null,
+                target === "tickets" ? id : null,
+                visit?.id || null,
+                kind,
+                filename,
+                mime,
+                normalized.length,
+                req.user.id,
+                target === "tickets" ? job.diagnosis_revision : null,
+              ],
+            );
+            await audit(
+              db,
+              req.user.id,
+              "project",
+              job.project_id,
+              "evidence.saved",
+              { kind, evidence_id: row.id },
+            );
+            return row;
+          });
+        } catch (e) {
+          await unlink(path).catch(() => {});
+          throw e;
+        }
+      },
+    );
   app.get(
     "/api/evidence/:id",
     { schema: { params: Params } },
@@ -104,13 +136,29 @@ export async function fileRoutes(app: FastifyInstance) {
       const { id } = req.params as { id: string };
       const file = await one(
         pool,
-        "SELECT e.*,j.technician_id FROM evidence e JOIN jobs j ON j.id=e.job_id WHERE e.id=$1",
+        "SELECT e.*,j.technician_id FROM evidence e LEFT JOIN jobs j ON j.id=e.job_id WHERE e.id=$1",
         [id],
       );
       ensure(file, "Evidence not found", 404);
-      allow(req, ["admin", "technician", "sales", "support", "surveyor"]);
+      allow(req, [
+        "admin",
+        "technician",
+        "sales",
+        "support",
+        "surveyor",
+        "coordinator",
+      ]);
+      if (file.ticket_id)
+        await accessibleTicket(pool, req.user, file.ticket_id);
       ensure(
-        req.user.role !== "technician" || file.technician_id === req.user.id,
+        file.ticket_id ||
+          req.user.role !== "technician" ||
+          file.technician_id === req.user.id ||
+          (await one(
+            pool,
+            "SELECT 1 FROM job_crew WHERE job_id=$1 AND user_id=$2",
+            [file.job_id, req.user.id],
+          )),
         "This evidence belongs to another technician’s job.",
         403,
       );

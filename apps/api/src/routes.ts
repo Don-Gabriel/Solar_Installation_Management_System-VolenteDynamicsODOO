@@ -8,6 +8,8 @@ import * as stock from "./modules/inventory.js";
 import * as field from "./modules/field.js";
 import * as service from "./modules/service.js";
 import * as read from "./modules/queries.js";
+import * as staff from "./modules/staff.js";
+import * as scheduling from "./modules/scheduling.js";
 type Command = (
   db: Db,
   req: FastifyRequest,
@@ -81,11 +83,14 @@ export async function routes(app: FastifyInstance) {
     return {
       items: (
         await pool.query(
-          "SELECT u.id,u.name,u.email,u.role,u.active,(SELECT count(*)::integer FROM jobs j WHERE j.technician_id=u.id AND j.status<>'completed') AS open_jobs FROM users u ORDER BY u.role,u.name",
+          "SELECT u.id,u.name,u.email,u.role,u.active,u.dispatch_enabled,u.skills,u.working_days,(SELECT count(*)::integer FROM jobs j WHERE j.technician_id=u.id AND j.status<>'completed') AS open_jobs FROM users u ORDER BY u.role,u.name",
         )
       ).rows,
     };
   });
+  command("/users/:id/access", ["admin"], C.StaffUpdate, (db, r, id, b) =>
+    staff.updateStaff(db, r.user, id, b),
+  );
   app.get("/api/barcodes", async (req) => {
     allow(req, ["admin", "warehouse", "accounts"]);
     return {
@@ -161,7 +166,7 @@ export async function routes(app: FastifyInstance) {
   app.get("/api/jobs", async (req) => ({
     items: (
       await pool.query(
-        `${read.projectSelect} WHERE j.id IS NOT NULL AND ($1::uuid IS NULL OR j.technician_id=$1) ORDER BY j.scheduled_at NULLS LAST`,
+        `${read.projectSelect} WHERE j.id IS NOT NULL AND ($1::uuid IS NULL OR j.technician_id=$1 OR EXISTS(SELECT 1 FROM job_crew jc WHERE jc.job_id=j.id AND jc.user_id=$1)) ORDER BY j.scheduled_at NULLS LAST`,
         [req.user.role === "technician" ? req.user.id : null],
       )
     ).rows,
@@ -171,9 +176,119 @@ export async function routes(app: FastifyInstance) {
     return read.passports((req.query as any).search || "");
   });
   app.get("/api/tickets", (req) => {
-    allow(req, ["admin", "support", "accounts"]);
-    return read.ticketList();
+    allow(req, [
+      "admin",
+      "support",
+      "accounts",
+      "coordinator",
+      "technician",
+      "warehouse",
+    ]);
+    return service.ticketList(req.user);
   });
+  app.get("/api/tickets/:id", { schema: { params: C.Params } }, (req) => {
+    allow(req, [
+      "admin",
+      "support",
+      "accounts",
+      "coordinator",
+      "technician",
+      "warehouse",
+    ]);
+    return service.detail(req.user, (req.params as any).id);
+  });
+  app.get(
+    "/api/schedule/availability",
+    { schema: { querystring: C.Availability } },
+    (req) => {
+      allow(req, ["admin", "coordinator"]);
+      return scheduling.availability(req.query);
+    },
+  );
+  app.get("/api/schedule", async (req) => {
+    allow(req, ["admin", "coordinator", "technician", "support", "surveyor"]);
+    const tech = req.user.role === "technician" ? req.user.id : null;
+    return {
+      installations: (
+        await pool.query(
+          `${read.projectSelect} WHERE j.status IN ('scheduled','in_progress') AND ($1::uuid IS NULL OR j.technician_id=$1 OR EXISTS(SELECT 1 FROM job_crew jc WHERE jc.job_id=j.id AND jc.user_id=$1)) ORDER BY j.scheduled_at`,
+          [tech],
+        )
+      ).rows,
+      visits: (
+        await pool.query(
+          "SELECT v.*,c.name AS customer_name,t.number AS ticket_number,coalesce((SELECT json_agg(json_build_object('id',u.id,'name',u.name,'is_lead',vc.is_lead)) FROM visit_crew vc JOIN users u ON u.id=vc.user_id WHERE vc.visit_id=v.id),'[]') AS crew,EXISTS(SELECT 1 FROM staff_leave sl JOIN visit_crew vc ON vc.user_id=sl.user_id WHERE vc.visit_id=v.id AND sl.starts_at<v.ends_at AND sl.ends_at>v.starts_at) AS leave_conflict,EXISTS(SELECT 1 FROM visit_crew vc JOIN users u ON u.id=vc.user_id WHERE vc.visit_id=v.id AND (NOT u.active OR NOT u.dispatch_enabled OR NOT v.required_skill=ANY(u.skills) OR (vc.is_lead AND NOT 'crew_lead'=ANY(u.skills)))) AS staffing_conflict FROM visits v JOIN projects p ON p.id=v.project_id JOIN sites s ON s.id=p.site_id JOIN customers c ON c.id=s.customer_id LEFT JOIN tickets t ON t.id=v.ticket_id WHERE ($1::uuid IS NULL OR EXISTS(SELECT 1 FROM visit_crew vc WHERE vc.visit_id=v.id AND vc.user_id=$1)) ORDER BY v.starts_at",
+          [tech],
+        )
+      ).rows,
+      leave: (
+        await pool.query(
+          "SELECT l.*,u.name FROM staff_leave l JOIN users u ON u.id=l.user_id WHERE ($1::uuid IS NULL OR l.user_id=$1) ORDER BY starts_at",
+          [tech],
+        )
+      ).rows,
+      technicians: (
+        await pool.query(
+          "SELECT id,name,skills,dispatch_enabled FROM users WHERE role='technician' AND active ORDER BY name",
+        )
+      ).rows,
+    };
+  });
+  command(
+    "/visits",
+    ["admin", "coordinator"],
+    C.VisitBooking,
+    (db, r, _id, b) => scheduling.bookVisit(db, r.user, b),
+  );
+  command(
+    "/visits/:id/action",
+    ["admin", "coordinator", "technician"],
+    C.VisitAction,
+    (db, r, id, b) => scheduling.visitAction(db, r.user, id, b),
+  );
+  command("/staff-leave", ["admin", "coordinator"], C.Leave, (db, r, _id, b) =>
+    scheduling.addLeave(db, r.user, b),
+  );
+  command(
+    "/tickets/:id/diagnosis",
+    ["admin", "coordinator", "technician"],
+    C.Diagnosis,
+    (db, r, id, b) => service.saveDiagnosis(db, r.user, id, b),
+  );
+  command(
+    "/tickets/:id/approval",
+    ["admin", "coordinator", "support", "accounts"],
+    C.EstimateApproval,
+    (db, r, id, b) => service.approveEstimate(db, r.user, id, b),
+  );
+  command(
+    "/tickets/:id/note",
+    ["admin", "coordinator", "support"],
+    C.TicketNote,
+    (db, r, id, b) => service.noteTicket(db, r.user, id, b),
+  );
+  command(
+    "/service-returns/:id/receive",
+    ["admin", "warehouse"],
+    C.Confirmation,
+    async (db, r, id, b) => {
+      const row = await one(
+        db,
+        "UPDATE service_returns SET status='quarantined',received_by=$2,received_at=now(),note=$3 WHERE id=$1 AND status='pending_return' RETURNING *",
+        [id, r.user.id, b.confirmed_by],
+      );
+      ensure(row, "Return already received or not found.");
+      await audit(
+        db,
+        r.user.id,
+        "ticket",
+        row.ticket_id,
+        "return.quarantined",
+        { return_id: id },
+      );
+      return row;
+    },
+  );
   app.get("/api/reports", (req) => {
     allow(req, ["admin", "accounts"]);
     return read.financeSummary((req.query as any).period || "month");
@@ -230,8 +345,11 @@ export async function routes(app: FastifyInstance) {
         }),
       ),
   );
-  command("/projects", ["admin", "sales"], C.Enquiry, (db, r, _id, b) =>
-    sales.createEnquiry(db, r.user.id, b),
+  command(
+    "/projects",
+    ["admin", "sales", "support", "coordinator"],
+    C.Enquiry,
+    (db, r, _id, b) => sales.createEnquiry(db, r.user.id, b),
   );
   command(
     "/projects/:id/surveys",
@@ -284,8 +402,11 @@ export async function routes(app: FastifyInstance) {
     undefined,
     (db, r, id) => stock.deliverOrder(db, r.user.id, id),
   );
-  command("/jobs/:id/assignment", ["admin"], C.Assignment, (db, r, id, b) =>
-    field.assignJob(db, r.user, id, b),
+  command(
+    "/jobs/:id/assignment",
+    ["admin", "coordinator"],
+    C.Assignment,
+    (db, r, id, b) => field.assignJob(db, r.user, id, b),
   );
   command("/jobs/:id/start", ["admin", "technician"], undefined, (db, r, id) =>
     field.startJob(db, r.user, id),
@@ -302,14 +423,17 @@ export async function routes(app: FastifyInstance) {
     C.Subsidy,
     (db, r, id, b) => field.saveSubsidy(db, r.user, id, b),
   );
-  command("/tickets", ["admin", "support"], C.Ticket, (db, r, _id, b) =>
-    service.createTicket(db, r.user.id, b),
+  command(
+    "/tickets",
+    ["admin", "support", "coordinator"],
+    C.Ticket,
+    (db, r, _id, b) => service.createTicket(db, r.user.id, b),
   );
   command(
     "/tickets/:id/resolution",
-    ["admin", "support"],
+    ["admin", "technician"],
     C.Resolution,
-    (db, r, id, b) => service.resolveTicket(db, r.user.id, id, b),
+    (db, r, id, b) => service.resolveTicket(db, r.user, id, b),
   );
   command(
     "/tickets/:id/confirmation",
@@ -318,24 +442,15 @@ export async function routes(app: FastifyInstance) {
     (db, r, id, b) => service.confirmTicket(db, r.user.id, id, b),
   );
   command(
+    "/jobs/:id/crew-pay",
+    ["admin", "accounts"],
+    C.CrewPayment,
+    (db, r, id, b) => field.payCrew(db, r.user, id, b),
+  );
+  command(
     "/jobs/:id/pay",
     ["admin", "accounts"],
     C.Confirmation,
-    async (db, r, id, b) => {
-      const j = await one(db, "SELECT * FROM jobs WHERE id=$1 FOR UPDATE", [
-        id,
-      ]);
-      ensure(
-        j?.status === "completed",
-        "Only completed jobs have a payable labour amount.",
-      );
-      const pay = await one(
-        db,
-        "INSERT INTO technician_payments(job_id,amount_minor,reference) VALUES($1,$2,$3) ON CONFLICT(job_id) DO NOTHING RETURNING *",
-        [id, j.labour_cost_minor, b.confirmed_by],
-      );
-      await audit(db, r.user.id, "job", id, "labour.paid");
-      return pay || { already_paid: true };
-    },
+    (db, r, id, b) => field.payCrew(db, r.user, id, b),
   );
 }

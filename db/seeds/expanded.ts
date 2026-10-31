@@ -167,9 +167,8 @@ export async function seedExpanded(hash: string) {
       const job = await one(db, "SELECT id FROM jobs WHERE order_id=$1", [
         order.id,
       ]);
-      const scheduled = new Date();
-      scheduled.setDate(scheduled.getDate() + 1 + Math.floor(i / 7));
-      scheduled.setHours(9, 0, 0, 0);
+      const scheduled = new Date(new Date(Date.now()+(1+Math.floor(i/7))*86400000).toLocaleDateString('en-CA',{timeZone:'Asia/Kolkata'})+'T09:00:00+05:30');
+      while(scheduled.getUTCDay()===0)scheduled.setUTCDate(scheduled.getUTCDate()+1);
       await field.assignJob(db, admin, job.id, {
         technician_id: techs[Math.floor(i / 7) % techs.length].id,
         scheduled_at: scheduled.toISOString(),

@@ -9,7 +9,7 @@ export async function listProjects(user: User, q: any) {
   const search = `%${q.search || ""}%`,
     page = q.page || 1,
     limit = q.limit || 50;
-  const where = ` WHERE (c.name ILIKE $1 OR c.phone ILIKE $1 OR s.address ILIKE $1 OR p.number::text ILIKE $1) AND ($2::text IS NULL OR p.stage=$2) AND ($3::uuid IS NULL OR j.technician_id=$3)`;
+  const where = ` WHERE (c.name ILIKE $1 OR c.phone ILIKE $1 OR s.address ILIKE $1 OR p.number::text ILIKE $1) AND ($2::text IS NULL OR p.stage=$2) AND ($3::uuid IS NULL OR j.technician_id=$3 OR EXISTS(SELECT 1 FROM job_crew jc WHERE jc.job_id=j.id AND jc.user_id=$3) OR EXISTS(SELECT 1 FROM tickets t WHERE t.project_id=p.id AND t.assigned_to=$3) OR EXISTS(SELECT 1 FROM visits v JOIN visit_crew vc ON vc.visit_id=v.id WHERE v.project_id=p.id AND vc.user_id=$3 AND v.status<>'cancelled'))`;
   const args = [
     search,
     q.status || null,
@@ -35,7 +35,18 @@ export async function projectDetail(user: User, id: string) {
     project.order_id || null,
   ]);
   ensure(
-    user.role !== "technician" || job?.technician_id === user.id,
+    user.role !== "technician" ||
+      job?.technician_id === user.id ||
+      (await one(
+        pool,
+        "SELECT 1 FROM job_crew WHERE job_id=$1 AND user_id=$2",
+        [job?.id || null, user.id],
+      )) ||
+      (await one(
+        pool,
+        "SELECT 1 FROM tickets WHERE project_id=$1 AND assigned_to=$2 UNION ALL SELECT 1 FROM visits v JOIN visit_crew c ON c.visit_id=v.id WHERE v.project_id=$1 AND c.user_id=$2 AND v.status<>'cancelled' LIMIT 1",
+        [id, user.id],
+      )),
     "This job is assigned to another technician.",
     403,
   );
@@ -86,6 +97,19 @@ export async function projectDetail(user: User, id: string) {
   ]);
   const order = orders.rows[0] || null;
   const canFinance = financeRoles.includes(user.role);
+  if (job) {
+    job.crew = (
+      await pool.query(
+        "SELECT c.*,u.name FROM job_crew c JOIN users u ON u.id=c.user_id WHERE job_id=$1 ORDER BY is_lead DESC,u.name",
+        [job.id],
+      )
+    ).rows;
+    if (!canFinance)
+      for (const c of job.crew) {
+        delete c.hourly_rate_minor;
+        delete c.labour_cost_minor;
+      }
+  }
   if (!canFinance) {
     if (order) {
       delete order.total_minor;
@@ -134,9 +158,15 @@ export async function dashboard(user: User) {
   ).rows;
   const tickets = await one(
     pool,
-    "SELECT count(*)::integer AS count FROM tickets WHERE status<>'closed'",
+    "SELECT count(*)::integer AS count FROM tickets WHERE status NOT IN ('closed','cancelled')",
   );
   return {
+    service_queue: (
+      await pool.query(
+        "SELECT t.status,count(*)::int AS count,count(*) FILTER(WHERE t.priority='urgent')::int AS urgent,count(*) FILTER(WHERE EXISTS(SELECT 1 FROM visits v WHERE v.ticket_id=t.id AND v.status='scheduled' AND v.starts_at<now()))::int AS overdue FROM tickets t WHERE t.status NOT IN ('closed','cancelled') AND ($1::uuid IS NULL OR t.assigned_to=$1 OR EXISTS(SELECT 1 FROM visits v JOIN visit_crew c ON c.visit_id=v.id WHERE v.ticket_id=t.id AND c.user_id=$1 AND v.status<>'cancelled')) GROUP BY t.status ORDER BY t.status",
+        [user.role === "technician" ? user.id : null],
+      )
+    ).rows,
     projects: rows.items.slice(0, 6),
     counts:
       user.role === "technician"
@@ -172,7 +202,7 @@ export async function financeSummary(period: string) {
  (SELECT coalesce(sum(pay.amount_minor),0)::bigint FROM payments pay JOIN invoices i ON i.id=pay.invoice_id WHERE i.order_id=o.id) AS collected_minor,
  (SELECT coalesce(sum(l.material_cost_minor),0)::bigint FROM order_lines l WHERE l.order_id=o.id) AS material_cost_minor,
  coalesce(j.labour_cost_minor,0) AS labour_cost_minor,
- (SELECT coalesce(sum(t.parts_cost_minor+t.labour_cost_minor),0)::bigint FROM tickets t JOIN warranties w ON w.id=t.warranty_id JOIN order_lines l ON l.id=w.order_line_id WHERE l.order_id=o.id) AS service_cost_minor
+ (SELECT coalesce(sum(t.parts_cost_minor+t.labour_cost_minor),0)::bigint FROM tickets t WHERE t.project_id=p.id) AS service_cost_minor
  FROM orders o JOIN projects p ON p.id=o.project_id JOIN sites s ON s.id=p.site_id JOIN customers c ON c.id=s.customer_id LEFT JOIN jobs j ON j.order_id=o.id
  WHERE ($1::text IS NULL OR o.confirmed_at>=date_trunc($1::text,now() AT TIME ZONE 'Asia/Kolkata') AT TIME ZONE 'Asia/Kolkata') ORDER BY o.confirmed_at DESC`,
       [interval],
@@ -203,7 +233,7 @@ export async function financeSummary(period: string) {
   );
   const payroll = (
     await pool.query(
-      "SELECT j.id,j.order_id,p.id AS project_id,p.number,u.name,j.labour_minutes,j.hourly_rate_minor,j.labour_cost_minor,tp.paid_at,tp.reference FROM jobs j JOIN users u ON u.id=j.technician_id JOIN orders o ON o.id=j.order_id JOIN projects p ON p.id=o.project_id LEFT JOIN technician_payments tp ON tp.job_id=j.id WHERE j.status='completed' ORDER BY j.finished_at DESC",
+      "SELECT j.id,j.order_id,p.id AS project_id,p.number,u.id AS technician_id,u.name,c.labour_minutes,c.hourly_rate_minor,c.labour_cost_minor,tp.paid_at,tp.reference FROM jobs j JOIN job_crew c ON c.job_id=j.id JOIN users u ON u.id=c.user_id JOIN orders o ON o.id=j.order_id JOIN projects p ON p.id=o.project_id LEFT JOIN crew_payments tp ON tp.job_id=j.id AND tp.user_id=c.user_id WHERE j.status='completed' ORDER BY j.finished_at DESC,u.name",
     )
   ).rows;
   return {
