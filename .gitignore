@@ -20,6 +20,10 @@ playwright-report/
 test-results/
 .vite/
 *.log
+native/android/.gradle/
+native/android/.kotlin/
+native/android/**/build/
+native/android/local.properties
 
 # Local editor and OS files
 .DS_Store

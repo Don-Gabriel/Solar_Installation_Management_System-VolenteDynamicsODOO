@@ -1,0 +1,34 @@
+{
+  "name": "sunpower-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SunPower operations Windows client",
+  "author": "SunPower Operations",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-builder --win portable --x64"
+  },
+  "devDependencies": {
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "local.sunpower.operations",
+    "productName": "SunPower Operations",
+    "directories": {
+      "output": "../../output/native/windows"
+    },
+    "files": [
+      "main.cjs",
+      "package.json"
+    ],
+    "win": {
+      "target": "portable",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "SunPower-Windows-${version}.exe"
+    }
+  }
+}
