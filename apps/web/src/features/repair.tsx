@@ -223,6 +223,7 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
           coverage: l.coverage_override || "auto",
           labour_coverage: l.labour_coverage_override || "auto",
           labour_price: l.labour_price_minor / 100,
+          callout_price: l.callout_price_minor / 100,
           selling_price: l.unit_price_minor / 100,
         })),
       );
@@ -255,6 +256,7 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
               replacement_serial: "",
               labour_minutes: 60,
               labour_price: 500,
+              callout_price: 0,
               selling_price: c.price_minor / 100,
               coverage: "auto",
               labour_coverage: "auto",
@@ -266,7 +268,7 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
     (s: number, l: any) =>
       s +
       ((l.covered ? 0 : l.unit_price_minor * l.quantity) +
-        (l.labour_covered ? 0 : l.labour_price_minor)),
+        (l.labour_covered ? 0 : l.labour_price_minor + l.callout_price_minor)),
     0,
   );
   return (
@@ -422,6 +424,9 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
                   replacement_serial: l.replacement_serial || "",
                   labour_minutes: Number(l.labour_minutes),
                   labour_price_minor: Math.round(Number(l.labour_price) * 100),
+                  callout_price_minor: Math.round(
+                    Number(l.callout_price || 0) * 100,
+                  ),
                   ...(reviewer
                     ? {
                         coverage: l.coverage,
@@ -521,6 +526,22 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
                   </label>
                   {reviewer && (
                     <>
+                      <label>
+                        Callout charge (₹)
+                        <input
+                          type="number"
+                          min={0}
+                          step="0.01"
+                          value={l.callout_price}
+                          onChange={(e) =>
+                            update(i, "callout_price", e.target.value)
+                          }
+                        />
+                        <small>
+                          Agreed travel charge for this work. Uses the labour
+                          coverage decision.
+                        </small>
+                      </label>
                       <label>
                         Part selling price per unit (₹)
                         <input
@@ -636,7 +657,9 @@ function RepairDetail({ id, onBack }: { id: string; onBack: () => void }) {
                     <td>
                       {money(
                         (l.covered ? 0 : l.unit_price_minor * l.quantity) +
-                          (l.labour_covered ? 0 : l.labour_price_minor),
+                          (l.labour_covered
+                            ? 0
+                            : l.labour_price_minor + l.callout_price_minor),
                       )}
                     </td>
                   </tr>

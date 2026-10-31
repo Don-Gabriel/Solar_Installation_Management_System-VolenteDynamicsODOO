@@ -11,7 +11,7 @@ async function signIn(page: any) {
     page.getByRole("heading", { name: /Good morning|Good afternoon/ }),
   ).toBeVisible();
 }
-test("responsive navigation, persisted enquiry and accessible core screens", async ({
+test("[UXP-02] responsive navigation, saved next steps and accessible core screens", async ({
   page,
 }, testInfo) => {
   const errors: string[] = [];
@@ -88,6 +88,18 @@ test("responsive navigation, persisted enquiry and accessible core screens", asy
   await expect(
     page.getByRole("heading", { name: "Invoices & collections" }),
   ).toBeVisible();
+  await page.reload();
+  await expect(
+    page
+      .getByRole("region", { name: "Next project step" })
+      .getByRole("heading", {
+        name: "Record the advance payment",
+        exact: true,
+      }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Your role can handle this step.", { exact: true }),
+  ).toBeVisible();
   await page
     .getByRole("button", { name: "Record payment", exact: true })
     .click();
@@ -96,6 +108,11 @@ test("responsive navigation, persisted enquiry and accessible core screens", asy
     .fill(`QA-${randomUUID()}`);
   await page.getByRole("button", { name: "Save payment", exact: true }).click();
   await expect(page.getByRole("dialog")).toBeHidden();
+  await expect(
+    page
+      .getByRole("region", { name: "Next project step" })
+      .getByRole("heading", { name: "Reserve the equipment", exact: true }),
+  ).toBeVisible();
   await page.getByRole("tab", { name: "Packing & delivery" }).click();
   await page
     .getByRole("button", { name: "Reserve stock for this order" })

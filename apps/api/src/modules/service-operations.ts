@@ -289,8 +289,12 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
       "SELECT * FROM warranties WHERE order_line_id=$1 AND (asset_id=$2 OR (asset_id IS NULL AND $2::uuid IS NULL))",
       [l.id, a?.id || null],
     );
-    ensure(w || l.warranty_months===0 || (line.coverage && line.coverage!=='auto'),
-      'Warranty dates are missing. An authorized reviewer must record a coverage decision before this work can be billed.');
+    ensure(
+      w ||
+        l.warranty_months === 0 ||
+        (line.coverage && line.coverage !== "auto"),
+      "Warranty dates are missing. An authorized reviewer must record a coverage decision before this work can be billed.",
+    );
     let covered =
         !!w &&
         new Date(w.starts_at) <= new Date(t.opened_at) &&
@@ -385,7 +389,7 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
   await db.query("DELETE FROM diagnosis_lines WHERE ticket_id=$1", [id]);
   for (const r of rows)
     await db.query(
-      `INSERT INTO diagnosis_lines(ticket_id,order_line_id,asset_id,warranty_id,product_id,description,finding,quantity,action,replacement_serial,covered,coverage_reason,unit_price_minor,unit_cost_minor,labour_price_minor,labour_cost_minor,labour_minutes,labour_covered,coverage_override,labour_coverage_override) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)`,
+      `INSERT INTO diagnosis_lines(ticket_id,order_line_id,asset_id,warranty_id,product_id,description,finding,quantity,action,replacement_serial,covered,coverage_reason,unit_price_minor,unit_cost_minor,labour_price_minor,labour_cost_minor,labour_minutes,labour_covered,coverage_override,labour_coverage_override,callout_price_minor) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)`,
       [
         id,
         r.l.id,
@@ -407,6 +411,7 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
         r.labourCovered,
         r.line.coverage || "auto",
         r.line.labour_coverage || "auto",
+        r.line.callout_price_minor || 0,
       ],
     );
   await db.query(
@@ -424,6 +429,8 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
       labour_covered: r.labourCovered,
       reason: r.reason,
       price_minor: r.price,
+      labour_price_minor: r.line.labour_price_minor,
+      callout_price_minor: r.line.callout_price_minor || 0,
       finding: r.line.finding,
     })),
     revision: t.version + 1,
@@ -444,7 +451,7 @@ export async function approveEstimate(db: Db, user: User, id: string, b: any) {
     (s, l) =>
       s +
       (l.covered ? 0 : l.unit_price_minor * l.quantity) +
-      (l.labour_covered ? 0 : l.labour_price_minor),
+      (l.labour_covered ? 0 : l.labour_price_minor + l.callout_price_minor),
     0,
   );
   ensure(
@@ -627,7 +634,20 @@ export async function resolveTicket(
     );
     partsCost += l.unit_cost_minor * l.quantity;
     labourCost += l.labour_cost_minor;
-    total += net * l.quantity + labourNet;
+    const calloutNet = l.labour_covered ? 0 : l.callout_price_minor;
+    if (l.callout_price_minor > 0)
+      await db.query(
+        "INSERT INTO invoice_lines(invoice_id,description,quantity,unit_price_minor,gross_unit_price_minor,warranty_credit_minor,coverage_reason) VALUES($1,$2,1,$3,$4,$5,$6)",
+        [
+          invoice.id,
+          "Callout — " + l.description,
+          calloutNet,
+          l.callout_price_minor,
+          l.labour_covered ? l.callout_price_minor : 0,
+          l.coverage_reason,
+        ],
+      );
+    total += net * l.quantity + labourNet + calloutNet;
   }
   ensure(
     [total, partsCost, labourCost].every(

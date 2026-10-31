@@ -4,7 +4,7 @@ export const roleNames: Record<string, string> = {
   sales: "Sales",
   surveyor: "Site surveyor",
   warehouse: "Stock team",
-  technician: "Installer",
+  technician: "Field technician",
   support: "Customer support",
   accounts: "Accounts",
 };
@@ -19,7 +19,7 @@ export const roleDescriptions: Record<string, string> = {
   warehouse:
     "Receive stock, reserve equipment, scan serials and confirm delivery.",
   technician:
-    "See only your assigned projects. Start work, save evidence and finish installation.",
+    "Open assigned installations and repair visits, diagnose faults, save photos and record completed work.",
   support: "Check warranties, record repairs and obtain customer confirmation.",
   accounts:
     "Record customer payments, manage subsidy records and review costs and staff payments.",
@@ -113,9 +113,9 @@ export function nextProjectStep(d: any): Step {
     return {
       title: "Assign an installer and time",
       detail:
-        "The administrator chooses an installer and a time without an overlapping job.",
+        "The administrator or service coordinator chooses a qualified crew and an available time.",
       tab: "installation",
-      roles: ["admin"],
+      roles: ["admin", "coordinator"],
     };
   if (job.status !== "completed")
     return {
@@ -141,6 +141,7 @@ export function nextProjectStep(d: any): Step {
       "technician",
       "support",
       "accounts",
+      "coordinator",
     ],
   };
 }

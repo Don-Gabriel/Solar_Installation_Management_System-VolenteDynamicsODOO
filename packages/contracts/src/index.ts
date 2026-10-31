@@ -218,6 +218,7 @@ export const Diagnosis = Type.Object(
           replacement_serial: optionalText(100),
           labour_minutes: Type.Integer({ minimum: 0, maximum: 10080 }),
           labour_price_minor: Money,
+          callout_price_minor: Type.Optional(Money),
           unit_price_minor: Type.Optional(Money),
           unit_cost_minor: Type.Optional(Money),
           coverage: Type.Optional(

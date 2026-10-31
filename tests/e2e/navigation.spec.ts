@@ -78,7 +78,7 @@ test("phone menu supports Escape and new screens remain readable", async ({
     fullPage: false,
   });
 });
-test("staff roles show different workspaces and server access rules", async ({
+test("[UXP-02] staff roles show permitted next steps, different workspaces and server access rules", async ({
   browser,
 }, info) => {
   for (const [role, email] of [
@@ -116,6 +116,13 @@ test("staff roles show different workspaces and server access rules", async ({
       await expect(
         page.getByRole("heading", { name: "My installation jobs" }),
       ).toBeVisible();
+    }
+    if (role === "sales") {
+      await page.goto("/projects?search=Priya&status=enquiry");
+      await page.locator(".project-row").first().click();
+      await expect(
+        page.getByRole("region", { name: "Next project step" }),
+      ).toContainText("Handled by: Administrator, Site surveyor");
     }
     await page.screenshot({
       path: `output/qa/${info.project.name}-role-${role}.png`,

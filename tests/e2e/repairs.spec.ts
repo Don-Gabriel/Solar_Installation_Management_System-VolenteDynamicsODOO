@@ -10,7 +10,7 @@ async function login(page: any, email = "admin@sunpower.local") {
     page.getByRole("heading", { name: /Good morning|Good afternoon/ }),
   ).toBeVisible();
 }
-test("[BIL-10] repair appointment, diagnosis, approval, real photo and service document on desktop and phone", async ({
+test("[CRM-09 BIL-10] repair appointment, diagnosis, approval, real photo and service document on desktop and phone", async ({
   page,
 }, info) => {
   const errors: string[] = [];
@@ -20,6 +20,23 @@ test("[BIL-10] repair appointment, diagnosis, approval, real photo and service d
   await page
     .getByRole("button", { name: "New repair request", exact: true })
     .click();
+  await page
+    .getByRole("combobox", { name: "Installation", exact: true })
+    .selectOption({ index: 1 });
+  await expect(page.getByLabel("What the customer reported")).toBeVisible();
+  await page
+    .getByLabel("Find customer's installation")
+    .fill("different household");
+  await expect(
+    page.getByRole("combobox", { name: "Installation", exact: true }),
+  ).toHaveValue("");
+  await expect(page.getByLabel("What the customer reported")).toBeHidden();
+  await page.getByLabel("Find customer's installation").fill("");
+  await expect(
+    page
+      .getByRole("combobox", { name: "Installation", exact: true })
+      .locator("option"),
+  ).not.toHaveCount(1);
   await page
     .getByRole("combobox", { name: "Installation", exact: true })
     .selectOption({ index: 1 });

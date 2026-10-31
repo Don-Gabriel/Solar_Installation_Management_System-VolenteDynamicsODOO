@@ -1222,35 +1222,60 @@ describe("Review regressions and real operational requests", () => {
       ),
     ).toBe(initial);
   });
-  it("[DIA-01 WAR-03 WAR-08 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost", async () => {
-    const f = await operationFixture();
+  it("[DIA-01 WAR-03 BIL-02 BIL-09] mixed cover totals exactly INR 1700 while covered stock remains a company cost", async () => {
+    const connector = (
+      await db.query(
+        "INSERT INTO products(sku,name,kind,price_minor,stock_qty,stock_value_minor) VALUES($1,'Solar cable connector','quantity',45000,100,2000000) RETURNING id",
+        ["MIX1-" + id()],
+      )
+    ).rows[0];
+    const pkg = (
+      await db.query(
+        "SELECT id FROM packages WHERE capacity_kw=1 AND system_type='on_grid' ORDER BY version DESC LIMIT 1",
+      )
+    ).rows[0];
+    await db.query(
+      "INSERT INTO package_lines(package_id,product_id,quantity) VALUES($1,$2,2)",
+      [pkg.id, connector.id],
+    );
+    let f: any;
+    try {
+      f = await operationFixture();
+    } finally {
+      await db.query(
+        "DELETE FROM package_lines WHERE package_id=$1 AND product_id=$2",
+        [pkg.id, connector.id],
+      );
+    }
     const { line } = await startDiagnosis(f, {
-      labour_price_minor: 50000,
-      labour_coverage: "chargeable",
-      coverage_reason: "Parts-only company policy",
+      labour_price_minor: 0,
+      unit_price_minor: 1800000,
     });
     let d = await get(`/tickets/${f.ticket.id}`);
-    const panel = d.components.find((c: any) => c.kind === "quantity");
+    const panel = d.components.find((c: any) => c.product_id === connector.id);
     expect(panel).toBeTruthy();
     await post(`/tickets/${f.ticket.id}/diagnosis`, {
       version: d.ticket.version,
       lines: [
         {
           ...line,
-          labour_coverage: "chargeable",
-          coverage_reason: "Parts only",
+          labour_coverage: "covered",
+          unit_price_minor: 1800000,
+          coverage_reason: "Covered inverter repair; no charge for its labour",
         },
         {
           order_line_id: panel.order_line_id,
           quantity: 2,
-          finding:
-            "Two damaged connectors represented by quantity stock fixture",
+          finding: "Two damaged solar cable connectors",
           action: "replace",
-          labour_minutes: 0,
-          labour_price_minor: 0,
-          unit_price_minor: 60000,
+          labour_minutes: 60,
+          labour_price_minor: 60000,
+          callout_price_minor: 20000,
+          unit_price_minor: 45000,
           coverage: "chargeable",
-          coverage_reason: "Accidental damage excluded",
+          labour_coverage: "chargeable",
+          coverage_reason:
+            "Customer approved uncovered connectors, their labour and callout",
         },
       ],
     });
@@ -1262,7 +1287,17 @@ describe("Review regressions and real operational requests", () => {
     });
     d = await get(`/tickets/${f.ticket.id}`);
     expect(d.invoices[0].total_minor).toBe(170000);
-    expect(d.invoices[0].lines).toHaveLength(4);
+    expect(d.invoices[0].lines).toHaveLength(5);
+    expect(
+      d.invoices[0].lines.find((l: any) => l.description.startsWith("Callout"))
+        .unit_price_minor,
+    ).toBe(20000);
+    expect(
+      d.invoices[0].lines.find((l: any) => l.quantity === 2).unit_price_minor,
+    ).toBe(45000);
+    expect(
+      d.invoices[0].lines.find((l: any) => l.warranty_credit_minor === 1800000),
+    ).toBeTruthy();
     expect(d.ticket.parts_cost_minor).toBeGreaterThan(0);
     expect(
       d.invoices[0].lines.reduce(
@@ -1270,6 +1305,32 @@ describe("Review regressions and real operational requests", () => {
         0,
       ),
     ).toBe(170000);
+  });
+  it("[WAR-08 BIL-04] covered parts can have approved charged labour and callout, while full cover credits all three", async () => {
+    for (const covered of [false, true]) {
+      const f = await operationFixture();
+      await startDiagnosis(f, {
+        labour_price_minor: 50000,
+        callout_price_minor: 20000,
+        labour_coverage: covered ? "covered" : "chargeable",
+        coverage_reason: covered
+          ? "Full company cover includes callout"
+          : "Customer agreed parts-only policy, labour and travel charges",
+      });
+      const approval = await approveRepair(f);
+      expect(approval.payable_minor).toBe(covered ? 0 : 70000);
+      await repairPhoto(f.ticket.id);
+      await post(`/tickets/${f.ticket.id}/resolution`, {
+        resolution: "Parts-only versus full-cover rehearsal",
+      });
+      const d = await get(`/tickets/${f.ticket.id}`);
+      expect(d.invoices[0].total_minor).toBe(covered ? 0 : 70000);
+      const callout = d.invoices[0].lines.find((l: any) =>
+        l.description.startsWith("Callout"),
+      );
+      expect(callout.unit_price_minor).toBe(covered ? 0 : 20000);
+      expect(callout.warranty_credit_minor).toBe(covered ? 20000 : 0);
+    }
   });
   it("[DIA-02 DIA-03 CON-03] foreign component, excessive quantity and stale diagnosis are rejected", async () => {
     const f = await operationFixture();
@@ -2456,6 +2517,39 @@ describe("Capacity, payroll and workload verification", () => {
       tickets.filter((t: any) => t.complaint.startsWith(prefix)),
     ).toHaveLength(200);
     expect(Math.max(...times, ticketMs)).toBeLessThan(2000);
+    const day = f.body.starts_at.slice(0, 10);
+    const concurrent = await Promise.all(
+      Array.from({ length: 10 }, async () => {
+        const start = performance.now();
+        const result = await get(
+          "/projects?search=" + prefix + "&page=1&limit=100",
+          "support",
+        );
+        expect(result.total).toBe(1000);
+        const searchMs = performance.now() - start;
+        const slotStart = performance.now();
+        const slots = await get(
+          "/schedule/availability?" +
+            new URLSearchParams({
+              from: day,
+              to: day,
+              skill: "inverter_repair",
+              duration_hours: "2",
+              crew_size: "1",
+            }),
+          "coordinator",
+        );
+        expect(Array.isArray(slots.slots)).toBe(true);
+        return {
+          search_ms: searchMs,
+          availability_ms: performance.now() - slotStart,
+        };
+      }),
+    );
+    expect(Math.max(...concurrent.map((r) => r.search_ms))).toBeLessThan(2000);
+    expect(Math.max(...concurrent.map((r) => r.availability_ms))).toBeLessThan(
+      3000,
+    );
     await mkdir("output/scenarios", { recursive: true });
     await writeFile(
       "output/scenarios/load1.json",
@@ -2466,6 +2560,8 @@ describe("Capacity, payroll and workload verification", () => {
           requests: 200,
           project_page_ms: times,
           ticket_list_ms: ticketMs,
+          concurrent_users: 10,
+          concurrent_timings: concurrent,
           target_ms: 2000,
           environment:
             "Local PostgreSQL and Fastify injection; excludes internet latency",
@@ -2648,15 +2744,108 @@ describe("Customer follow-up and workflow compatibility", () => {
   });
 });
 
-
-describe('Final billing and intake guards',()=>{
- it('[INT-10] explicit phone-only setting blocks anonymous creation while staff intake stays usable',async()=>{
-  const previous=process.env.PUBLIC_INTAKE_ENABLED;process.env.PUBLIC_INTAKE_ENABLED='false';const body={name:'Phone-only caller',phone:'9888888888',address:'Synthetic site',capacity_kw:1,system_type:'on_grid',source:'Phone',subsidy_interest:false};try{expect((await app.inject({method:'POST',url:'/api/enquiries/public',payload:body})).statusCode).toBe(403);await post('/projects',body,'support');}finally{if(previous===undefined)delete process.env.PUBLIC_INTAKE_ENABLED;else process.env.PUBLIC_INTAKE_ENABLED=previous;}
- });
- it('[WAR-07] missing promised policy requires a reviewed decision, never silent billing',async()=>{
-  const f=await operationFixture();await post(`/visits/${f.visit.id}/action`,{action:'start',version:1});let d=await get(`/tickets/${f.ticket.id}`);const c=d.components.find((c:any)=>c.asset_status==='delivered');await db.query('DELETE FROM warranties WHERE id=$1',[c.warranty_id]);const line={order_line_id:c.order_line_id,asset_id:c.asset_id,quantity:1,finding:'Imported policy dates missing',action:'repair',labour_minutes:60,labour_price_minor:50000};const r=await req('POST',`/tickets/${f.ticket.id}/diagnosis`,{version:d.ticket.version,lines:[line]},'technician');expect(r.statusCode).toBe(409);expect(r.body).toContain('reviewer');expect((await get(`/tickets/${f.ticket.id}`)).invoices).toHaveLength(0);await post(`/tickets/${f.ticket.id}/diagnosis`,{version:d.ticket.version,lines:[{...line,coverage:'covered',coverage_reason:'Company accepted goodwill pending policy recovery'}]},'coordinator');expect((await get(`/tickets/${f.ticket.id}`)).lines[0].covered).toBe(true);
- });
- it('[INS-10] material capacity discrepancy blocks handover for review',async()=>{
-  const d=await delivered();const when=new Date(Date.now()+(repairDay+=7)*86400000);while(when.getUTCDay()===0)when.setUTCDate(when.getUTCDate()+1);await post(`/jobs/${d.job.id}/assignment`,{technician_id:accounts.technician.id,scheduled_at:when.toISOString().slice(0,10)+'T09:00:00+05:30',duration_hours:2});await post(`/jobs/${d.job.id}/start`);const r=await req('POST',`/jobs/${d.job.id}/completion`,{capacity_kw:0.5,generation_kw:0.3,labour_minutes:60,signer_name:'Synthetic signer',checklist:{mounting:true,earthing:true,wiring:true,inverter:true,handover:true}},'technician');expect(r.statusCode).toBe(409);expect(r.body).toContain('capacity differs');expect((await get(`/projects/${d.project.id}`)).job.status).toBe('in_progress');
- });
+describe("Final billing and intake guards", () => {
+  it("[INT-10] explicit phone-only setting blocks anonymous creation while staff intake stays usable", async () => {
+    const previous = process.env.PUBLIC_INTAKE_ENABLED;
+    process.env.PUBLIC_INTAKE_ENABLED = "false";
+    const body = {
+      name: "Phone-only caller",
+      phone: "9888888888",
+      address: "Synthetic site",
+      capacity_kw: 1,
+      system_type: "on_grid",
+      source: "Phone",
+      subsidy_interest: false,
+    };
+    try {
+      expect(
+        (
+          await app.inject({
+            method: "POST",
+            url: "/api/enquiries/public",
+            payload: body,
+          })
+        ).statusCode,
+      ).toBe(403);
+      await post("/projects", body, "support");
+    } finally {
+      if (previous === undefined) delete process.env.PUBLIC_INTAKE_ENABLED;
+      else process.env.PUBLIC_INTAKE_ENABLED = previous;
+    }
+  });
+  it("[WAR-07] missing promised policy requires a reviewed decision, never silent billing", async () => {
+    const f = await operationFixture();
+    await post(`/visits/${f.visit.id}/action`, { action: "start", version: 1 });
+    let d = await get(`/tickets/${f.ticket.id}`);
+    const c = d.components.find((c: any) => c.asset_status === "delivered");
+    await db.query("DELETE FROM warranties WHERE id=$1", [c.warranty_id]);
+    const line = {
+      order_line_id: c.order_line_id,
+      asset_id: c.asset_id,
+      quantity: 1,
+      finding: "Imported policy dates missing",
+      action: "repair",
+      labour_minutes: 60,
+      labour_price_minor: 50000,
+    };
+    const r = await req(
+      "POST",
+      `/tickets/${f.ticket.id}/diagnosis`,
+      { version: d.ticket.version, lines: [line] },
+      "technician",
+    );
+    expect(r.statusCode).toBe(409);
+    expect(r.body).toContain("reviewer");
+    expect((await get(`/tickets/${f.ticket.id}`)).invoices).toHaveLength(0);
+    await post(
+      `/tickets/${f.ticket.id}/diagnosis`,
+      {
+        version: d.ticket.version,
+        lines: [
+          {
+            ...line,
+            coverage: "covered",
+            coverage_reason:
+              "Company accepted goodwill pending policy recovery",
+          },
+        ],
+      },
+      "coordinator",
+    );
+    expect((await get(`/tickets/${f.ticket.id}`)).lines[0].covered).toBe(true);
+  });
+  it("[INS-10] material capacity discrepancy blocks handover for review", async () => {
+    const d = await delivered();
+    const when = new Date(Date.now() + (repairDay += 7) * 86400000);
+    while (when.getUTCDay() === 0) when.setUTCDate(when.getUTCDate() + 1);
+    await post(`/jobs/${d.job.id}/assignment`, {
+      technician_id: accounts.technician.id,
+      scheduled_at: when.toISOString().slice(0, 10) + "T09:00:00+05:30",
+      duration_hours: 2,
+    });
+    await post(`/jobs/${d.job.id}/start`);
+    const r = await req(
+      "POST",
+      `/jobs/${d.job.id}/completion`,
+      {
+        capacity_kw: 0.5,
+        generation_kw: 0.3,
+        labour_minutes: 60,
+        signer_name: "Synthetic signer",
+        checklist: {
+          mounting: true,
+          earthing: true,
+          wiring: true,
+          inverter: true,
+          handover: true,
+        },
+      },
+      "technician",
+    );
+    expect(r.statusCode).toBe(409);
+    expect(r.body).toContain("capacity differs");
+    expect((await get(`/projects/${d.project.id}`)).job.status).toBe(
+      "in_progress",
+    );
+  });
 });
