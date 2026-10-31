@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 import { mkdir, writeFile, unlink } from "node:fs/promises";
 import { createReadStream } from "node:fs";
 import { resolve } from "node:path";
@@ -10,6 +10,7 @@ import { accessibleTicket } from "../modules/service.js";
 import { allow } from "./auth.js";
 import { Params } from "../../../../packages/contracts/src/index.js";
 export const uploadDir = resolve(process.env.UPLOAD_DIR || "data/uploads");
+export const evidenceStorage = { writeFile };
 export async function fileRoutes(app: FastifyInstance) {
   await mkdir(uploadDir, { recursive: true });
   for (const target of ["jobs", "tickets"])
@@ -33,6 +34,22 @@ export async function fileRoutes(app: FastifyInstance) {
           400,
         );
         const bytes = await file.toBuffer();
+        const orderLine =
+            (file.fields.order_line_id as { value?: string })?.value || null,
+          assetId = (file.fields.asset_id as { value?: string })?.value || null;
+        const uuid =
+          /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        ensure(
+          (!orderLine || uuid.test(orderLine)) &&
+            (!assetId || uuid.test(assetId)),
+          "Choose a valid installed component.",
+          400,
+        );
+        ensure(
+          !assetId || orderLine,
+          "Select the component for this serial.",
+          400,
+        );
         ensure(
           !file.file.truncated && bytes.length <= 8 * 1024 * 1024,
           "File exceeds the 8 MB limit.",
@@ -74,7 +91,18 @@ export async function fileRoutes(app: FastifyInstance) {
         const mime = png ? "image/png" : jpeg ? "image/jpeg" : "image/webp",
           filename = `${randomUUID()}.${png ? "png" : jpeg ? "jpg" : "webp"}`,
           path = resolve(uploadDir, filename);
-        await writeFile(path, normalized, { flag: "wx" });
+        try {
+          await evidenceStorage.writeFile(path, normalized, { flag: "wx" });
+        } catch (error) {
+          await unlink(path).catch(() => {});
+          ensure(
+            false,
+            (error as any).code === "ENOSPC"
+              ? "Photo storage is full. Nothing was saved; contact the administrator and retry."
+              : "Photo storage is unavailable. Nothing was saved; retry after storage is restored.",
+            503,
+          );
+        }
         try {
           return await transaction(async (db) => {
             const job =
@@ -98,9 +126,50 @@ export async function fileRoutes(app: FastifyInstance) {
                     ),
               "Start the assigned visit before saving evidence. Completed evidence cannot be changed.",
             );
+
+            if (orderLine) {
+              const line = await one(
+                db,
+                "SELECT l.id FROM order_lines l JOIN orders o ON o.id=l.order_id WHERE l.id=$1 AND o.project_id=$2",
+                [orderLine, job.project_id],
+              );
+              ensure(
+                line,
+                "Photo component belongs to another installation.",
+                400,
+              );
+              if (assetId)
+                ensure(
+                  await one(
+                    db,
+                    "SELECT id FROM assets WHERE id=$1 AND order_line_id=$2",
+                    [assetId, orderLine],
+                  ),
+                  "Photo serial does not belong to this component.",
+                  400,
+                );
+            }
+            const hash = createHash("sha256").update(normalized).digest("hex");
+            const duplicate = await one(
+              db,
+              "SELECT id,kind,size_bytes,order_line_id,asset_id FROM evidence WHERE (job_id=$1 OR ticket_id=$1) AND kind=$2 AND visit_id IS NOT DISTINCT FROM $3::uuid AND diagnosis_revision IS NOT DISTINCT FROM $4::integer AND order_line_id IS NOT DISTINCT FROM $5::uuid AND asset_id IS NOT DISTINCT FROM $6::uuid AND content_hash=$7",
+              [
+                id,
+                kind,
+                visit?.id || null,
+                target === "tickets" ? job.diagnosis_revision : null,
+                orderLine,
+                assetId,
+                hash,
+              ],
+            );
+            if (duplicate) {
+              await unlink(path);
+              return { ...duplicate, deduplicated: true };
+            }
             const row = await one(
               db,
-              "INSERT INTO evidence(job_id,ticket_id,visit_id,kind,filename,mime,size_bytes,uploaded_by,diagnosis_revision) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id,kind,size_bytes",
+              "INSERT INTO evidence(job_id,ticket_id,visit_id,kind,filename,mime,size_bytes,uploaded_by,diagnosis_revision,order_line_id,asset_id,content_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING id,kind,size_bytes,order_line_id,asset_id",
               [
                 target === "jobs" ? id : null,
                 target === "tickets" ? id : null,
@@ -111,6 +180,9 @@ export async function fileRoutes(app: FastifyInstance) {
                 normalized.length,
                 req.user.id,
                 target === "tickets" ? job.diagnosis_revision : null,
+                orderLine,
+                assetId,
+                hash,
               ],
             );
             await audit(

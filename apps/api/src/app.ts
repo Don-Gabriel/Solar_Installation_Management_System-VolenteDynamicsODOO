@@ -41,7 +41,7 @@ export async function buildApp(
     timeWindow: "1 minute",
   });
   await app.register(multipart, {
-    limits: { fileSize: 8 * 1024 * 1024, files: 1, fields: 2 },
+    limits: { fileSize: 8 * 1024 * 1024, files: 1, fields: 4 },
   });
   await app.register(swagger, {
     openapi: {

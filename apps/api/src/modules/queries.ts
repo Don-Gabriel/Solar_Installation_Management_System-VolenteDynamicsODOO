@@ -1,7 +1,7 @@
 import { pool, one, ensure } from "../db.js";
 import type { User } from "../../../../packages/contracts/src/index.js";
 const financeRoles = ["admin", "accounts", "sales"];
-export const projectSelect = `SELECT p.*,c.name AS customer_name,c.phone,s.address,u.name AS owner_name,
+export const projectSelect = `SELECT p.*,c.name AS customer_name,c.phone,c.id AS customer_id,c.version AS customer_version,c.billing_address,s.address,s.access_notes,s.version AS site_version,u.name AS owner_name,
  o.id AS order_id,j.id AS job_id,j.status AS job_status,j.scheduled_at,t.name AS technician_name
  FROM projects p JOIN sites s ON s.id=p.site_id JOIN customers c ON c.id=s.customer_id
  LEFT JOIN users u ON u.id=p.owner_id LEFT JOIN orders o ON o.project_id=p.id LEFT JOIN jobs j ON j.order_id=o.id LEFT JOIN users t ON t.id=j.technician_id`;
@@ -70,7 +70,7 @@ export async function projectDetail(user: User, id: string) {
       [id],
     ),
     pool.query(
-      "SELECT o.*,(coalesce((SELECT sum(pay.amount_minor) FROM payments pay JOIN invoices i ON i.id=pay.invoice_id WHERE i.order_id=o.id AND i.kind='installation'),0)>=o.minimum_advance_minor) AS advance_received,coalesce((SELECT json_agg(l ORDER BY l.description) FROM order_lines l WHERE l.order_id=o.id),'[]') AS lines FROM orders o WHERE project_id=$1",
+      "SELECT o.*,(coalesce((SELECT sum(pay.amount_minor) FROM cash_movements pay JOIN invoices i ON i.id=pay.invoice_id WHERE i.order_id=o.id AND i.kind='installation'),0)>=o.minimum_advance_minor) AS advance_received,coalesce((SELECT json_agg(l ORDER BY l.description) FROM order_lines l WHERE l.order_id=o.id),'[]') AS lines FROM orders o WHERE project_id=$1",
       [id],
     ),
     pool.query(
@@ -82,7 +82,7 @@ export async function projectDetail(user: User, id: string) {
       [project.order_id || null],
     ),
     pool.query(
-      "SELECT i.*,coalesce((SELECT sum(amount_minor) FROM payments WHERE invoice_id=i.id),0)::bigint AS paid_minor,coalesce((SELECT json_agg(l) FROM invoice_lines l WHERE l.invoice_id=i.id),'[]') AS lines,coalesce((SELECT json_agg(p ORDER BY p.paid_at) FROM payments p WHERE p.invoice_id=i.id),'[]') AS payments FROM invoices i WHERE i.order_id=$1 ORDER BY issued_at",
+      "SELECT i.*,coalesce((SELECT json_agg(l) FROM invoice_lines l WHERE l.invoice_id=i.id),'[]') AS lines,coalesce((SELECT json_agg(p ORDER BY p.paid_at) FROM payments p WHERE p.invoice_id=i.id),'[]') AS payments FROM invoice_balances i WHERE i.order_id=$1 ORDER BY issued_at",
       [project.order_id || null],
     ),
     pool.query(
@@ -126,6 +126,21 @@ export async function projectDetail(user: User, id: string) {
   }
   return {
     project,
+    contacts: (
+      await pool.query(
+        "SELECT n.*,u.name AS actor_name FROM project_contacts n JOIN users u ON u.id=n.actor_id WHERE project_id=$1 ORDER BY created_at DESC",
+        [id],
+      )
+    ).rows,
+    related_systems:
+      user.role === "technician"
+        ? []
+        : (
+            await pool.query(
+              "SELECT p.id,p.number,p.stage,p.capacity_kw,p.site_id,s.address FROM projects p JOIN sites s ON s.id=p.site_id WHERE s.customer_id=$1 ORDER BY p.created_at",
+              [project.customer_id],
+            )
+          ).rows,
     surveys: surveys.rows,
     quotes: canFinance ? quotes.rows : [],
     order,
@@ -198,8 +213,8 @@ export async function financeSummary(period: string) {
   const rows = (
     await pool.query(
       `SELECT p.id AS project_id,p.number,c.name AS customer_name,p.stage,o.confirmed_at,o.total_minor AS order_value_minor,
- (SELECT coalesce(sum(i.total_minor),0)::bigint FROM invoices i WHERE i.order_id=o.id) AS invoiced_minor,
- (SELECT coalesce(sum(pay.amount_minor),0)::bigint FROM payments pay JOIN invoices i ON i.id=pay.invoice_id WHERE i.order_id=o.id) AS collected_minor,
+ (SELECT coalesce(sum(i.net_total_minor),0)::bigint FROM invoice_balances i WHERE i.order_id=o.id) AS invoiced_minor,
+ (SELECT coalesce(sum(pay.amount_minor),0)::bigint FROM cash_movements pay JOIN invoices i ON i.id=pay.invoice_id WHERE i.order_id=o.id) AS collected_minor,
  (SELECT coalesce(sum(l.material_cost_minor),0)::bigint FROM order_lines l WHERE l.order_id=o.id) AS material_cost_minor,
  coalesce(j.labour_cost_minor,0) AS labour_cost_minor,
  (SELECT coalesce(sum(t.parts_cost_minor+t.labour_cost_minor),0)::bigint FROM tickets t WHERE t.project_id=p.id) AS service_cost_minor
@@ -223,7 +238,7 @@ export async function financeSummary(period: string) {
   }));
   const cash = await one(
     pool,
-    "SELECT coalesce(sum(amount_minor),0)::bigint AS total FROM payments WHERE ($1::text IS NULL OR paid_at>=date_trunc($1::text,now() AT TIME ZONE 'Asia/Kolkata') AT TIME ZONE 'Asia/Kolkata')",
+    "SELECT coalesce(sum(amount_minor),0)::bigint AS total FROM cash_movements WHERE ($1::text IS NULL OR paid_at>=date_trunc($1::text,now() AT TIME ZONE 'Asia/Kolkata') AT TIME ZONE 'Asia/Kolkata')",
     [interval],
   );
   const purchases = await one(

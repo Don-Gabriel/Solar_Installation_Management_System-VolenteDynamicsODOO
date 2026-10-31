@@ -1,7 +1,98 @@
 import { audit, ensure, one, pool, type Db } from "../db.js";
 import type { User } from "../../../../packages/contracts/src/index.js";
+import { openTask } from "./operational-tasks.js";
 
 export const bufferMinutes = 30;
+export async function extendVisit(db: Db, user: User, id: string, b: any) {
+  await db.query("SELECT pg_advisory_xact_lock(902636)");
+  const initial = await one(db, "SELECT ticket_id FROM visits WHERE id=$1", [
+    id,
+  ]);
+  if (initial?.ticket_id)
+    await one(db, "SELECT id FROM tickets WHERE id=$1 FOR UPDATE", [
+      initial.ticket_id,
+    ]);
+  const v = await accessibleVisit(db, user, id);
+  ensure(
+    v.status === "in_progress" && v.version === b.version,
+    "Only the current in-progress appointment can be extended.",
+  );
+  const end = new Date(b.ends_at);
+  ensure(
+    +end > +new Date(v.ends_at) &&
+      +end - +new Date(v.starts_at) <= 12 * 3600000,
+    "Choose a later end within 12 hours of the start.",
+    400,
+  );
+  const crew = (
+    await db.query(
+      "SELECT user_id FROM visit_crew WHERE visit_id=$1 ORDER BY user_id",
+      [id],
+    )
+  ).rows.map((r) => r.user_id);
+  await db.query(
+    "SELECT id FROM users WHERE id=ANY($1::uuid[]) ORDER BY id FOR UPDATE",
+    [crew],
+  );
+  const conflicts = (
+    await db.query(
+      "SELECT DISTINCT other.* FROM visits other JOIN visit_crew c ON c.visit_id=other.id WHERE c.user_id=ANY($1::uuid[]) AND other.id<>$2 AND other.status='scheduled' AND other.starts_at<$3::timestamptz+interval '30 minutes' AND other.ends_at>$4::timestamptz",
+      [crew, id, b.ends_at, v.ends_at],
+    )
+  ).rows;
+  const jobs = (
+    await db.query(
+      "SELECT DISTINCT j.id,o.project_id FROM jobs j JOIN orders o ON o.id=j.order_id LEFT JOIN job_crew jc ON jc.job_id=j.id WHERE (j.technician_id=ANY($1::uuid[]) OR jc.user_id=ANY($1::uuid[])) AND j.status='scheduled' AND j.scheduled_at<$2::timestamptz+interval '30 minutes' AND j.scheduled_at+make_interval(hours=>j.duration_hours)>$3::timestamptz",
+      [crew, b.ends_at, v.ends_at],
+    )
+  ).rows;
+  await db.query(
+    "UPDATE visits SET ends_at=$2,reason=$3,version=version+1 WHERE id=$1",
+    [id, b.ends_at, b.reason],
+  );
+  for (const c of conflicts) {
+    await openTask(
+      db,
+      user.id,
+      c.project_id,
+      "overrun",
+      "Earlier job overran. Reassign or explicitly reschedule this appointment: " +
+        b.reason,
+      c.ticket_id,
+      c.id,
+    );
+    await openTask(
+      db,
+      user.id,
+      c.project_id,
+      "customer_contact",
+      "Notify customer of possible delay and record an agreed appointment.",
+      c.ticket_id,
+      c.id,
+    );
+  }
+  for (const j of jobs)
+    await openTask(
+      db,
+      user.id,
+      j.project_id,
+      "overrun",
+      "Installation may be delayed by repair visit " + id + ": " + b.reason,
+    );
+  await audit(db, user.id, "project", v.project_id, "visit.extended", {
+    visit_id: id,
+    before: v.ends_at,
+    after: b.ends_at,
+    reason: b.reason,
+    affected_visits: conflicts.map((c) => c.id),
+    affected_jobs: jobs.map((j) => j.id),
+  });
+  return {
+    saved: true,
+    affected_visits: conflicts.map((c) => c.id),
+    affected_jobs: jobs.map((j) => j.id),
+  };
+}
 export async function eligible(
   db: Pick<Db, "query">,
   tech: any,
@@ -17,6 +108,12 @@ export async function eligible(
     return "Inactive or unavailable for dispatch";
   if (!tech.skills.includes(skill)) return "Required skill is missing";
   if (!tech.working_days.includes(local.getUTCDay())) return "Nonworking day";
+  if (
+    await one(db, "SELECT day FROM company_holidays WHERE day=$1::date", [
+      local.toISOString().slice(0, 10),
+    ])
+  )
+    return "Company holiday";
   if (
     local.getUTCHours() < 9 ||
     finish.getUTCHours() > 17 ||
@@ -107,6 +204,7 @@ export async function availability(
   };
 }
 export async function bookVisit(db: Db, user: User, b: any) {
+  await db.query("SELECT pg_advisory_xact_lock(902636)");
   let ticket = null;
   if (b.ticket_id) {
     ticket = await one(db, "SELECT * FROM tickets WHERE id=$1 FOR UPDATE", [
@@ -121,7 +219,11 @@ export async function bookVisit(db: Db, user: User, b: any) {
   const projectId = ticket?.project_id || b.project_id;
   ensure(projectId, "Select a site.", 400);
   ensure(
-    await one(db, "SELECT id FROM projects WHERE id=$1", [projectId]),
+    await one(
+      db,
+      "SELECT id FROM projects WHERE id=$1 AND cancelled_at IS NULL FOR UPDATE",
+      [projectId],
+    ),
     "Project not found",
     404,
   );
@@ -213,6 +315,20 @@ export async function bookVisit(db: Db, user: User, b: any) {
       "INSERT INTO visit_crew(visit_id,user_id,is_lead) VALUES($1,$2,$3)",
       [visit.id, id, id === b.lead_id],
     );
+  await db.query(
+    "UPDATE visits SET acknowledgement_due_at=LEAST(now()+interval '4 hours',starts_at-interval '30 minutes') WHERE id=$1",
+    [visit.id],
+  );
+  if (previous)
+    await openTask(
+      db,
+      user.id,
+      projectId,
+      "customer_contact",
+      "Tell the customer about the changed appointment and record their response.",
+      ticket?.id || null,
+      visit.id,
+    );
   if (ticket)
     await db.query(
       "UPDATE tickets SET assigned_to=$2,status='scheduled',version=version+1 WHERE id=$1",
@@ -236,6 +352,12 @@ export async function bookVisit(db: Db, user: User, b: any) {
 export async function accessibleVisit(db: Db, user: User, id: string) {
   const v = await one(db, "SELECT * FROM visits WHERE id=$1 FOR UPDATE", [id]);
   ensure(v, "Visit not found", 404);
+  if (user.role === "surveyor")
+    ensure(
+      v.kind === "survey",
+      "Survey staff cannot change repair visits.",
+      403,
+    );
   if (user.role === "technician")
     ensure(
       await one(
@@ -261,7 +383,23 @@ export async function visitAction(db: Db, user: User, id: string, b: any) {
     v.version === b.version,
     "This visit changed. Reload before updating.",
   );
-  if (b.action === "start") {
+  if (b.action === "acknowledge") {
+    ensure(
+      v.status === "scheduled",
+      "Only a scheduled visit can be acknowledged.",
+    );
+    const own = await one(
+      db,
+      "UPDATE visit_crew SET acknowledged_at=now() WHERE visit_id=$1 AND user_id=$2 RETURNING user_id",
+      [id, user.id],
+    );
+    ensure(
+      own,
+      "Only a named crew member can acknowledge their own attendance.",
+      403,
+    );
+    await db.query("UPDATE visits SET version=version+1 WHERE id=$1", [id]);
+  } else if (b.action === "start") {
     ensure(v.status === "scheduled", "Only a scheduled visit can start.");
     await db.query(
       "UPDATE visits SET status='in_progress',started_at=now(),version=version+1 WHERE id=$1",
@@ -293,6 +431,32 @@ export async function visitAction(db: Db, user: User, id: string, b: any) {
         "UPDATE tickets SET status=CASE WHEN $2='completed' THEN 'waiting_parts' ELSE 'open' END,version=version+1 WHERE id=$1",
         [v.ticket_id, status],
       );
+    if (b.action === "no_access" || b.action === "decline") {
+      await openTask(
+        db,
+        user.id,
+        v.project_id,
+        "reschedule",
+        b.action === "decline"
+          ? "Worker declined: " + b.reason
+          : "No access: " + b.reason,
+        v.ticket_id,
+        id,
+      );
+      await openTask(
+        db,
+        user.id,
+        v.project_id,
+        "customer_contact",
+        "Contact customer and agree a new appointment: " + b.reason,
+        v.ticket_id,
+        id,
+      );
+      if (v.ticket_id)
+        await db.query("UPDATE tickets SET assigned_to=NULL WHERE id=$1", [
+          v.ticket_id,
+        ]);
+    }
   }
   await audit(db, user.id, "project", v.project_id, "visit." + b.action, {
     visit_id: id,
@@ -301,6 +465,7 @@ export async function visitAction(db: Db, user: User, id: string, b: any) {
   return { saved: true };
 }
 export async function addLeave(db: Db, user: User, b: any) {
+  await db.query("SELECT pg_advisory_xact_lock(902636)");
   const tech = await one(
     db,
     "SELECT * FROM users WHERE id=$1 AND role='technician' FOR UPDATE",
@@ -317,6 +482,32 @@ export async function addLeave(db: Db, user: User, b: any) {
     "INSERT INTO staff_leave(user_id,starts_at,ends_at,reason,created_by) VALUES($1,$2,$3,$4,$5) RETURNING *",
     [b.user_id, b.starts_at, b.ends_at, b.reason, user.id],
   );
+  const affected = (
+    await db.query(
+      "SELECT v.* FROM visits v JOIN visit_crew vc ON vc.visit_id=v.id WHERE vc.user_id=$1 AND v.status='scheduled' AND v.starts_at<$3 AND v.ends_at>$2",
+      [b.user_id, b.starts_at, b.ends_at],
+    )
+  ).rows;
+  for (const v of affected) {
+    await openTask(
+      db,
+      user.id,
+      v.project_id,
+      "reschedule",
+      "Assigned worker is on leave: " + b.reason,
+      v.ticket_id,
+      v.id,
+    );
+    await openTask(
+      db,
+      user.id,
+      v.project_id,
+      "customer_contact",
+      "Confirm any appointment change caused by worker leave.",
+      v.ticket_id,
+      v.id,
+    );
+  }
   await audit(db, user.id, "user", b.user_id, "leave.recorded", {
     ...row,
     warning: "Review existing assignments and reassign affected visits.",

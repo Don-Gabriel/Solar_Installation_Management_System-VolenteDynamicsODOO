@@ -53,7 +53,7 @@ export async function reserveStock(db: Db, userId: string, id: string) {
   const order = await packingOrder(db, id);
   const paid = await one(
     db,
-    "SELECT coalesce(sum(p.amount_minor),0)::bigint AS total FROM payments p JOIN invoices i ON i.id=p.invoice_id WHERE i.order_id=$1 AND i.kind='installation'",
+    "SELECT coalesce(sum(p.amount_minor),0)::bigint AS total FROM cash_movements p JOIN invoices i ON i.id=p.invoice_id WHERE i.order_id=$1 AND i.kind='installation'",
     [id],
   );
   ensure(

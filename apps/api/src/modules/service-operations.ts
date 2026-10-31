@@ -1,3 +1,4 @@
+import { openTask } from "./operational-tasks.js";
 import { audit, ensure, one, pool, type Db } from "../db.js";
 import type { User } from "../../../../packages/contracts/src/index.js";
 
@@ -88,6 +89,15 @@ export async function createTicket(db: Db, userId: string, b: any) {
     priority: t.priority,
     parent_ticket_id: parent?.id || null,
   });
+  if (t.priority === "urgent")
+    await openTask(
+      db,
+      userId,
+      projectId,
+      "hazard",
+      "Urgent customer report: " + t.complaint,
+      t.id,
+    );
   return t;
 }
 export async function accessibleTicket(
@@ -139,7 +149,7 @@ export async function detail(user: User, id: string) {
   ).rows;
   const project = await one(
     pool,
-    "SELECT p.*,c.name AS customer_name,c.phone,s.address,o.id AS order_id FROM projects p JOIN sites s ON s.id=p.site_id JOIN customers c ON c.id=s.customer_id JOIN orders o ON o.project_id=p.id WHERE p.id=$1",
+    "SELECT p.*,c.name AS customer_name,c.phone,s.address,s.access_notes,o.id AS order_id FROM projects p JOIN sites s ON s.id=p.site_id JOIN customers c ON c.id=s.customer_id JOIN orders o ON o.project_id=p.id WHERE p.id=$1",
     [ticket.project_id],
   );
   const components = (
@@ -162,13 +172,13 @@ export async function detail(user: User, id: string) {
   ).rows;
   const evidence = (
     await pool.query(
-      "SELECT id,kind,visit_id,diagnosis_revision,created_at FROM evidence WHERE ticket_id=$1 ORDER BY created_at",
+      "SELECT e.id,e.kind,e.visit_id,e.diagnosis_revision,e.created_at,e.order_line_id,e.asset_id,l.description AS component_description,a.serial FROM evidence e LEFT JOIN order_lines l ON l.id=e.order_line_id LEFT JOIN assets a ON a.id=e.asset_id WHERE e.ticket_id=$1 ORDER BY e.created_at",
       [id],
     )
   ).rows;
   const invoices = (
     await pool.query(
-      "SELECT i.*,coalesce((SELECT json_agg(l ORDER BY l.id) FROM invoice_lines l WHERE l.invoice_id=i.id),'[]') AS lines,coalesce((SELECT sum(amount_minor) FROM payments WHERE invoice_id=i.id),0)::bigint AS paid_minor FROM invoices i WHERE ticket_id=$1",
+      "SELECT i.*,coalesce((SELECT json_agg(l ORDER BY l.id) FROM invoice_lines l WHERE l.invoice_id=i.id),'[]') AS lines FROM invoice_balances i WHERE ticket_id=$1",
       [id],
     )
   ).rows;
@@ -207,6 +217,12 @@ export async function detail(user: User, id: string) {
     visits,
     evidence,
     invoices,
+    reviews: (
+      await pool.query(
+        "SELECT * FROM service_reviews WHERE ticket_id=$1 ORDER BY created_at DESC",
+        [id],
+      )
+    ).rows,
     returns,
     events,
     spares,
@@ -284,6 +300,25 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
         "Quantity exceeds installed quantity.",
         400,
       );
+    if (!a && line.action === "replace") {
+      const used = await one(
+        db,
+        "SELECT coalesce(sum(d.quantity),0)::integer AS quantity FROM diagnosis_lines d JOIN invoices i ON i.ticket_id=d.ticket_id WHERE d.order_line_id=$1 AND d.action='replace'",
+        [l.id],
+      );
+      if (used.quantity + line.quantity > l.quantity)
+        ensure(
+          ["admin", "coordinator"].includes(user.role) &&
+            line.entitlement_review?.trim(),
+          "Repeated quantity replacements exceed the identifiable installed quantity. A coordinator must record an entitlement review.",
+        );
+      if (line.entitlement_review)
+        ensure(
+          ["admin", "coordinator"].includes(user.role),
+          "Only a coordinator can review replacement entitlement.",
+          403,
+        );
+    }
     const w = await one(
       db,
       "SELECT * FROM warranties WHERE order_line_id=$1 AND (asset_id=$2 OR (asset_id IS NULL AND $2::uuid IS NULL))",
@@ -317,6 +352,21 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
       );
       covered = line.coverage === "covered";
       reason += "; reviewer decision: " + line.coverage_reason;
+    }
+    if (
+      line.coverage === "chargeable" &&
+      w &&
+      new Date(w.starts_at) <= new Date(t.opened_at) &&
+      new Date(w.expires_at) > new Date(t.opened_at)
+    ) {
+      ensure(
+        await one(
+          db,
+          "SELECT e.id FROM evidence e JOIN visits v ON v.id=e.visit_id WHERE e.ticket_id=$1 AND e.kind='photo' AND v.status='in_progress' AND (e.order_line_id IS NULL OR e.order_line_id=$2) AND (e.asset_id IS NULL OR e.asset_id=$3)",
+          [id, l.id, a?.id || null],
+        ),
+        "Save diagnostic photo evidence before excluding a covered component.",
+      );
     }
     let labourCovered = covered;
     if (line.labour_coverage && line.labour_coverage !== "auto") {
@@ -389,7 +439,7 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
   await db.query("DELETE FROM diagnosis_lines WHERE ticket_id=$1", [id]);
   for (const r of rows)
     await db.query(
-      `INSERT INTO diagnosis_lines(ticket_id,order_line_id,asset_id,warranty_id,product_id,description,finding,quantity,action,replacement_serial,covered,coverage_reason,unit_price_minor,unit_cost_minor,labour_price_minor,labour_cost_minor,labour_minutes,labour_covered,coverage_override,labour_coverage_override,callout_price_minor) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)`,
+      `INSERT INTO diagnosis_lines(ticket_id,order_line_id,asset_id,warranty_id,product_id,description,finding,quantity,action,replacement_serial,covered,coverage_reason,unit_price_minor,unit_cost_minor,labour_price_minor,labour_cost_minor,labour_minutes,labour_covered,coverage_override,labour_coverage_override,callout_price_minor,entitlement_review) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)`,
       [
         id,
         r.l.id,
@@ -412,6 +462,7 @@ export async function saveDiagnosis(db: Db, user: User, id: string, b: any) {
         r.line.coverage || "auto",
         r.line.labour_coverage || "auto",
         r.line.callout_price_minor || 0,
+        r.line.entitlement_review || "",
       ],
     );
   await db.query(
@@ -540,6 +591,23 @@ export async function resolveTicket(
     let replacement: any = null,
       original: any = null;
     if (l.action === "replace") {
+      if (!l.asset_id) {
+        const originalLine = await one(
+          db,
+          "SELECT quantity FROM order_lines WHERE id=$1 FOR UPDATE",
+          [l.order_line_id],
+        );
+        const used = await one(
+          db,
+          "SELECT coalesce(sum(d.quantity),0)::integer AS quantity FROM diagnosis_lines d JOIN invoices i ON i.ticket_id=d.ticket_id WHERE d.order_line_id=$1 AND d.action='replace' AND d.ticket_id<>$2",
+          [l.order_line_id, id],
+        );
+        ensure(
+          used.quantity + l.quantity <= originalLine.quantity ||
+            l.entitlement_review?.trim(),
+          "Replacement entitlement changed. Obtain a coordinator review before completion.",
+        );
+      }
       const p = await one(db, "SELECT * FROM products WHERE id=$1 FOR UPDATE", [
         l.product_id,
       ]);

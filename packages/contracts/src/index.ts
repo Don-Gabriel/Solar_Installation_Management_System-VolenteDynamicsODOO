@@ -16,7 +16,23 @@ export const Enquiry = Type.Object(
     name: text(150),
     phone: Type.String({ pattern: "^[+0-9 ()-]{7,20}$" }),
     address: text(1000),
-    capacity_kw: Type.Integer({ minimum: 1, maximum: 5 }),
+    capacity_kw: Type.Union([
+      Type.Integer({ minimum: 1, maximum: 5 }),
+      Type.Null(),
+    ]),
+    customer_id: Type.Optional(Id),
+    site_id: Type.Optional(Id),
+    billing_address: optionalText(1000),
+    access_notes: optionalText(2000),
+    preferred_date: Type.Optional(Type.String({ format: "date" })),
+    preferred_window: Type.Optional(
+      Type.Union([
+        Type.Literal("any"),
+        Type.Literal("morning"),
+        Type.Literal("afternoon"),
+      ]),
+    ),
+    hazard_notes: optionalText(2000),
     system_type: Type.Union([
       Type.Literal("on_grid"),
       Type.Literal("off_grid"),
@@ -31,8 +47,42 @@ export const Enquiry = Type.Object(
   { additionalProperties: false },
 );
 export type EnquiryInput = Static<typeof Enquiry>;
+export const CustomerEdit = Type.Object(
+  {
+    version: Type.Integer({ minimum: 1 }),
+    name: text(150),
+    phone: Type.String({ pattern: "^[+0-9 ()-]{7,20}$" }),
+    phone_verified: Type.Boolean(),
+    billing_address: Type.String({ maxLength: 1000 }),
+    reason: text(2000),
+  },
+  { additionalProperties: false },
+);
+export const SiteEdit = Type.Object(
+  {
+    version: Type.Integer({ minimum: 1 }),
+    access_notes: Type.String({ maxLength: 2000 }),
+    reason: text(2000),
+  },
+  { additionalProperties: false },
+);
+export const CustomerMerge = Type.Object(
+  {
+    version: Type.Integer({ minimum: 1 }),
+    target_id: Id,
+    target_version: Type.Integer({ minimum: 1 }),
+    confirmed_same_customer: Type.Boolean(),
+    reason: text(2000),
+  },
+  { additionalProperties: false },
+);
+export const ContactNote = Type.Object(
+  { note: text(2000) },
+  { additionalProperties: false },
+);
 export const Survey = Type.Object(
   {
+    capacity_kw: Type.Optional(Type.Integer({ minimum: 1, maximum: 5 })),
     roof_area: Type.Number({ minimum: 1, maximum: 100000 }),
     bill_minor: Money,
     grid_suitable: Type.Boolean(),
@@ -47,6 +97,46 @@ export const Approval = Type.Object(
   { approved: Type.Boolean() },
   { additionalProperties: false },
 );
+export const QuoteAcceptance = Type.Object(
+  { quote_id: Type.Optional(Id) },
+  { additionalProperties: false },
+);
+export const ReviewDecision = Type.Object(
+  { approved: Type.Boolean(), note: text(2000) },
+  { additionalProperties: false },
+);
+export const FinancialReason = Type.Object(
+  { reason: text(2000) },
+  { additionalProperties: false },
+);
+export const InvoiceCorrection = Type.Object(
+  {
+    reason: text(2000),
+    credit_minor: Type.Integer({ minimum: 1, maximum: 1000000000000 }),
+    replacement_lines: Type.Optional(
+      Type.Array(
+        Type.Object(
+          {
+            description: text(500),
+            quantity: Type.Integer({ minimum: 1, maximum: 10000 }),
+            unit_price_minor: Money,
+          },
+          { additionalProperties: false },
+        ),
+        { maxItems: 50 },
+      ),
+    ),
+  },
+  { additionalProperties: false },
+);
+export const Refund = Type.Object(
+  {
+    amount_minor: Type.Integer({ minimum: 1, maximum: 1000000000000 }),
+    reference: text(150),
+    reason: text(2000),
+  },
+  { additionalProperties: false },
+);
 export const Payment = Type.Object(
   {
     amount_minor: Type.Integer({ minimum: 1, maximum: 1000000000000 }),
@@ -54,6 +144,9 @@ export const Payment = Type.Object(
       ["cash", "bank", "upi", "card"].map((v) => Type.Literal(v)),
     ),
     reference: text(120),
+    status: Type.Optional(
+      Type.Union([Type.Literal("pending"), Type.Literal("verified")]),
+    ),
   },
   { additionalProperties: false },
 );
@@ -186,9 +279,14 @@ export const VisitBooking = Type.Object(
 export const VisitAction = Type.Object(
   {
     action: Type.Union(
-      ["start", "cancel", "no_access", "diagnosis_done"].map((v) =>
-        Type.Literal(v),
-      ),
+      [
+        "start",
+        "cancel",
+        "no_access",
+        "diagnosis_done",
+        "acknowledge",
+        "decline",
+      ].map((v) => Type.Literal(v)),
     ),
     version: Type.Integer({ minimum: 1 }),
     reason: optionalText(),
@@ -201,6 +299,16 @@ export const Leave = Type.Object(
     starts_at: Type.String({ format: "date-time" }),
     ends_at: Type.String({ format: "date-time" }),
     reason: text(1000),
+  },
+  { additionalProperties: false },
+);
+export const ServiceOutcome = Type.Object(
+  {
+    version: Type.Integer({ minimum: 1 }),
+    kind: Type.Union([Type.Literal("remote"), Type.Literal("no_fault")]),
+    observations: text(2000),
+    customer_confirmation: Type.Optional(Type.String({ maxLength: 500 })),
+    minutes: Type.Optional(Type.Integer({ minimum: 0, maximum: 720 })),
   },
   { additionalProperties: false },
 );
@@ -232,6 +340,7 @@ export const Diagnosis = Type.Object(
             ),
           ),
           coverage_reason: optionalText(),
+          entitlement_review: optionalText(),
         },
         { additionalProperties: false },
       ),
@@ -311,5 +420,29 @@ export const StaffUpdate = Type.Object(
 
 export const CrewPayment = Type.Object(
   { technician_id: Id, confirmed_by: text(150) },
+  { additionalProperties: false },
+);
+export const ScheduleSearch = Type.Object(
+  {
+    ...Availability.properties,
+    ticket_id: Type.Optional(Id),
+    project_id: Type.Optional(Id),
+  },
+  { additionalProperties: false },
+);
+export const TaskOutcome = Type.Object(
+  { version: Type.Integer({ minimum: 1 }), outcome: text(2000) },
+  { additionalProperties: false },
+);
+export const Holiday = Type.Object(
+  { day: Type.String({ format: "date" }), reason: text(500) },
+  { additionalProperties: false },
+);
+export const VisitExtension = Type.Object(
+  {
+    version: Type.Integer({ minimum: 1 }),
+    ends_at: Type.String({ format: "date-time" }),
+    reason: text(1000),
+  },
   { additionalProperties: false },
 );

@@ -17,16 +17,26 @@ pool.on("error", (error) => {
 export type Db = PoolClient;
 export async function transaction<T>(fn: (db: Db) => Promise<T>): Promise<T> {
   const db = await pool.connect();
+  let broken: Error | undefined;
+  const connectionError = (error: Error) => {
+    broken = error;
+  };
+  db.on("error", connectionError);
   try {
     await db.query("BEGIN");
     const result = await fn(db);
     await db.query("COMMIT");
     return result;
   } catch (e) {
-    await db.query("ROLLBACK");
+    try {
+      await db.query("ROLLBACK");
+    } catch (rollbackError) {
+      broken = rollbackError as Error;
+    }
     throw e;
   } finally {
-    db.release();
+    db.release(broken);
+    db.off("error", connectionError);
   }
 }
 export async function one(

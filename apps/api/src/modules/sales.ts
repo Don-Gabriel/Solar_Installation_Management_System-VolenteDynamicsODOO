@@ -1,3 +1,4 @@
+import { openTask } from "./operational-tasks.js";
 import { audit, ensure, one, type Db } from "../db.js";
 import type { EnquiryInput } from "../../../../packages/contracts/src/index.js";
 export async function createEnquiry(
@@ -5,16 +6,34 @@ export async function createEnquiry(
   userId: string | null,
   body: EnquiryInput,
 ) {
-  const customer = await one(
-    db,
-    "INSERT INTO customers(name,phone) VALUES($1,$2) RETURNING *",
-    [body.name.trim(), body.phone.trim()],
+  ensure(
+    userId || (!body.customer_id && !body.site_id),
+    "Existing records require staff access.",
+    403,
   );
-  const site = await one(
-    db,
-    "INSERT INTO sites(customer_id,address) VALUES($1,$2) RETURNING *",
-    [customer.id, body.address.trim()],
-  );
+  const customer = body.customer_id
+    ? await one(
+        db,
+        "SELECT * FROM customers WHERE id=$1 AND merged_into IS NULL FOR UPDATE",
+        [body.customer_id],
+      )
+    : await one(
+        db,
+        "INSERT INTO customers(name,phone,billing_address) VALUES($1,$2,$3) RETURNING *",
+        [body.name.trim(), body.phone.trim(), body.billing_address || ""],
+      );
+  ensure(customer, "Customer not found", 404);
+  const site = body.site_id
+    ? await one(db, "SELECT * FROM sites WHERE id=$1 AND customer_id=$2", [
+        body.site_id,
+        customer.id,
+      ])
+    : await one(
+        db,
+        "INSERT INTO sites(customer_id,address,access_notes) VALUES($1,$2,$3) RETURNING *",
+        [customer.id, body.address.trim(), body.access_notes || ""],
+      );
+  ensure(site, "Site does not belong to the selected customer.", 404);
   const project = await one(
     db,
     `INSERT INTO projects(site_id,capacity_kw,system_type,source,notes,subsidy_interest,owner_id,follow_up) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *`,
@@ -29,6 +48,24 @@ export async function createEnquiry(
       body.follow_up || null,
     ],
   );
+  await db.query(
+    "UPDATE projects SET preferred_date=$2,preferred_window=$3,hazard_notes=$4 WHERE id=$1",
+    [
+      project.id,
+      body.preferred_date || null,
+      body.preferred_window || "any",
+      body.hazard_notes || "",
+    ],
+  );
+  if (userId && body.hazard_notes)
+    await openTask(
+      db,
+      userId,
+      project.id,
+      "hazard",
+      "Customer reported hazard; coordinator must arrange qualified review: " +
+        body.hazard_notes,
+    );
   if (body.subsidy_interest)
     await db.query("INSERT INTO subsidies(project_id,owner_id) VALUES($1,$2)", [
       project.id,
@@ -42,10 +79,16 @@ export async function saveSurvey(db: Db, userId: string, id: string, b: any) {
     id,
   ]);
   ensure(p, "Project not found", 404);
+  ensure(!p.cancelled_at, "This enquiry was cancelled.");
   ensure(
     ["enquiry", "survey", "quoted"].includes(p.stage),
     "An accepted order cannot be resurveyed in this workflow.",
   );
+  if (b.capacity_kw)
+    await db.query("UPDATE projects SET capacity_kw=$2 WHERE id=$1", [
+      id,
+      b.capacity_kw,
+    ]);
   const survey = await one(
     db,
     `INSERT INTO surveys(project_id,roof_area,bill_minor,grid_suitable,direction,tilt,cable_distance,notes,status,surveyed_by) VALUES($1,$2,$3,$4,$5,$6,$7,$8,'pending',$9) RETURNING *`,
@@ -77,6 +120,7 @@ export async function approveSurvey(
     [id],
   );
   ensure(project, "Project not found", 404);
+  ensure(!project.cancelled_at, "This enquiry was cancelled.");
   ensure(
     ["enquiry", "survey", "quoted"].includes(project.stage),
     "Order already accepted.",
@@ -92,6 +136,10 @@ export async function approveSurvey(
     "Survey already reviewed. Record a new survey to change the decision.",
   );
   if (b.approved) {
+    ensure(
+      project.capacity_kw,
+      "Record the surveyed system capacity before approval.",
+    );
     ensure(
       Number(survey.roof_area) >= project.capacity_kw * 8,
       "Usable roof area must be at least 8 m² per kW under the demo qualification policy.",
@@ -120,6 +168,7 @@ export async function issueQuote(db: Db, userId: string, id: string) {
     id,
   ]);
   ensure(p, "Project not found", 404);
+  ensure(!p.cancelled_at, "This enquiry was cancelled.");
   ensure(
     !(await one(db, "SELECT id FROM orders WHERE project_id=$1", [id])),
     "An accepted quotation cannot be replaced.",
@@ -172,21 +221,41 @@ export async function issueQuote(db: Db, userId: string, id: string) {
   });
   return q;
 }
-export async function acceptQuote(db: Db, userId: string, id: string) {
+export async function acceptQuote(
+  db: Db,
+  userId: string,
+  id: string,
+  b: any = {},
+) {
   const p = await one(db, "SELECT * FROM projects WHERE id=$1 FOR UPDATE", [
     id,
   ]);
   ensure(p, "Project not found", 404);
+  ensure(!p.cancelled_at, "This enquiry was cancelled.");
   const existing = await one(db, "SELECT * FROM orders WHERE project_id=$1", [
     id,
   ]);
-  if (existing) return existing;
+  if (existing) {
+    ensure(
+      !b.quote_id || existing.quote_id === b.quote_id,
+      "A different quotation has already been accepted.",
+    );
+    return existing;
+  }
   const quote = await one(
     db,
     "SELECT * FROM quotes WHERE project_id=$1 ORDER BY version DESC LIMIT 1 FOR UPDATE",
     [id],
   );
   ensure(quote, "Issue a quotation first.");
+  ensure(
+    !b.quote_id || b.quote_id === quote.id,
+    "A newer quotation is available. Review it before acceptance.",
+  );
+  ensure(
+    new Date(quote.expires_at).getTime() > Date.now(),
+    "Quotation expired. Issue and review a renewed quotation.",
+  );
   const survey = await one(
     db,
     "SELECT * FROM surveys WHERE project_id=$1 ORDER BY created_at DESC,id DESC LIMIT 1",
@@ -258,17 +327,17 @@ export async function recordPayment(
   }
   const paid = await one(
     db,
-    "SELECT coalesce(sum(amount_minor),0)::bigint AS total FROM payments WHERE invoice_id=$1",
+    "SELECT paid_minor AS total,net_total_minor FROM invoice_balances WHERE id=$1",
     [id],
   );
   ensure(
-    b.amount_minor <= invoice.total_minor - paid.total,
+    b.amount_minor <= paid.net_total_minor - paid.total,
     "Payment exceeds the outstanding invoice balance.",
   );
   const payment = await one(
     db,
-    "INSERT INTO payments(invoice_id,amount_minor,method,reference,created_by) VALUES($1,$2,$3,$4,$5) RETURNING *",
-    [id, b.amount_minor, b.method, b.reference, userId],
+    "INSERT INTO payments(invoice_id,amount_minor,method,reference,created_by,status) VALUES($1,$2,$3,$4,$5,$6) RETURNING *",
+    [id, b.amount_minor, b.method, b.reference, userId, b.status || "verified"],
   );
   const order = await one(db, "SELECT project_id FROM orders WHERE id=$1", [
     invoice.order_id,

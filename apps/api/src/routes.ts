@@ -1,8 +1,11 @@
+import * as serviceReview from "./modules/service-reviews.js";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { TSchema } from "typebox";
 import * as C from "../../../packages/contracts/src/index.js";
 import { audit, ensure, one, pool, transaction, type Db } from "./db.js";
 import { allow, digest } from "./plugins/auth.js";
+import * as customers from "./modules/customers.js";
+import * as finance from "./modules/finance.js";
 import * as sales from "./modules/sales.js";
 import * as stock from "./modules/inventory.js";
 import * as field from "./modules/field.js";
@@ -10,6 +13,7 @@ import * as service from "./modules/service.js";
 import * as read from "./modules/queries.js";
 import * as staff from "./modules/staff.js";
 import * as scheduling from "./modules/scheduling.js";
+import * as operational from "./modules/operational-tasks.js";
 type Command = (
   db: Db,
   req: FastifyRequest,
@@ -75,6 +79,61 @@ export async function routes(app: FastifyInstance) {
     );
   }
   app.get("/api/dashboard", (req) => read.dashboard(req.user));
+  app.get("/api/operational-tasks", (req) => {
+    allow(req, ["admin", "coordinator", "support", "surveyor", "technician"]);
+    return operational.taskList(req.user);
+  });
+  command(
+    "/operational-tasks/:id/completion",
+    ["admin", "coordinator", "support"],
+    C.TaskOutcome,
+    (db, r, id, b) => operational.finishTask(db, r.user, id, b),
+  );
+  command("/holidays", ["admin", "coordinator"], C.Holiday, (db, r, id, b) =>
+    operational.holiday(db, r.user, b),
+  );
+  command(
+    "/schedule/search",
+    ["admin", "coordinator"],
+    C.ScheduleSearch,
+    async (db, r, id, b) => {
+      const result = await scheduling.availability(b);
+      if (!result.slots.length && (b.ticket_id || b.project_id)) {
+        const ticket = b.ticket_id
+          ? await one(db, "SELECT * FROM tickets WHERE id=$1", [b.ticket_id])
+          : null;
+        ensure(!b.ticket_id || ticket, "Request not found", 404);
+        ensure(
+          !ticket ||
+            !["closed", "cancelled", "awaiting_confirmation"].includes(
+              ticket.status,
+            ),
+          "This request no longer needs scheduling.",
+        );
+        const projectId = ticket?.project_id || b.project_id;
+        ensure(
+          await one(db, "SELECT id FROM projects WHERE id=$1", [projectId]),
+          "Site not found",
+          404,
+        );
+        result.escalation = await operational.openTask(
+          db,
+          r.user.id,
+          projectId,
+          "capacity",
+          `No qualified crew from ${b.from} through ${b.to}; review alternatives and contact customer.`,
+          ticket?.id || null,
+        );
+      }
+      return result;
+    },
+  );
+  command(
+    "/visits/:id/extension",
+    ["admin", "coordinator", "technician"],
+    C.VisitExtension,
+    (db, r, id, b) => scheduling.extendVisit(db, r.user, id, b),
+  );
   app.get("/api/demo-tools", async () => ({
     enabled: process.env.DEMO_TOOLS === "true",
   }));
@@ -242,7 +301,7 @@ export async function routes(app: FastifyInstance) {
   );
   command(
     "/visits/:id/action",
-    ["admin", "coordinator", "technician"],
+    ["admin", "coordinator", "technician", "surveyor"],
     C.VisitAction,
     (db, r, id, b) => scheduling.visitAction(db, r.user, id, b),
   );
@@ -337,7 +396,11 @@ export async function routes(app: FastifyInstance) {
       config: { rateLimit: { max: 5, timeWindow: "1 minute" } },
     },
     (req) => {
-      ensure(process.env.PUBLIC_INTAKE_ENABLED!=='false','Public enquiries are disabled. Please call the company.',403);
+      ensure(
+        process.env.PUBLIC_INTAKE_ENABLED !== "false",
+        "Public enquiries are disabled. Please call the company.",
+        403,
+      );
       return transaction((db) =>
         sales.createEnquiry(db, null, {
           ...(req.body as C.EnquiryInput),
@@ -346,6 +409,64 @@ export async function routes(app: FastifyInstance) {
         }),
       );
     },
+  );
+  app.get(
+    "/api/customers",
+    {
+      schema: {
+        querystring: {
+          type: "object",
+          properties: { search: { type: "string", maxLength: 150 } },
+          additionalProperties: false,
+        },
+      },
+    },
+    async (req) => {
+      allow(req, ["admin", "sales", "support", "coordinator", "accounts"]);
+      return customers.search(req.query);
+    },
+  );
+  app.get(
+    "/api/customers/:id/history",
+    { schema: { params: C.Params } },
+    async (req) => {
+      allow(req, ["admin", "support"]);
+      return {
+        items: (
+          await pool.query(
+            "SELECT h.*,u.name AS actor_name FROM customer_history h JOIN users u ON u.id=h.actor_id WHERE customer_id=$1 ORDER BY created_at DESC",
+            [(req.params as any).id],
+          )
+        ).rows,
+      };
+    },
+  );
+  command(
+    "/customers/:id/contact",
+    ["admin", "sales", "support"],
+    C.CustomerEdit,
+    (db, r, id, b) => customers.editCustomer(db, r.user.id, id, b),
+  );
+  command("/customers/:id/merge", ["admin"], C.CustomerMerge, (db, r, id, b) =>
+    customers.merge(db, r.user.id, id, b),
+  );
+  command(
+    "/sites/:id/access",
+    ["admin", "sales", "support", "coordinator"],
+    C.SiteEdit,
+    (db, r, id, b) => customers.siteEdit(db, r.user.id, id, b),
+  );
+  command(
+    "/projects/:id/contact-notes",
+    ["admin", "sales", "support", "coordinator"],
+    C.ContactNote,
+    (db, r, id, b) => customers.contact(db, r.user.id, id, b),
+  );
+  command(
+    "/projects/:id/cancellation",
+    ["admin", "sales", "support", "coordinator"],
+    C.FinancialReason,
+    (db, r, id, b) => customers.cancelEnquiry(db, r.user.id, id, b),
   );
   command(
     "/projects",
@@ -371,14 +492,52 @@ export async function routes(app: FastifyInstance) {
   command(
     "/projects/:id/acceptance",
     ["admin", "sales"],
-    undefined,
-    (db, r, id) => sales.acceptQuote(db, r.user.id, id),
+    C.QuoteAcceptance,
+    (db, r, id, b) => sales.acceptQuote(db, r.user.id, id, b),
   );
   command(
     "/invoices/:id/payments",
     ["admin", "sales", "accounts"],
     C.Payment,
     (db, r, id, b) => sales.recordPayment(db, r.user.id, id, b),
+  );
+  app.get(
+    "/api/invoices/:id/ledger",
+    { schema: { params: C.Params } },
+    async (req) => {
+      allow(req, ["admin", "accounts", "sales"]);
+      return finance.ledger((req.params as any).id);
+    },
+  );
+  command(
+    "/invoices/:id/corrections",
+    ["admin", "accounts"],
+    C.InvoiceCorrection,
+    (db, r, id, b) => finance.requestCorrection(db, r.user.id, id, b),
+  );
+  command(
+    "/invoice-corrections/:id/review",
+    ["admin", "accounts"],
+    C.ReviewDecision,
+    (db, r, id, b) => finance.reviewCorrection(db, r.user.id, id, b),
+  );
+  command(
+    "/payments/:id/verification",
+    ["admin", "accounts"],
+    C.ReviewDecision,
+    (db, r, id, b) => finance.verifyPayment(db, r.user.id, id, b),
+  );
+  command(
+    "/payments/:id/reversal",
+    ["admin", "accounts"],
+    C.FinancialReason,
+    (db, r, id, b) => finance.reversePayment(db, r.user.id, id, b),
+  );
+  command(
+    "/invoices/:id/refunds",
+    ["admin", "accounts"],
+    C.Refund,
+    (db, r, id, b) => finance.refund(db, r.user.id, id, b),
   );
   command("/receipts", ["admin", "warehouse"], C.Receipt, (db, r, _id, b) =>
     stock.receiveStock(db, r.user.id, b),
@@ -430,6 +589,31 @@ export async function routes(app: FastifyInstance) {
     ["admin", "support", "coordinator"],
     C.Ticket,
     (db, r, _id, b) => service.createTicket(db, r.user.id, b),
+  );
+  command(
+    "/tickets/:id/outcome-review",
+    ["admin", "technician", "support", "coordinator"],
+    C.ServiceOutcome,
+    (db, r, id, b) => serviceReview.requestReview(db, r.user, id, b),
+  );
+  command(
+    "/service-reviews/:id/decision",
+    ["admin", "coordinator"],
+    C.ReviewDecision,
+    (db, r, id, b) => serviceReview.decide(db, r.user, id, b),
+  );
+  command(
+    "/jobs/:id/dispute",
+    ["admin", "technician"],
+    C.FinancialReason,
+    (db, r, id, b) => serviceReview.installationDispute(db, r.user, id, b),
+  );
+  command(
+    "/jobs/:id/dispute-review",
+    ["admin", "coordinator"],
+    C.FinancialReason,
+    (db, r, id, b) =>
+      serviceReview.installationDispute(db, r.user, id, b, true),
   );
   command(
     "/tickets/:id/resolution",

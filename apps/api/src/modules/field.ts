@@ -21,6 +21,7 @@ export async function accessibleJob(db: Db, user: User, id: string) {
   return job;
 }
 export async function assignJob(db: Db, user: User, id: string, b: any) {
+  await db.query("SELECT pg_advisory_xact_lock(902636)");
   const job = await accessibleJob(db, user, id);
   ensure(
     !["completed", "in_progress"].includes(job.status),
@@ -98,9 +99,20 @@ export async function completeJob(db: Db, user: User, id: string, b: any) {
     403,
   );
   if (job.status === "completed") return job;
-  const accepted=await one(db,'SELECT capacity_kw FROM projects WHERE id=$1',[job.project_id]);
-  ensure(Math.abs(b.capacity_kw-accepted.capacity_kw)<=accepted.capacity_kw*0.1,
-    'Installed capacity differs materially from the accepted system. Review the discrepancy before handover.');
+  ensure(
+    !job.review_required,
+    "Resolve the customer handover dispute before completion.",
+  );
+  const accepted = await one(
+    db,
+    "SELECT capacity_kw FROM projects WHERE id=$1",
+    [job.project_id],
+  );
+  ensure(
+    Math.abs(b.capacity_kw - accepted.capacity_kw) <=
+      accepted.capacity_kw * 0.1,
+    "Installed capacity differs materially from the accepted system. Review the discrepancy before handover.",
+  );
   ensure(
     job.status === "in_progress",
     "Start the job before recording completion.",
